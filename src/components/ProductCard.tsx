@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { ShoppingCart, Star, Zap } from 'lucide-react'
 import { ProductWithCategory } from '@/types'
+import { useFormatPrice } from '@/hooks/useFormatPrice'
 
 interface ProductCardProps {
   product: ProductWithCategory
@@ -15,6 +16,7 @@ interface ProductCardProps {
 
 const ProductCard = memo(({ product, onAddToCart, variant = 'default', addedToCart }: ProductCardProps) => {
   const t = useTranslations('common')
+  const formatPrice = useFormatPrice()
   const isCompact = variant === 'compact'
   const isAdded = addedToCart?.has(product.id) || false
 
@@ -166,7 +168,7 @@ const ProductCard = memo(({ product, onAddToCart, variant = 'default', addedToCa
             backdropFilter: 'blur(15px)',
           }}
         >
-          {product.price} ֏
+          {formatPrice(product.price)}
         </div>
 
         {/* Bottom Gradient Overlay - Removed black overlay */}

@@ -238,7 +238,7 @@
     "statusReady": "Պatրast",
     "statusDelivered": "Առakvac",
     "statusCancelled": "Չեղարկված",
-    "pcsPrice": "{qty} հատ × {price} ֏"
+    "pcsPrice": "{qty} հատ × {price}"
   },
   "about": {
     "heroTitle": "Pideh Armenia-ի մասին",

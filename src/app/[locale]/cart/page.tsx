@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft, ShoppingCart, Minus, Trash2, ShoppingBag } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
+import { useFormatPrice } from '@/hooks/useFormatPrice'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -12,6 +13,7 @@ export default function CartPage() {
   const t = useTranslations('cart')
   const tc = useTranslations('common')
   const { items, updateQuantity, removeItem, getTotalPrice, clearCart } = useCart()
+  const formatPrice = useFormatPrice()
   const [isClearing, setIsClearing] = useState(false)
 
   const handleQuantityChange = (productId: string, newQuantity: number) => {
@@ -161,7 +163,7 @@ export default function CartPage() {
                         {item.product.category?.name || tc('noCategory')}
                       </p>
                       <div className="text-lg font-bold text-orange-500 mb-3">
-                        {item.product.price} ֏
+                        {formatPrice(item.product.price)}
                       </div>
                       
                       {/* Quantity Controls - Mobile Style */}
@@ -189,7 +191,7 @@ export default function CartPage() {
                         {/* Total Price and Delete */}
                         <div className="text-right">
                           <div className="text-lg font-bold text-gray-900 mb-1">
-                            {item.product.price * item.quantity} ֏
+                            {formatPrice(item.product.price * item.quantity)}
                           </div>
                           <button
                             onClick={() => removeItem(item.product.id)}
@@ -255,7 +257,7 @@ export default function CartPage() {
                           {item.product.category?.name || tc('noCategory')}
                         </p>
                         <div className="text-xl font-bold text-orange-500">
-                          {item.product.price} ֏
+                          {formatPrice(item.product.price)}
                         </div>
                       </div>
                       
@@ -283,7 +285,7 @@ export default function CartPage() {
                       {/* Total Price */}
                       <div className="text-right">
                         <div className="text-xl font-bold text-gray-900">
-                          {item.product.price * item.quantity} ֏
+                          {formatPrice(item.product.price * item.quantity)}
                         </div>
                         <button
                           onClick={() => removeItem(item.product.id)}
@@ -307,7 +309,7 @@ export default function CartPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>{t('itemsCount', { count: items.reduce((total, item) => total + item.quantity, 0) })}</span>
-                  <span>{getTotalPrice()} ֏</span>
+                  <span>{formatPrice(getTotalPrice())}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>{t('delivery')}</span>
@@ -316,7 +318,7 @@ export default function CartPage() {
                 <div className="border-t border-gray-300 pt-4">
                   <div className="flex justify-between text-xl font-bold text-gray-900">
                     <span>{t('toPay')}</span>
-                    <span>{getTotalPrice()} ֏</span>
+                    <span>{formatPrice(getTotalPrice())}</span>
                   </div>
                 </div>
               </div>
@@ -348,7 +350,7 @@ export default function CartPage() {
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-gray-600">
                 <span>{t('itemsCount', { count: items.reduce((total, item) => total + item.quantity, 0) })}</span>
-                <span>{getTotalPrice()} ֏</span>
+                <span>{formatPrice(getTotalPrice())}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>{t('delivery')}</span>
@@ -357,7 +359,7 @@ export default function CartPage() {
               <div className="border-t border-gray-300 pt-3">
                 <div className="flex justify-between text-lg font-bold text-gray-900">
                   <span>{t('toPay')}</span>
-                  <span>{getTotalPrice()} ֏</span>
+                  <span>{formatPrice(getTotalPrice())}</span>
                 </div>
               </div>
             </div>

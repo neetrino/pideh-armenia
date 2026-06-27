@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import { ArrowLeft, MapPin, Clock, CreditCard, Phone, User } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
+import { useFormatPrice } from '@/hooks/useFormatPrice'
 import { useSession } from 'next-auth/react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -33,6 +34,7 @@ export default function CheckoutPage() {
   const tc = useTranslations('common')
   const router = useRouter()
   const { items, getTotalPrice, clearCart, validateCart } = useCart()
+  const formatPrice = useFormatPrice()
   const { data: session, status } = useSession()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
@@ -412,7 +414,7 @@ export default function CheckoutPage() {
                       <div className="text-xs text-gray-600">{item.quantity} {tc('pcs')}</div>
                     </div>
                     <div className="font-semibold text-gray-900 text-sm">
-                      {item.product.price * item.quantity} ֏
+                      {formatPrice(item.product.price * item.quantity)}
                     </div>
                   </div>
                 ))}
@@ -420,7 +422,7 @@ export default function CheckoutPage() {
                 <div className="border-t border-gray-300 pt-3">
                   <div className="flex justify-between text-lg font-bold text-gray-900">
                     <span>{tc('total')}</span>
-                    <span>{getTotalPrice()} ֏</span>
+                    <span>{formatPrice(getTotalPrice())}</span>
                   </div>
                   <div className="text-sm text-green-600 mt-1">
                     {t('freeDeliveryNote')}
@@ -650,7 +652,7 @@ export default function CheckoutPage() {
                         <div className="text-sm text-gray-600">{item.quantity} {tc('pcs')}</div>
                       </div>
                       <div className="font-semibold text-gray-900">
-                        {item.product.price * item.quantity} ֏
+                        {formatPrice(item.product.price * item.quantity)}
                       </div>
                     </div>
                   ))}
@@ -658,7 +660,7 @@ export default function CheckoutPage() {
                   <div className="border-t border-gray-300 pt-4">
                     <div className="flex justify-between text-lg font-bold text-gray-900">
                       <span>{tc('total')}</span>
-                      <span>{getTotalPrice()} ֏</span>
+                      <span>{formatPrice(getTotalPrice())}</span>
                     </div>
                     <div className="text-sm text-green-600 mt-1">
                       {t('freeDeliveryNote')}

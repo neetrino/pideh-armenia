@@ -22,6 +22,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import EditProfileModal from '@/components/EditProfileModal'
 import DeleteAccountModal from '@/components/DeleteAccountModal'
+import { useFormatPrice } from '@/hooks/useFormatPrice'
 
 interface Order {
   id: string
@@ -47,6 +48,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const formatPrice = useFormatPrice()
   const [userProfile, setUserProfile] = useState({
     name: session?.user?.name || null,
     email: session?.user?.email || null,
@@ -379,7 +381,7 @@ export default function ProfilePage() {
                             </p>
                           </div>
                           <div className="flex items-center justify-between md:flex-col md:items-end">
-                            <p className="text-base md:text-lg font-bold text-gray-900">{order.total} ֏</p>
+                            <p className="text-base md:text-lg font-bold text-gray-900">{formatPrice(order.total)}</p>
                             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusInfo.bg} ${statusInfo.color}`}>
                               {getStatusIcon(order.status)}
                               <span className="ml-1">{statusInfo.text}</span>
@@ -403,9 +405,9 @@ export default function ProfilePage() {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="font-medium text-gray-900 text-sm md:text-base truncate">{item.product.name}</p>
-                                <p className="text-xs md:text-sm text-gray-600">{t('pcsPrice', { qty: item.quantity, price: item.price })}</p>
+                                <p className="text-xs md:text-sm text-gray-600">{t('pcsPrice', { qty: item.quantity, price: formatPrice(item.price) })}</p>
                               </div>
-                              <p className="font-semibold text-gray-900 text-sm md:text-base flex-shrink-0">{item.quantity * item.price} ֏</p>
+                              <p className="font-semibold text-gray-900 text-sm md:text-base flex-shrink-0">{formatPrice(item.quantity * item.price)}</p>
                             </div>
                           ))}
                         </div>

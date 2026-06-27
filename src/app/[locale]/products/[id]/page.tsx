@@ -12,6 +12,7 @@ import { ProductWithCategory } from '@/types'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
+import { useFormatPrice } from '@/hooks/useFormatPrice'
 
 export default function ProductPage() {
   const t = useTranslations('productDetail')
@@ -21,6 +22,7 @@ export default function ProductPage() {
   const params = useParams()
   const router = useRouter()
   const { addItem } = useCart()
+  const formatPrice = useFormatPrice()
   const [product, setProduct] = useState<ProductWithCategory | null>(null)
   const [similarProducts, setSimilarProducts] = useState<ProductWithCategory[]>([])
   const [loading, setLoading] = useState(true)
@@ -408,7 +410,7 @@ export default function ProductPage() {
 
               {/* Price */}
               <div className="flex items-center space-x-4 mb-8">
-                <span className="text-4xl font-bold text-orange-500">{product.price} ֏</span>
+                <span className="text-4xl font-bold text-orange-500">{formatPrice(product.price)}</span>
                 <span className="text-lg text-gray-500">{t('perPortion')}</span>
               </div>
             </div>

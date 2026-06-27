@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CATEGORY_SLUGS, CATEGORY_SLUG_ORDER } from '@/lib/category-slugs'
 import ProductCard from "@/components/ProductCard";
+import { useFormatPrice } from '@/hooks/useFormatPrice'
 
 export default function Home() {
   const t = useTranslations('home')
@@ -28,6 +29,7 @@ export default function Home() {
   const [addedToCart, setAddedToCart] = useState<Set<string>>(new Set())
   const [addedToCartHits, setAddedToCartHits] = useState<Set<string>>(new Set())
   const { addItem } = useCart()
+  const formatPrice = useFormatPrice()
 
   useEffect(() => {
     fetchProducts()
@@ -217,7 +219,7 @@ export default function Home() {
                     
                     {/* Price Badge - Bottom Right */}
                     <div className="absolute bottom-1 right-1 bg-yellow-400 text-orange-800 px-2 py-1 rounded-lg text-xs font-bold shadow-lg">
-                      {bannerProduct.price} ֏
+                      {formatPrice(bannerProduct.price)}
                     </div>
                   </div>
                   
@@ -330,7 +332,7 @@ export default function Home() {
                     boxShadow: '0 15px 35px rgba(0, 0, 0, 0.3)',
                   }}
                 >
-                  {bannerProduct.price} ֏
+                  {formatPrice(bannerProduct.price)}
                 </div>
               )}
               

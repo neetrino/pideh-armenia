@@ -238,7 +238,7 @@
     "statusReady": "Готов к выдаче",
     "statusDelivered": "Доставлен",
     "statusCancelled": "Отменен",
-    "pcsPrice": "{qty} шт. × {price} ֏"
+    "pcsPrice": "{qty} шт. × {price}"
   },
   "about": {
     "heroTitle": "О Pideh Armenia",

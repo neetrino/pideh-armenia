@@ -82,9 +82,10 @@ API отдаёт поля для текущей locale; fallback: запроше
 - [x] Admin API: `nameHy/En/Ru`, slug, Zod validation
 - [x] Shell admin (навигация, кнопки) — ru
 
-#### 7.5 — Форматирование и SEO
-- [ ] Цены AMD через `Intl` per locale
-- [ ] `hreflang`, `<html lang={locale}>`, metadata
+#### 7.5 — Форматирование и SEO ✅
+- [x] Цены AMD через `Intl` per locale (`formatPrice`, `useFormatPrice`)
+- [x] `hreflang`, `<html lang={locale}>`, Open Graph locale
+- [x] Canonical + alternates на главной и `/products`, `/about`, `/contact`
 
 ---
 

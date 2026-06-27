@@ -238,7 +238,7 @@
     "statusReady": "Ready for pickup",
     "statusDelivered": "Delivered",
     "statusCancelled": "Cancelled",
-    "pcsPrice": "{qty} pcs × {price} ֏"
+    "pcsPrice": "{qty} pcs × {price}"
   },
   "about": {
     "heroTitle": "About Pideh Armenia",

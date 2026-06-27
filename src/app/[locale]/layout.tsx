@@ -7,6 +7,7 @@ import '../globals.css'
 import ClientProviders from '@/components/ClientProviders'
 import MobileBottomNav from '@/components/MobileBottomNav'
 import ServiceWorkerProvider from '@/components/ServiceWorkerProvider'
+import { buildLocaleMetadata } from '@/lib/locale-metadata'
 import { routing, type Locale } from '@/i18n/routing'
 
 const inter = Inter({
@@ -47,8 +48,11 @@ export async function generateMetadata({
     : routing.defaultLocale
 
   return {
-    title: titles[lang],
-    description: descriptions[lang],
+    ...buildLocaleMetadata({
+      locale: lang,
+      title: titles[lang],
+      description: descriptions[lang],
+    }),
     icons: {
       icon: '/logo.png',
       shortcut: '/logo.png',
