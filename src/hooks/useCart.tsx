@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useReducer, ReactNode, useEffect } from 'react'
+import { createContext, useContext, useReducer, ReactNode, useEffect, useState, useCallback } from 'react'
 import { Product, CartItem, CartContextType } from '@/types'
 import { useHydration } from './useHydration'
 
@@ -110,7 +110,11 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 // Провайдер контекста
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, dispatch] = useReducer(cartReducer, initialState)
+  const [isCartOpen, setIsCartOpen] = useState(false)
   const isHydrated = useHydration()
+
+  const openCart = useCallback(() => setIsCartOpen(true), [])
+  const closeCart = useCallback(() => setIsCartOpen(false), [])
 
   // Загружаем корзину из localStorage при инициализации
   useEffect(() => {
@@ -179,6 +183,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const value: CartContextType = {
     items: isHydrated ? items : [], // На сервере всегда пустая корзина
+    isCartOpen,
+    openCart,
+    closeCart,
     addItem,
     removeItem,
     updateQuantity,

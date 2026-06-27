@@ -33,7 +33,7 @@ export default function CheckoutPage() {
   const t = useTranslations('checkout')
   const tc = useTranslations('common')
   const router = useRouter()
-  const { items, getTotalPrice, clearCart, validateCart } = useCart()
+  const { items, getTotalPrice, clearCart, validateCart, openCart } = useCart()
   const formatPrice = useFormatPrice()
   const { data: session, status } = useSession()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -53,7 +53,7 @@ export default function CheckoutPage() {
   // Redirect if cart is empty and validate cart
   useEffect(() => {
     if (items.length === 0) {
-      router.push('/cart')
+      router.push('/products')
     } else {
       validateCart()
     }
@@ -194,26 +194,28 @@ export default function CheckoutPage() {
         {/* Mobile Header */}
         <div className="md:hidden mb-6">
           <div className="flex items-center space-x-4 mb-4">
-            <Link 
-              href="/cart"
+            <button
+              type="button"
+              onClick={openCart}
               className="flex items-center text-gray-600 hover:text-orange-500 transition-colors"
             >
               <ArrowLeft className="h-6 w-6 mr-2" />
               <span className="text-lg font-medium">{t('mobileBackToCart')}</span>
-            </Link>
+            </button>
             <h1 className="text-2xl font-bold text-gray-900">{t('mobileTitleShort')}</h1>
           </div>
         </div>
 
         {/* Desktop Header */}
         <div className="hidden md:flex items-center space-x-4 mb-8">
-          <Link 
-            href="/cart"
+          <button
+            type="button"
+            onClick={openCart}
             className="flex items-center text-gray-600 hover:text-orange-500 transition-colors"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             {t('backToCart')}
-          </Link>
+          </button>
           <div className="h-8 w-px bg-gray-300"></div>
           <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
         </div>

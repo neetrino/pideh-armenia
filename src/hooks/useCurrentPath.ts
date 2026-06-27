@@ -11,7 +11,6 @@ export function useCurrentPath() {
     if (path.startsWith('/products')) return 'products'
     if (path.startsWith('/about')) return 'about'
     if (path.startsWith('/contact')) return 'contact'
-    if (path.startsWith('/cart')) return 'cart'
     if (path.startsWith('/profile')) return 'profile'
     if (path.startsWith('/admin')) return 'admin'
     if (path.startsWith('/login')) return 'login'

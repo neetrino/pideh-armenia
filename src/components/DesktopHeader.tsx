@@ -13,7 +13,7 @@ import { UserMenu } from '@/components/UserMenu'
 export default function DesktopHeader() {
   const t = useTranslations('nav')
   const isHydrated = useHydration()
-  const { getTotalItems } = useCart()
+  const { getTotalItems, openCart, isCartOpen } = useCart()
   const { data: session, status } = useSession()
   const pathname = usePathname()
 
@@ -68,13 +68,15 @@ export default function DesktopHeader() {
           <div className="flex items-center space-x-2 sm:space-x-3">
             <LanguageSwitcher />
 
-            <Link
-              href="/cart"
+            <button
+              type="button"
+              onClick={openCart}
               className={`relative p-3 rounded-xl transition-all duration-300 ${
-                isActive('/cart')
+                isCartOpen
                   ? 'text-orange-500 bg-orange-50 shadow-md'
                   : 'text-gray-900 hover:text-orange-500 hover:bg-orange-50'
               }`}
+              aria-label={t('cart')}
             >
               <ShoppingCart className="h-6 w-6" />
               {isHydrated && getTotalItems() > 0 && (
@@ -82,7 +84,7 @@ export default function DesktopHeader() {
                   {getTotalItems()}
                 </span>
               )}
-            </Link>
+            </button>
 
             {status === 'loading' ? (
               <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />

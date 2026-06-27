@@ -9,7 +9,6 @@ const intlMiddleware = createIntlMiddleware(routing)
 const LEGACY_STOREFRONT_PATHS = [
   '/login',
   '/register',
-  '/cart',
   '/checkout',
   '/profile',
   '/products',
@@ -29,6 +28,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(
       new URL(`/${routing.defaultLocale}${pathname}`, request.url)
     )
+  }
+
+  const cartMatch = pathname.match(/^\/(hy|en|ru)\/cart\/?$/)
+  if (cartMatch) {
+    return NextResponse.redirect(new URL(`/${cartMatch[1]}/products`, request.url))
+  }
+
+  if (pathname === '/cart' || pathname.startsWith('/cart/')) {
+    return NextResponse.redirect(new URL(`/${routing.defaultLocale}/products`, request.url))
   }
 
   if (pathname.startsWith('/admin')) {
@@ -71,5 +79,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/(hy|en|ru)/:path*', '/admin/:path*', '/login', '/register', '/cart/:path*', '/checkout', '/profile/:path*', '/products/:path*', '/about', '/contact', '/order-success'],
+  matcher: ['/', '/(hy|en|ru)/:path*', '/admin/:path*', '/login', '/register', '/cart', '/cart/:path*', '/checkout', '/profile/:path*', '/products/:path*', '/about', '/contact', '/order-success'],
 }
