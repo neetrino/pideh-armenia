@@ -10,7 +10,7 @@ const STATIC_FILES = [
   '/about',
   '/contact',
   '/manifest.json',
-  '/favicon.ico'
+  '/icon.png'
 ]
 
 // API endpoints для кэширования
@@ -170,8 +170,8 @@ self.addEventListener('push', (event) => {
   
   const options = {
     body: event.data ? event.data.text() : 'Новое уведомление от Pideh Armenia',
-    icon: '/logo.png',
-    badge: '/logo.png',
+    icon: '/icon.png',
+    badge: '/icon.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
@@ -181,12 +181,12 @@ self.addEventListener('push', (event) => {
       {
         action: 'explore',
         title: 'Посмотреть',
-        icon: '/logo.png'
+        icon: '/icon.png'
       },
       {
         action: 'close',
         title: 'Закрыть',
-        icon: '/logo.png'
+        icon: '/icon.png'
       }
     ]
   }

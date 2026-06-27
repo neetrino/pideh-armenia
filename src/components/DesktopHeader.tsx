@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react'
 import { Link, usePathname } from '@/i18n/navigation'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { UserMenu } from '@/components/UserMenu'
+import { DEFAULT_BRAND_ICON } from '@/lib/brand-assets'
 
 export default function DesktopHeader() {
   const t = useTranslations('nav')
@@ -37,7 +38,7 @@ export default function DesktopHeader() {
         <div className="flex justify-between items-center py-4 gap-3">
           <Link href="/" className="hover:opacity-80 transition-opacity shrink-0">
             <Image
-              src="/logo.png?v=2"
+              src={DEFAULT_BRAND_ICON}
               alt="Pideh Armenia Logo"
               width={180}
               height={60}

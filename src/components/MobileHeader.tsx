@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { DEFAULT_BRAND_ICON } from '@/lib/brand-assets'
 
 export default function MobileHeader() {
   const t = useTranslations('nav')
@@ -45,7 +46,7 @@ export default function MobileHeader() {
           <div className="flex-1 flex justify-center">
             <Link href="/" className="hover:opacity-80 transition-all duration-300">
               <Image
-                src="/logo.png?v=2"
+                src={DEFAULT_BRAND_ICON}
                 alt="Pideh Armenia Logo"
                 width={60}
                 height={18}

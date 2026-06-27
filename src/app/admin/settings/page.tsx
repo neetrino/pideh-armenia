@@ -8,6 +8,7 @@ import Link from 'next/link'
 import ImageUpload from '@/components/ImageUpload'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { DEFAULT_BRAND_ICON_PATH } from '@/lib/brand-assets'
 
 interface SiteSettings {
   logo?: string
@@ -162,7 +163,7 @@ export default function AdminSettings() {
                 <p className="text-sm font-medium text-gray-700 mb-2">Текущий логотип:</p>
                 <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                   <img 
-                    src="/logo.png" 
+                    src={DEFAULT_BRAND_ICON_PATH} 
                     alt="Current Logo" 
                     className="h-16 w-auto"
                     onError={(e) => {
@@ -173,7 +174,7 @@ export default function AdminSettings() {
               </div>
 
               <ImageUpload
-                currentImage="/logo.png"
+                currentImage={DEFAULT_BRAND_ICON_PATH}
                 onImageChange={(url) => {
                   // Обновляем логотип через специальный API
                   updateLogo()
