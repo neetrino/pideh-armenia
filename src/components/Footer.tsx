@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { Phone, Mail, MapPin, Clock } from 'lucide-react'
+import { DEFAULT_BRAND_ICON } from '@/lib/brand-assets'
 
 export default function Footer() {
   const t = useTranslations('footer')
@@ -16,7 +17,7 @@ export default function Footer() {
           <div className="md:col-span-2">
             <div className="flex items-center mb-4">
               <Image
-                src="/logo.png?v=2"
+                src={DEFAULT_BRAND_ICON}
                 alt="Pideh Armenia Logo"
                 width={120}
                 height={40}
