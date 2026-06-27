@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Phone, MapPin, Clock, ShoppingCart, Search } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/hooks/useCart";
 import { ProductWithCategory } from "@/types";
 import Header from "@/components/Header";
@@ -11,6 +12,7 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 
 export default function Home() {
+  const t = useTranslations('home')
   const [products, setProducts] = useState<ProductWithCategory[]>([])
   const [comboProducts, setComboProducts] = useState<ProductWithCategory[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<ProductWithCategory[]>([])
@@ -448,7 +450,7 @@ export default function Home() {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <input
                 type="text"
-                placeholder="Поиск по меню..."
+                placeholder={t('searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-base text-gray-900 placeholder-gray-500 bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md focus:bg-white"
@@ -456,7 +458,7 @@ export default function Home() {
             </div>
             <button 
               type="button"
-              aria-label="Поиск"
+              aria-label={t('searchLabel')}
               className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
               style={{
                 boxShadow: '0 8px 25px rgba(255, 107, 53, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)',
@@ -546,7 +548,7 @@ export default function Home() {
             <div className="flex justify-center py-20">
               <div className="flex flex-col items-center space-y-4">
                 <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-500 border-t-transparent"></div>
-                <p className="text-gray-600">Загружаем меню...</p>
+                <p className="text-gray-600">{t('loadingMenu')}</p>
               </div>
             </div>
           ) : getFilteredProducts().length === 0 ? (
@@ -555,39 +557,39 @@ export default function Home() {
               {searchQuery.trim() ? (
                 <>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    По запросу "{searchQuery}" ничего не найдено
+                    {t('noSearchResults', { query: searchQuery })}
                   </h3>
                   <p className="text-gray-600 mb-6">
-                    Поиск выполнен по всему меню. Попробуйте изменить поисковый запрос или выбрать категорию
+                    {t('searchHint')}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <button
                       onClick={() => setSearchQuery('')}
                       className="bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-600 transition-colors"
                     >
-                      Очистить поиск
+                      {t('clearSearch')}
                     </button>
                     <button
                       onClick={() => setActiveCategory('Комбо')}
                       className="bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors"
                     >
-                      Показать комбо
+                      {t('showCombos')}
                     </button>
                   </div>
                 </>
               ) : (
                 <>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    Товары в категории "{activeCategory}" скоро появятся
+                    {t('categoryEmpty', { category: activeCategory })}
                   </h3>
                   <p className="text-gray-600 mb-6">
-                    Пока что посмотрите другие категории
+                    {t('categoryEmptyHint')}
                   </p>
                   <button
                     onClick={() => setActiveCategory('Комбо')}
                     className="bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors"
                   >
-                    Показать комбо
+                    {t('showCombos')}
                   </button>
                 </>
               )}
@@ -618,7 +620,7 @@ export default function Home() {
               href="/products"
               className="group inline-flex items-center bg-orange-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-orange-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
             >
-              <span>Посмотреть все меню</span>
+              <span>{t('viewAllMenu')}</span>
               <svg className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -633,10 +635,10 @@ export default function Home() {
           {/* Section header */}
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Попробуйте наши хиты
+              {t('featuredTitle')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Самые популярные и вкусные пиде, которые выбирают наши клиенты
+              {t('featuredDesc')}
             </p>
           </div>
 
@@ -659,7 +661,7 @@ export default function Home() {
             ) : (
               // Fallback if no featured products
               <div className="col-span-full text-center py-12">
-                <p className="text-gray-500 text-lg">Товары-хиты скоро появятся!</p>
+                <p className="text-gray-500 text-lg">{t('featuredEmpty')}</p>
               </div>
             )}
           </div>
@@ -670,7 +672,7 @@ export default function Home() {
               href="/products"
               className="group inline-flex items-center bg-orange-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-orange-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
             >
-              <span>Посмотреть все вкусы</span>
+              <span>{t('viewAllFlavors')}</span>
               <svg className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>

@@ -1,6 +1,7 @@
 'use client'
 
 import { memo } from 'react'
+import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { ShoppingCart, Star, Zap } from 'lucide-react'
 import { ProductWithCategory } from '@/types'
@@ -13,6 +14,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = memo(({ product, onAddToCart, variant = 'default', addedToCart }: ProductCardProps) => {
+  const t = useTranslations('common')
   const isCompact = variant === 'compact'
   const isAdded = addedToCart?.has(product.id) || false
 
@@ -219,12 +221,12 @@ const ProductCard = memo(({ product, onAddToCart, variant = 'default', addedToCa
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    В корзине
+                    {t('inCart')}
                   </span>
                 ) : (
                   <span className="flex items-center relative z-10">
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    Добавить
+                    {t('addToCart')}
                   </span>
                 )}
               </button>
@@ -269,12 +271,12 @@ const ProductCard = memo(({ product, onAddToCart, variant = 'default', addedToCa
                     <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    В корзине
+                    {t('inCart')}
                   </span>
                 ) : (
                   <span className="flex items-center relative z-10">
                     <ShoppingCart className="w-5 h-5 mr-2" />
-                    Добавить
+                    {t('addToCart')}
                   </span>
                 )}
               </button>

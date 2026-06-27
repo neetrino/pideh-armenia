@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import { ArrowLeft, MapPin, Clock, CreditCard, Phone, User } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
@@ -28,6 +29,8 @@ interface CheckoutFormData {
 }
 
 export default function CheckoutPage() {
+  const t = useTranslations('checkout')
+  const tc = useTranslations('common')
   const router = useRouter()
   const { items, getTotalPrice, clearCart, validateCart } = useCart()
   const { data: session, status } = useSession()
@@ -101,17 +104,17 @@ export default function CheckoutPage() {
     const newErrors: Record<string, string> = {}
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Имя обязательно'
+      newErrors.name = t('nameRequired')
     }
 
     if (!formData.phone.trim()) {
-      newErrors.phone = 'Телефон обязателен'
+      newErrors.phone = t('phoneRequired')
     } else if (!/^\+?[0-9\s\-\(\)]{10,}$/.test(formData.phone)) {
-      newErrors.phone = 'Неверный формат телефона'
+      newErrors.phone = t('phoneInvalid')
     }
 
     if (!formData.address.trim()) {
-      newErrors.address = 'Адрес обязателен'
+      newErrors.address = t('addressRequired')
     }
 
     // Время доставки уже имеет дефолтное значение, валидация не нужна
@@ -132,7 +135,7 @@ export default function CheckoutPage() {
     
     // Проверяем, что корзина не пуста после валидации
     if (items.length === 0) {
-      alert('В корзине нет доступных товаров. Пожалуйста, добавьте товары в корзину.')
+      alert(t('emptyCartAlert'))
       router.push('/products')
       return
     }
@@ -165,9 +168,9 @@ export default function CheckoutPage() {
       }
 
       clearCart()
-      window.location.href = '/order-success'
+      router.push('/order-success')
     } catch {
-      alert('Произошла ошибка при оформлении заказа. Попробуйте еще раз.')
+      alert(t('orderError'))
     } finally {
       setIsSubmitting(false)
     }
@@ -194,9 +197,9 @@ export default function CheckoutPage() {
               className="flex items-center text-gray-600 hover:text-orange-500 transition-colors"
             >
               <ArrowLeft className="h-6 w-6 mr-2" />
-              <span className="text-lg font-medium">к корзине</span>
+              <span className="text-lg font-medium">{t('mobileBackToCart')}</span>
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">оформление</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('mobileTitleShort')}</h1>
           </div>
         </div>
 
@@ -207,10 +210,10 @@ export default function CheckoutPage() {
             className="flex items-center text-gray-600 hover:text-orange-500 transition-colors"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
-            Назад к корзине
+            {t('backToCart')}
           </Link>
           <div className="h-8 w-px bg-gray-300"></div>
-          <h1 className="text-3xl font-bold text-gray-900">Оформление заказа</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -219,10 +222,10 @@ export default function CheckoutPage() {
             {/* Mobile Order Form */}
             <div className="bg-white rounded-2xl shadow-lg p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Данные для доставки</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('deliveryInfo')}</h2>
                 {!session && (
                   <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                    Гостевой заказ
+                    {t('guestOrder')}
                   </span>
                 )}
               </div>
@@ -232,7 +235,7 @@ export default function CheckoutPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <User className="inline h-4 w-4 mr-1" />
-                    Имя *
+                    {tc('name')} *
                   </label>
                   <input
                     type="text"
@@ -242,7 +245,7 @@ export default function CheckoutPage() {
                     className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-gray-900 ${
                       errors.name ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="Введите ваше имя"
+                    placeholder={t('namePlaceholder')}
                   />
                   {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
@@ -251,7 +254,7 @@ export default function CheckoutPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Phone className="inline h-4 w-4 mr-1" />
-                    Телефон *
+                    {tc('phone')} *
                   </label>
                   <input
                     type="tel"
@@ -270,7 +273,7 @@ export default function CheckoutPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <MapPin className="inline h-4 w-4 mr-1" />
-                    Адрес доставки *
+                    {t('deliveryAddress')} *
                   </label>
                   <textarea
                     name="address"
@@ -280,7 +283,7 @@ export default function CheckoutPage() {
                     className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-none text-gray-900 ${
                       errors.address ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="Укажите полный адрес доставки"
+                    placeholder={t('addressPlaceholder')}
                   />
                   {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                 </div>
@@ -289,7 +292,7 @@ export default function CheckoutPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Clock className="inline h-4 w-4 mr-1" />
-                    Время доставки *
+                    {t('deliveryTime')} *
                   </label>
                   <select
                     name="deliveryTime"
@@ -297,7 +300,7 @@ export default function CheckoutPage() {
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-gray-900"
                   >
-                    <option value="asap">Как можно скорее (20-30 мин)</option>
+                    <option value="asap">{t('asapOption')}</option>
                     <option value="11:00-12:00">11:00 - 12:00</option>
                     <option value="12:00-13:00">12:00 - 13:00</option>
                     <option value="13:00-14:00">13:00 - 14:00</option>
@@ -316,7 +319,7 @@ export default function CheckoutPage() {
 
             {/* Mobile Payment Method */}
             <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Способ оплаты</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('paymentMethod')}</h2>
               <div className="space-y-4">
                 <label className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
                   formData.paymentMethod === 'CASH' 
@@ -338,8 +341,8 @@ export default function CheckoutPage() {
                       </svg>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-base font-semibold text-gray-900">Наличные</h3>
-                      <p className="text-sm text-gray-600">Оплата курьеру наличными</p>
+                      <h3 className="text-base font-semibold text-gray-900">{t('cash')}</h3>
+                      <p className="text-sm text-gray-600">{t('cashDesc')}</p>
                     </div>
                     {formData.paymentMethod === 'CASH' && (
                       <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
@@ -369,8 +372,8 @@ export default function CheckoutPage() {
                       <CreditCard className="h-6 w-6 text-blue-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-base font-semibold text-gray-900">Карта</h3>
-                      <p className="text-sm text-gray-600">Оплата картой через терминал</p>
+                      <h3 className="text-base font-semibold text-gray-900">{t('card')}</h3>
+                      <p className="text-sm text-gray-600">{t('cardDesc')}</p>
                     </div>
                     {formData.paymentMethod === 'ARCA' && (
                       <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
@@ -386,27 +389,27 @@ export default function CheckoutPage() {
 
             {/* Mobile Notes */}
             <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Комментарий</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('notes')}</h2>
               <textarea
                 name="notes"
                 value={formData.notes}
                 onChange={handleInputChange}
                 rows={3}
                 className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-none text-gray-900"
-                placeholder="Дополнительные пожелания к заказу..."
+                placeholder={t('notesPlaceholder')}
               />
             </div>
 
             {/* Mobile Order Summary */}
             <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Ваш заказ</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('yourOrder')}</h2>
               
               <div className="space-y-3 mb-6">
                 {items.map((item) => (
                   <div key={item.product.id} className="flex justify-between items-center py-2">
                     <div className="flex-1">
                       <div className="font-medium text-gray-900 text-sm">{item.product.name}</div>
-                      <div className="text-xs text-gray-600">{item.quantity} шт.</div>
+                      <div className="text-xs text-gray-600">{item.quantity} {tc('pcs')}</div>
                     </div>
                     <div className="font-semibold text-gray-900 text-sm">
                       {item.product.price * item.quantity} ֏
@@ -416,11 +419,11 @@ export default function CheckoutPage() {
                 
                 <div className="border-t border-gray-300 pt-3">
                   <div className="flex justify-between text-lg font-bold text-gray-900">
-                    <span>Итого</span>
+                    <span>{tc('total')}</span>
                     <span>{getTotalPrice()} ֏</span>
                   </div>
                   <div className="text-sm text-green-600 mt-1">
-                    Доставка бесплатно
+                    {t('freeDeliveryNote')}
                   </div>
                 </div>
               </div>
@@ -430,15 +433,15 @@ export default function CheckoutPage() {
                 disabled={isSubmitting}
                 className="w-full bg-orange-500 text-white py-4 rounded-xl font-semibold hover:bg-orange-600 transition-colors text-center text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Оформляем заказ...' : 'Подтвердить заказ'}
+                {isSubmitting ? t('submitting') : t('placeOrder')}
               </button>
               
               <p className="text-xs text-gray-500 mt-4 text-center">
-                Нажимая "Подтвердить заказ", вы соглашаетесь с условиями доставки
+                {t('termsNotice')}
               </p>
               {!session && (
                 <p className="text-xs text-blue-600 mt-2 text-center">
-                  💡 После заказа вы сможете создать аккаунт для быстрого оформления в будущем
+                  💡 {t('guestHint')}
                 </p>
               )}
             </div>
@@ -450,10 +453,10 @@ export default function CheckoutPage() {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-semibold text-gray-900">Данные для доставки</h2>
+                  <h2 className="text-2xl font-semibold text-gray-900">{t('deliveryInfo')}</h2>
                   {!session && (
                     <span className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
-                      Гостевой заказ
+                      {t('guestOrder')}
                     </span>
                   )}
                 </div>
@@ -463,7 +466,7 @@ export default function CheckoutPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <User className="inline h-4 w-4 mr-1" />
-                      Имя *
+                      {tc('name')} *
                     </label>
                     <input
                       type="text"
@@ -473,7 +476,7 @@ export default function CheckoutPage() {
                       className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-gray-900 ${
                         errors.name ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      placeholder="Введите ваше имя"
+                      placeholder={t('namePlaceholder')}
                     />
                     {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                   </div>
@@ -482,7 +485,7 @@ export default function CheckoutPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <Phone className="inline h-4 w-4 mr-1" />
-                      Телефон *
+                      {tc('phone')} *
                     </label>
                     <input
                       type="tel"
@@ -501,7 +504,7 @@ export default function CheckoutPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <MapPin className="inline h-4 w-4 mr-1" />
-                      Адрес доставки *
+                      {t('deliveryAddress')} *
                     </label>
                     <textarea
                       name="address"
@@ -511,7 +514,7 @@ export default function CheckoutPage() {
                       className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-none text-gray-900 ${
                         errors.address ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      placeholder="Укажите полный адрес доставки"
+                      placeholder={t('addressPlaceholder')}
                     />
                     {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                   </div>
@@ -520,7 +523,7 @@ export default function CheckoutPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <Clock className="inline h-4 w-4 mr-1" />
-                      Время доставки *
+                      {t('deliveryTime')} *
                     </label>
                     <select
                       name="deliveryTime"
@@ -528,7 +531,7 @@ export default function CheckoutPage() {
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-gray-900"
                     >
-                      <option value="asap">Как можно скорее (20-30 мин)</option>
+                      <option value="asap">{t('asapOption')}</option>
                       <option value="11:00-12:00">11:00 - 12:00</option>
                       <option value="12:00-13:00">12:00 - 13:00</option>
                       <option value="13:00-14:00">13:00 - 14:00</option>
@@ -547,7 +550,7 @@ export default function CheckoutPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-4">
                       <CreditCard className="inline h-4 w-4 mr-1" />
-                      Способ оплаты *
+                      {t('paymentMethod')} *
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <label className={`relative p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 hover:shadow-lg ${
@@ -569,8 +572,8 @@ export default function CheckoutPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                           </div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">Наличные</h3>
-                          <p className="text-sm text-gray-600">Оплата курьеру наличными при доставке</p>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('cash')}</h3>
+                          <p className="text-sm text-gray-600">{t('cashDesc')}</p>
                           {formData.paymentMethod === 'CASH' && (
                             <div className="absolute top-4 right-4">
                               <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
@@ -600,8 +603,8 @@ export default function CheckoutPage() {
                           <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <CreditCard className="h-8 w-8 text-blue-600" />
                           </div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">Карта</h3>
-                          <p className="text-sm text-gray-600">Оплата картой через терминал курьера</p>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('card')}</h3>
+                          <p className="text-sm text-gray-600">{t('cardDescCourier')}</p>
                           {formData.paymentMethod === 'ARCA' && (
                             <div className="absolute top-4 right-4">
                               <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
@@ -619,7 +622,7 @@ export default function CheckoutPage() {
                   {/* Notes */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Комментарий к заказу
+                      {t('notesLabelFull')}
                     </label>
                     <textarea
                       name="notes"
@@ -627,7 +630,7 @@ export default function CheckoutPage() {
                       onChange={handleInputChange}
                       rows={3}
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-none text-gray-900"
-                      placeholder="Дополнительные пожелания к заказу..."
+                      placeholder={t('notesPlaceholder')}
                     />
                   </div>
                 </div>
@@ -637,14 +640,14 @@ export default function CheckoutPage() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Ваш заказ</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">{t('yourOrder')}</h2>
                 
                 <div className="space-y-4 mb-6">
                   {items.map((item) => (
                     <div key={item.product.id} className="flex justify-between items-center py-2">
                       <div className="flex-1">
                         <div className="font-medium text-gray-900">{item.product.name}</div>
-                        <div className="text-sm text-gray-600">{item.quantity} шт.</div>
+                        <div className="text-sm text-gray-600">{item.quantity} {tc('pcs')}</div>
                       </div>
                       <div className="font-semibold text-gray-900">
                         {item.product.price * item.quantity} ֏
@@ -654,11 +657,11 @@ export default function CheckoutPage() {
                   
                   <div className="border-t border-gray-300 pt-4">
                     <div className="flex justify-between text-lg font-bold text-gray-900">
-                      <span>Итого</span>
+                      <span>{tc('total')}</span>
                       <span>{getTotalPrice()} ֏</span>
                     </div>
                     <div className="text-sm text-green-600 mt-1">
-                      Доставка бесплатно
+                      {t('freeDeliveryNote')}
                     </div>
                   </div>
                 </div>
@@ -668,15 +671,15 @@ export default function CheckoutPage() {
                   disabled={isSubmitting}
                   className="w-full bg-orange-500 text-white py-4 rounded-xl font-semibold hover:bg-orange-600 transition-colors text-center text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Оформляем заказ...' : 'Подтвердить заказ'}
+                  {isSubmitting ? t('submitting') : t('placeOrder')}
                 </button>
                 
                 <p className="text-xs text-gray-500 mt-4 text-center">
-                  Нажимая "Подтвердить заказ", вы соглашаетесь с условиями доставки
+                  {t('termsNotice')}
                 </p>
                 {!session && (
                   <p className="text-xs text-blue-600 mt-2 text-center">
-                    💡 После заказа вы сможете создать аккаунт для быстрого оформления в будущем
+                    💡 {t('guestHint')}
                   </p>
                 )}
               </div>

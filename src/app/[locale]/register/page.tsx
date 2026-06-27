@@ -2,12 +2,15 @@
 
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
+import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 export default function RegisterPage() {
+  const t = useTranslations('auth')
+  const tc = useTranslations('common')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -36,13 +39,13 @@ export default function RegisterPage() {
 
     // Валидация
     if (formData.password !== formData.confirmPassword) {
-      setError('Пароли не совпадают')
+      setError(t('passwordMismatch'))
       setIsLoading(false)
       return
     }
 
     if (formData.password.length < 6) {
-      setError('Пароль должен содержать минимум 6 символов')
+      setError(t('passwordMin'))
       setIsLoading(false)
       return
     }
@@ -74,13 +77,13 @@ export default function RegisterPage() {
         if (result?.ok) {
           router.push('/')
         } else {
-          setError('Регистрация прошла успешно, но произошла ошибка при входе')
+          setError(t('registerSuccessLoginError'))
         }
       } else {
-        setError(data.error || 'Произошла ошибка при регистрации')
+        setError(data.error || t('registerError'))
       }
-    } catch (error) {
-      setError('Произошла ошибка при регистрации')
+    } catch {
+      setError(t('registerError'))
     } finally {
       setIsLoading(false)
     }
@@ -96,8 +99,8 @@ export default function RegisterPage() {
       <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Регистрация</h1>
-            <p className="text-gray-600">Создайте аккаунт для управления заказами</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('registerTitle')}</h1>
+            <p className="text-gray-600">{t('registerSubtitle')}</p>
           </div>
 
           {error && (
@@ -110,7 +113,7 @@ export default function RegisterPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <User className="inline h-4 w-4 mr-1" />
-                Имя *
+                {tc('name')} *
               </label>
               <input
                 type="text"
@@ -118,7 +121,7 @@ export default function RegisterPage() {
                 value={formData.name}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-gray-800 bg-white"
-                placeholder="Введите ваше имя"
+                placeholder={t('namePlaceholder')}
                 required
               />
             </div>
@@ -142,7 +145,7 @@ export default function RegisterPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Phone className="inline h-4 w-4 mr-1" />
-                Телефон
+                {tc('phone')}
               </label>
               <input
                 type="tel"
@@ -157,7 +160,7 @@ export default function RegisterPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Lock className="inline h-4 w-4 mr-1" />
-                Пароль *
+                {tc('password')} *
               </label>
               <div className="relative">
                 <input
@@ -166,7 +169,7 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-gray-800 bg-white"
-                  placeholder="Минимум 6 символов"
+                  placeholder={t('passwordMinPlaceholder')}
                   required
                 />
                 <button
@@ -182,7 +185,7 @@ export default function RegisterPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Lock className="inline h-4 w-4 mr-1" />
-                Подтвердите пароль *
+                {t('confirmPassword')} *
               </label>
               <div className="relative">
                 <input
@@ -191,7 +194,7 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-gray-800 bg-white"
-                  placeholder="Повторите пароль"
+                  placeholder={t('confirmPasswordPlaceholder')}
                   required
                 />
                 <button
@@ -209,15 +212,15 @@ export default function RegisterPage() {
               disabled={isLoading}
               className="w-full bg-orange-500 text-white py-4 rounded-xl font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Регистрируем...' : 'Зарегистрироваться'}
+              {isLoading ? t('registering') : t('signUp')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              Уже есть аккаунт?{' '}
+              {t('hasAccount')}{' '}
               <Link href="/login" className="text-orange-500 hover:text-orange-600 font-semibold">
-                Войти
+                {t('signInLink')}
               </Link>
             </p>
           </div>
