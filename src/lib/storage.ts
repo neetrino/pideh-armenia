@@ -88,7 +88,7 @@ export async function listImages(): Promise<StoredFile[]> {
 
   return (response.Contents ?? [])
     .map((item) => item.Key)
-    .filter((key): key is string => Boolean(key) && key.endsWith('.webp'))
+    .filter((key): key is string => key !== undefined && key.endsWith('.webp'))
     .map((key) => {
       const name = key.replace(/^images\//, '')
       return { name, path: getPublicUrl(key), category: getImageCategory(name) }

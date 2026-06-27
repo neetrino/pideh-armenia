@@ -7,9 +7,10 @@ import { logger } from '@/lib/logger'
 // PATCH /api/admin/orders/[id]/status - изменить статус заказа (только для админов)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     // Проверяем аутентификацию
     const session = await getServerSession(authOptions)
     
@@ -43,7 +44,7 @@ export async function PATCH(
 
     // Проверяем существование заказа
     const existingOrder = await prisma.order.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingOrder) {
@@ -55,7 +56,7 @@ export async function PATCH(
 
     // Обновляем статус заказа
     const updatedOrder = await prisma.order.update({
-      where: { id: params.id },
+      where: { id },
       data: { status },
       include: {
         user: {
@@ -71,7 +72,7 @@ export async function PATCH(
             product: {
               select: {
                 id: true,
-                name: true,
+                nameRu: true,
                 price: true,
                 image: true
               }
@@ -81,9 +82,8 @@ export async function PATCH(
       }
     })
 
-    // Вычисляем общую сумму заказа
     const totalAmount = updatedOrder.items.reduce(
-      (sum, item) => sum + (item.product.price * item.quantity), 
+      (sum, item) => sum + item.product.price * item.quantity,
       0
     )
 

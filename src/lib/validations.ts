@@ -57,7 +57,10 @@ export const productInputSchema = localizedProductTextSchema.extend({
   categoryId: z.string().min(1),
   image: z.string().optional(),
   isAvailable: z.boolean().optional(),
-  status: z.enum(['REGULAR', 'HIT', 'NEW', 'CLASSIC', 'BANNER', '']).optional(),
+  status: z.preprocess(
+    (val) => (val === '' ? undefined : val),
+    z.enum(['REGULAR', 'HIT', 'NEW', 'CLASSIC', 'BANNER']).default('REGULAR')
+  ),
 })
 
 export const categoryInputSchema = z.object({

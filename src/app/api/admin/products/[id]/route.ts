@@ -107,7 +107,7 @@ export async function PUT(
         categoryId: data.categoryId,
         image: data.image ?? existing.image,
         isAvailable: data.isAvailable ?? existing.isAvailable,
-        status: data.status && data.status !== '' ? data.status : 'REGULAR',
+        status: data.status,
       },
       select: ADMIN_PRODUCT_SELECT,
     })
