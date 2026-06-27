@@ -56,7 +56,7 @@ Understand the ask → inspect existing code → propose for large/risky changes
 
 ## Decisions
 
-**Hard (apply without asking):** security baseline (bcrypt/argon2 for passwords, validate input, CORS where applicable), TS strict, named exports, error handling, `npm` + Prisma per TECH_CARD.
+**Hard (apply without asking):** security baseline (bcryptjs for passwords per TECH_CARD, validate input, CORS where applicable), TS strict, named exports, error handling, `npm` + Prisma per TECH_CARD.
 
 **Adaptive (ask before picking values):** timeouts, pool limits, rate limits, cache TTL — explain options and tradeoffs; never silently use a generic default like `statement_timeout=30s` without team alignment.
 
@@ -74,7 +74,7 @@ Do not invent accounts or keys. Ask the developer when `DATABASE_URL`, OAuth, R2
 
 Full DoD/PR/release checklists: [`docs/reference/Check/Quality/project-quality-checklist.md`](docs/reference/Check/Quality/project-quality-checklist.md) (not loaded as Cursor rules — open when needed).
 
-## Rules index (by domain)
+## Rules index (Pideh Armenia — active)
 
 | Area | File |
 |------|------|
@@ -84,19 +84,16 @@ Full DoD/PR/release checklists: [`docs/reference/Check/Quality/project-quality-c
 | Database | `06-database.mdc` |
 | API | `07-api-design.mdc` |
 | Security | `08-security.mdc` |
-| Figma | `09-figma-design.mdc` |
-| Testing | `10-testing.mdc` |
+| Figma / UI | `09-figma-design.mdc` |
 | Docs | `11-documentation.mdc` |
 | Errors | `12-error-handling.mdc` |
 | Git | `13-git-workflow.mdc` |
 | Ops + reliability | `14-ops.mdc` |
 | Performance | `15-performance.mdc` |
 | State | `16-state-management.mdc` |
-| CI/CD | `17-cicd.mdc` |
-| i18n | `20-i18n.mdc` |
-| Onboarding | `21-project-onboarding.mdc` |
-| Project size | `99-project-size.mdc` |
 
-Platform how-tos: `docs/reference/platforms/`.
+Layout reference (size A): `project-sizes/size-a-small.mdc`.
 
-**Version:** 3.0 · **Date:** 2026-04-02
+Other `.mdc` files in `.cursor/rules/` (`10-testing`, `17-cicd`, `20-i18n`, `21-project-onboarding`, `99-project-size`, `size-b-*`, `size-c-*`) remain on disk and apply by globs when the task matches — not listed here for this project.
+
+References: `docs/TECH_CARD.md`, `docs/01-ARCHITECTURE.md`, payment guides in `docs/reference/payment integration/payments/`, security checklists in `docs/reference/Check/`.

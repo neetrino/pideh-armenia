@@ -1,20 +1,21 @@
-# ☑️ Նախագծի ստարտ — չեկլիստ
+# Pideh Armenia — чеклист разработки
 
-> Կարճ հաջորդականություն՝ ռեպո-ից մինչև env և որակ
-
----
-
-- [ ] **1.** Ստեղծել ռեպո կաղապարից (Use this template), կլոնավորել և բացել Cursor-ում
-- [ ] **2.** Լրացնել `docs/BRIEF.md` — նպատակ, ֆունկցիաներ, ինտեգրացիաներ
-- [ ] **3.** Chat-ում AI-ին տալ. «Կարդա՛ BRIEF, սկսի՛ր ըստ 21-project-onboarding»
-- [ ] **4.** Որոշել նախագծի չափը (A/B/C) և ամրագրել 00-core-ում
-- [ ] **5.** Լրացնել և հաստատել `docs/TECH_CARD.md` — stack, սերվիսներ, հոսթինգ
-- [ ] **6.** Հաստատել ճարտարապետությունը (թղթապանակներ, մոդուլներ) — կոդից առաջ
-- [ ] **7.** Ստեղծել `.env` + `.env.example`, `.gitignore`-ում ավելացնել `.env`, `.env.local`
-- [ ] **8.** Միացնել սերվիսներ ըստ need-ի. Neon → R2 → Resend/Upstash (անհրաժեշտության դեպքում), արժեքները `.env`-ում
-- [ ] **9.** Լոկալ ստուգել. ԲԶ (migrate/հարցում), R2/փոստ — անհրաժեշտության դեպքում
-- [ ] **10.** Որակ. Branch Protection, Secret Protection, Dependabot — տե՛ս QUALITY_AUTOMATION_PLAN
+> Текущий статус проекта. Обновляй по мере прогресса.
 
 ---
 
-*Բոլոր կետերը հաստատելուց հետո — կարող ես անցնել կոդին։*
+- [x] **1.** Репозиторий и Cursor rules настроены
+- [x] **2.** `docs/BRIEF.md` заполнен
+- [x] **3.** Размер проекта: **A** (зафиксирован в `00-core.mdc`)
+- [x] **4.** `docs/TECH_CARD.md` — Neon, R2, Vercel, NextAuth
+- [x] **5.** `docs/01-ARCHITECTURE.md` — структура и потоки
+- [x] **6.** `.env.example` + `.env` (локально)
+- [ ] **7.** Neon `DATABASE_URL` в Vercel env
+- [ ] **8.** R2 credentials + `R2_PUBLIC_URL` в Vercel env
+- [ ] **9.** Миграция `public/images/` → R2
+- [ ] **10.** Production deploy на Vercel
+- [ ] **11.** Платежи: Idram / ArCa / Ameriabank (см. `docs/reference/payment integration/payments/`)
+
+---
+
+*После пунктов 7–10 — магазин готов к production.*

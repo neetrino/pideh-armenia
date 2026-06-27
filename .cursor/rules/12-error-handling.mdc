@@ -7,7 +7,7 @@ alwaysApply: false
 # Error handling
 
 - **Typed errors** — domain/app errors with stable `code` for API mapping.
-- **Central handler** — Nest exception filter or Next route handlers map errors to HTTP + safe body.
+- **Central handler** — Next.js API route handlers map errors to HTTP status + safe JSON body.
 - **RFC 7807**-style problem+json if project uses it — stay consistent.
 - **Production**: never return stack traces, paths, or secrets to clients.
 - **Log** full detail server-side with request id; **redact** PII/secrets.
