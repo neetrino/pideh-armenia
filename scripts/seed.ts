@@ -1,14 +1,27 @@
 import fs from 'fs'
 import path from 'path'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, ProductStatus } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { uploadImageWebp } from '../src/lib/storage'
+import { invalidateCategoryCaches, invalidateProductCaches } from '../src/lib/redis'
 
 const prisma = new PrismaClient()
 const PASSWORD_SALT_ROUNDS = 12
 const IMAGES_DIR = path.join(__dirname, '../public/images')
 const PRODUCTS_JSON = path.join(__dirname, '../data/buy-am-products.json')
 const IMAGE_MAP_JSON = path.join(__dirname, '../data/image-map.json')
+const BANNER_PRODUCT_NAME = 'Пиде с говядиной'
+
+/** Featured statuses for homepage sections (exact product names from buy-am-products.json). */
+const PRODUCT_STATUS_BY_NAME: Record<string, ProductStatus> = {
+  '2 мяса пиде': 'HIT',
+  'Комбо «Я один»': 'HIT',
+  'Пепперони пиде': 'HIT',
+  'Пиде с бастурмой': 'NEW',
+  'Комбо «Мы вдвоем»': 'NEW',
+  'Классическое сырное пиде': 'CLASSIC',
+  'Овощное пиде': 'CLASSIC',
+}
 
 type ProductSeed = {
   name: string
@@ -96,6 +109,18 @@ async function main() {
     })
   }
 
+  await prisma.product.updateMany({ data: { status: 'REGULAR' } })
+
+  for (const [name, status] of Object.entries(PRODUCT_STATUS_BY_NAME)) {
+    await prisma.product.updateMany({ where: { name }, data: { status } })
+  }
+
+  await prisma.product.updateMany({ where: { status: 'BANNER' }, data: { status: 'REGULAR' } })
+  await prisma.product.updateMany({
+    where: { name: BANNER_PRODUCT_NAME },
+    data: { status: 'BANNER' },
+  })
+
   const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@pideh-armenia.am'
   const adminPassword = process.env.ADMIN_PASSWORD ?? 'admin123'
   const adminHash = await bcrypt.hash(adminPassword, PASSWORD_SALT_ROUNDS)
@@ -113,6 +138,8 @@ async function main() {
   })
 
   const count = await prisma.product.count()
+  await invalidateProductCaches()
+  await invalidateCategoryCaches()
   console.info(`Seed complete: ${count} products, admin ${adminEmail}`)
 }
 
