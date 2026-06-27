@@ -1,61 +1,95 @@
-# Pideh Armenia - Интернет-магазин мини-пицц
+# Pideh Armenia — Интернет-магазин мини-пицц
 
-Мини-пиццы в виде аджарских хачапури. Лодочки с начинкой как у пиццы.
+## Стек
 
-## 🚀 Запуск проекта
+- **Next.js 15** + TypeScript
+- **Neon PostgreSQL** — база данных
+- **Cloudflare R2** — хранение изображений
+- **Vercel** — хостинг
+- **Prisma** + **NextAuth**
+
+## Локальная разработка
 
 ```bash
-# Установка зависимостей
+cp .env.example .env
+# Заполните DATABASE_URL, NEXTAUTH_* и R2_* в .env
+
 npm install
-
-# Запуск базы данных PostgreSQL
-brew services start postgresql@15
-
-# Создание базы данных
-psql postgres -c "CREATE DATABASE pideh_armenia;"
-
-# Применение миграций
 npx prisma migrate dev
-
-# Заполнение тестовыми данными
-npx tsx scripts/seed.ts
-
-# Запуск приложения
+npm run db:seed
 npm run dev
 ```
 
-## 📁 Структура проекта
+Приложение: http://localhost:3000
+
+## Деплой на Vercel
+
+### 1. Neon (база данных)
+
+1. Создайте проект на [console.neon.tech](https://console.neon.tech)
+2. Скопируйте **Pooled connection string**
+3. Добавьте в Vercel → Settings → Environment Variables:
 
 ```
-app/
-├── src/
-│   ├── app/
-│   │   ├── api/products/     # API для товаров
-│   │   ├── products/         # Страница каталога
-│   │   └── page.tsx          # Главная страница
-│   ├── constants/            # Константы (товары, цвета)
-│   ├── hooks/                # React хуки (корзина)
-│   ├── lib/                  # Утилиты (Prisma)
-│   └── types/                # TypeScript типы
-├── prisma/                   # Схема базы данных
-└── scripts/                  # Скрипты (seed)
+DATABASE_URL=postgresql://...@ep-xxx.neon.tech/neondb?sslmode=require
 ```
 
-## 🛠 Технологии
+### 2. Cloudflare R2 (файлы)
 
-- **Next.js 15.5.1** - React фреймворк
-- **PostgreSQL** - база данных
-- **Prisma** - ORM
-- **Tailwind CSS** - стили
-- **TypeScript** - типизация
+1. Cloudflare Dashboard → R2 → Create bucket (`pideh-armenia`)
+2. Settings → Public access → Enable R2.dev subdomain (или custom domain)
+3. R2 → Manage R2 API Tokens → Create token
+4. Добавьте в Vercel:
 
-## 📊 База данных
+```
+R2_ACCOUNT_ID=...
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_NAME=pideh-armenia
+R2_PUBLIC_URL=https://pub-xxxxx.r2.dev
+```
 
-- **Товары** - 10 позиций хачапури
-- **Пользователи** - система заказов
-- **Заказы** - обработка заказов
-- **Платежи** - Idram, ArCa, Ameriabank
+### 3. NextAuth
 
-## 🌐 Деплой
+```
+NEXTAUTH_URL=https://your-app.vercel.app
+NEXTAUTH_SECRET=<openssl rand -base64 32>
+```
 
-Проект готов для деплоя на Vercel с PostgreSQL.
+### 4. Deploy
+
+```bash
+# Подключите репозиторий к Vercel — build выполнится автоматически
+# vercel.json запускает: prisma generate → migrate deploy → next build
+```
+
+После первого деплоя (опционально) загрузите начальные данные:
+
+```bash
+DATABASE_URL="..." npm run db:seed
+```
+
+## Структура проекта
+
+```
+src/
+├── app/          # Pages & API routes
+├── components/   # UI components
+├── hooks/        # React hooks
+├── lib/          # Prisma, auth, R2 storage
+└── types/        # TypeScript types
+prisma/           # Schema & migrations
+scripts/          # seed.ts
+public/           # Static assets (logo, sw.js)
+archive/          # Dev docs & legacy scripts (не для production)
+data/             # Seed data (buy-am-products.json)
+```
+
+## Команды
+
+| Команда | Описание |
+|---------|----------|
+| `npm run dev` | Локальный сервер |
+| `npm run build` | Production сборка |
+| `npm run db:seed` | Заполнить БД товарами |
+| `npm run db:migrate` | Применить миграции |

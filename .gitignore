@@ -30,6 +30,13 @@ build/
 .DS_Store
 Thumbs.db
 
+# Local dev artifacts
+.playwright-mcp/
+ents/
+
+# Archive contains sensitive dev notes — keep local only if needed
+# archive/docs/account.md
+
 # Logs
 logs
 *.log
