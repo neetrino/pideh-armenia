@@ -13,6 +13,8 @@ import ProductCard from "@/components/ProductCard";
 
 export default function Home() {
   const t = useTranslations('home')
+  const tp = useTranslations('productDetail')
+  const tc = useTranslations('common')
   const [products, setProducts] = useState<ProductWithCategory[]>([])
   const [comboProducts, setComboProducts] = useState<ProductWithCategory[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<ProductWithCategory[]>([])
@@ -98,15 +100,15 @@ export default function Home() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'HIT':
-        return { text: 'ХИТ ПРОДАЖ', color: 'bg-red-500' }
+        return { text: tp('statusHit'), color: 'bg-red-500' }
       case 'NEW':
-        return { text: 'НОВИНКА', color: 'bg-green-500' }
+        return { text: tp('statusNew'), color: 'bg-green-500' }
       case 'CLASSIC':
-        return { text: 'КЛАССИКА', color: 'bg-blue-500' }
+        return { text: tp('statusClassic'), color: 'bg-blue-500' }
       case 'BANNER':
-        return { text: 'БАННЕР', color: 'bg-purple-500' }
+        return { text: tp('statusBanner'), color: 'bg-purple-500' }
       default:
-        return { text: 'ПОПУЛЯРНОЕ', color: 'bg-orange-500' }
+        return { text: tp('statusPopular'), color: 'bg-orange-500' }
     }
   }
 
@@ -162,20 +164,20 @@ export default function Home() {
             {/* Left content - compact */}
             <div className="flex-1 pr-4">
               <h1 className="text-3xl font-bold leading-tight mb-3">
-                <span className="block text-white">Армянские</span>
-                <span className="block text-yellow-200">пиде</span>
+                <span className="block text-white">{t('heroLine1')}</span>
+                <span className="block text-yellow-200">{t('heroLine2')}</span>
               </h1>
               <p className="text-base text-orange-100 mb-4 font-medium">
-                15 уникальных вкусов
+                {t('heroFlavorsCount')}
               </p>
               <div className="flex gap-6 text-sm">
                 <div className="text-center">
                   <div className="text-xl font-bold text-yellow-200">15+</div>
-                  <div className="text-orange-100 font-medium">Вкусов</div>
+                  <div className="text-orange-100 font-medium">{t('heroFlavorsLabel')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-xl font-bold text-yellow-200">20</div>
-                  <div className="text-orange-100 font-medium">Минут</div>
+                  <div className="text-orange-100 font-medium">{t('heroMinutesLabel')}</div>
                 </div>
               </div>
             </div>
@@ -226,7 +228,7 @@ export default function Home() {
                   >
                     <span className="flex items-center justify-center gap-1">
                       <ShoppingCart className="w-3 h-3" />
-                      Добавить
+                      {tc('addToCart')}
                     </span>
                   </button>
                 </div>
@@ -235,8 +237,8 @@ export default function Home() {
                   <div className="relative w-24 h-24 mx-auto mb-2 bg-white/20 rounded-lg flex items-center justify-center">
                     <span className="text-2xl">🥟</span>
                   </div>
-                  <h3 className="text-sm font-bold mb-1 text-white">Армянские пиде</h3>
-                  <p className="text-xs text-orange-100">Вкусные и свежие</p>
+                  <h3 className="text-sm font-bold mb-1 text-white">{t('armenianPide')}</h3>
+                  <p className="text-xs text-orange-100">{t('tastyFresh')}</p>
                 </div>
               )}
             </div>
@@ -251,37 +253,37 @@ export default function Home() {
               {/* Badge */}
               <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium animate-fade-in">
                 <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                Свежие пиде каждый день
+                {t('heroBadge')}
               </div>
               
               {/* Main heading */}
               <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                <span className="block text-white animate-slide-up">Армянские</span>
-                <span className="block text-yellow-200 animate-slide-up-delay">пиде</span>
+                <span className="block text-white animate-slide-up">{t('heroLine1')}</span>
+                <span className="block text-yellow-200 animate-slide-up-delay">{t('heroLine2')}</span>
                 <span className="block text-2xl md:text-3xl font-normal text-orange-100 mt-3 animate-fade-in-delay">
-                  новый вкус
+                  {t('heroTagline')}
                 </span>
               </h1>
               
               {/* Description */}
               <p className="text-lg md:text-xl text-orange-100 leading-relaxed max-w-lg animate-fade-in-delay-2">
-                Традиционная форма с современными начинками. 
-                <span className="font-semibold text-yellow-200"> 15 уникальных вкусов</span> для настоящих гурманов!
+                {t('heroDesc')}
+                <span className="font-semibold text-yellow-200"> {t('heroDescHighlight')}</span> {t('heroDescEnd')}
               </p>
               
               {/* Stats */}
               <div className="flex flex-wrap gap-6 animate-fade-in-delay-3">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-yellow-200">15+</div>
-                  <div className="text-sm text-orange-100">Вкусов</div>
+                  <div className="text-sm text-orange-100">{t('heroFlavorsLabel')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-yellow-200">20</div>
-                  <div className="text-sm text-orange-100">Минут</div>
+                  <div className="text-sm text-orange-100">{t('heroMinutesLabel')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-yellow-200">24/7</div>
-                  <div className="text-sm text-orange-100">Доставка</div>
+                  <div className="text-sm text-orange-100">{t('heroDeliveryLabel')}</div>
                 </div>
               </div>
               
@@ -292,7 +294,7 @@ export default function Home() {
                   className="group bg-white text-orange-500 px-6 py-3 rounded-xl font-bold text-base hover:bg-yellow-100 hover:scale-105 transition-all duration-300 text-center shadow-lg hover:shadow-xl"
                 >
                   <span className="flex items-center justify-center">
-                  Посмотреть меню
+                  {t('viewMenu')}
                     <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
@@ -304,7 +306,7 @@ export default function Home() {
                 >
                   <span className="flex items-center justify-center">
                     <Phone className="mr-2 w-4 h-4 group-hover:rotate-12 transition-transform" />
-                  Связаться с нами
+                  {t('contactUs')}
                   </span>
                 </Link>
               </div>
@@ -404,20 +406,20 @@ export default function Home() {
                       className="bg-yellow-400 text-orange-800 px-6 py-3 rounded-xl font-bold hover:scale-105 active:bg-green-500 active:text-white transition-all duration-300 shadow-lg"
                     >
                       <ShoppingCart className="inline w-5 h-5 mr-2" />
-                      Быстрый заказ
+                      {t('quickOrder')}
                     </button>
                   </>
                 ) : (
                   <>
-                    <h3 className="text-2xl font-bold mb-2">Армянские пиде</h3>
-                    <p className="text-orange-100 mb-4 opacity-80 group-hover:opacity-100 transition-opacity duration-300">Вкусные и свежие</p>
+                    <h3 className="text-2xl font-bold mb-2">{t('armenianPide')}</h3>
+                    <p className="text-orange-100 mb-4 opacity-80 group-hover:opacity-100 transition-opacity duration-300">{t('tastyFresh')}</p>
                     
                     <Link 
                       href="/products"
                       className="bg-yellow-400 text-orange-800 px-6 py-3 rounded-xl font-bold hover:scale-105 active:bg-green-500 active:text-white transition-all duration-300 shadow-lg inline-block"
                     >
                       <ShoppingCart className="inline w-5 h-5 mr-2" />
-                      Посмотреть меню
+                      {t('viewMenu')}
                     </Link>
                   </>
                 )}
@@ -428,14 +430,14 @@ export default function Home() {
                 <div className="w-12 h-12 bg-white/30 rounded-lg flex items-center justify-center mb-2">
                   <span className="text-2xl">🍕</span>
                 </div>
-                <div className="text-xs font-semibold">15+ вкусов</div>
+                <div className="text-xs font-semibold">{t('flavorsPlus')}</div>
               </div>
               
               <div className="absolute -bottom-4 -right-4 bg-white/20 backdrop-blur-sm rounded-xl p-3 text-center border border-white/30 animate-float-delay">
                 <div className="w-12 h-12 bg-white/30 rounded-lg flex items-center justify-center mb-2">
                   <span className="text-2xl">🚚</span>
                 </div>
-                <div className="text-xs font-semibold">Быстрая доставка</div>
+                <div className="text-xs font-semibold">{t('fastDelivery')}</div>
               </div>
             </div>
           </div>
@@ -687,10 +689,10 @@ export default function Home() {
           {/* Section header */}
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Почему выбирают нас?
+              {t('featuresTitle')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Мы создали идеальное сочетание традиций и инноваций для вашего удовольствия
+              {t('featuresDesc')}
             </p>
           </div>
 
@@ -701,11 +703,11 @@ export default function Home() {
               <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Clock className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">Быстро</h3>
-              <p className="text-gray-600 text-center mb-4">Готовим за 15-20 минут</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{t('featureFastTitle')}</h3>
+              <p className="text-gray-600 text-center mb-4">{t('featureFastDesc')}</p>
               <div className="text-center">
                 <span className="inline-block bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm font-semibold">
-                  ⚡ Молниеносно
+                  {t('featureFastBadge')}
                 </span>
               </div>
             </div>
@@ -715,11 +717,11 @@ export default function Home() {
               <div className="w-16 h-16 bg-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <MapPin className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">Доставка</h3>
-              <p className="text-gray-600 text-center mb-4">По всему Еревану</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{t('featureDeliveryTitle')}</h3>
+              <p className="text-gray-600 text-center mb-4">{t('featureDeliveryDesc')}</p>
             <div className="text-center">
                 <span className="inline-block bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-semibold">
-                  🚚 30 мин
+                  {t('featureDeliveryBadge')}
                 </span>
               </div>
             </div>
@@ -731,11 +733,11 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">Качество</h3>
-              <p className="text-gray-600 text-center mb-4">Только свежие ингредиенты</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{t('featureQualityTitle')}</h3>
+              <p className="text-gray-600 text-center mb-4">{t('featureQualityDesc')}</p>
             <div className="text-center">
                 <span className="inline-block bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-semibold">
-                  🌟 Премиум
+                  {t('featureQualityBadge')}
                 </span>
               </div>
             </div>
@@ -745,11 +747,11 @@ export default function Home() {
               <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Phone className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">Поддержка</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{t('featureSupportTitle')}</h3>
               <p className="text-gray-600 text-center mb-4">+374 95-044-888</p>
             <div className="text-center">
                 <span className="inline-block bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-semibold">
-                  💬 24/7
+                  {t('featureSupportBadge')}
                 </span>
               </div>
             </div>
@@ -765,10 +767,10 @@ export default function Home() {
           {/* Section header */}
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Что говорят наши клиенты
+              {t('testimonialsTitle')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Более 1000 довольных клиентов уже попробовали наши пиде
+              {t('testimonialsDesc')}
             </p>
           </div>
 
@@ -786,15 +788,15 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-600 mb-6 italic">
-                "Невероятно вкусные пиде! Заказываю уже третий раз. Быстрая доставка и всегда свежие продукты. Рекомендую всем!"
+                {t('testimonial1')}
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4">
                   <span className="text-orange-500 font-bold text-lg">А</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Анна Меликян</h4>
-                  <p className="text-sm text-gray-500">Постоянный клиент</p>
+                  <h4 className="font-semibold text-gray-900">{t('testimonial1Name')}</h4>
+                  <p className="text-sm text-gray-500">{t('testimonial1Role')}</p>
                 </div>
               </div>
             </div>
@@ -811,15 +813,15 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-600 mb-6 italic">
-                "Лучшие пиде в Ереване! Качество на высоте, цены адекватные. Особенно нравится мясная пиде с соусом."
+                {t('testimonial2')}
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
                   <span className="text-red-500 font-bold text-lg">Д</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Давид Арутюнян</h4>
-                  <p className="text-sm text-gray-500">Гурман</p>
+                  <h4 className="font-semibold text-gray-900">{t('testimonial2Name')}</h4>
+                  <p className="text-sm text-gray-500">{t('testimonial2Role')}</p>
                 </div>
               </div>
             </div>
@@ -836,15 +838,15 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-600 mb-6 italic">
-                "Отличный сервис! Заказал комбо на двоих - все было готово за 20 минут. Пиде очень вкусные и сытные."
+                {t('testimonial3')}
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
                   <span className="text-blue-500 font-bold text-lg">С</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Саргис Петросян</h4>
-                  <p className="text-sm text-gray-500">Студент</p>
+                  <h4 className="font-semibold text-gray-900">{t('testimonial3Name')}</h4>
+                  <p className="text-sm text-gray-500">{t('testimonial3Role')}</p>
                 </div>
               </div>
             </div>
@@ -854,19 +856,19 @@ export default function Home() {
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold text-orange-500 mb-2">1000+</div>
-              <div className="text-gray-600">Довольных клиентов</div>
+              <div className="text-gray-600">{t('statHappyClients')}</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-orange-500 mb-2">15+</div>
-              <div className="text-gray-600">Уникальных вкусов</div>
+              <div className="text-gray-600">{t('statUniqueFlavors')}</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-orange-500 mb-2">20</div>
-              <div className="text-gray-600">Минут доставка</div>
+              <div className="text-gray-600">{t('statDeliveryMins')}</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-orange-500 mb-2">4.9</div>
-              <div className="text-gray-600">Рейтинг клиентов</div>
+              <div className="text-gray-600">{t('statRating')}</div>
             </div>
           </div>
         </div>
@@ -876,23 +878,23 @@ export default function Home() {
       <section className="hidden md:block py-20 bg-orange-500 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Готовы попробовать?
+            {t('ctaTitle')}
           </h2>
           <p className="text-xl text-orange-100 mb-8 max-w-2xl mx-auto">
-            Закажите сейчас и получите скидку 10% на первый заказ!
+            {t('ctaDesc')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               href="/products"
               className="bg-white text-orange-500 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-lg"
             >
-              Заказать сейчас
+              {t('orderNow')}
             </Link>
             <Link 
               href="/contact"
               className="border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-orange-500 hover:scale-105 transition-all duration-300"
             >
-              Узнать больше
+              {t('learnMore')}
             </Link>
           </div>
         </div>

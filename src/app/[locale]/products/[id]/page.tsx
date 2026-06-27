@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import Image from 'next/image'
 import { ArrowLeft, ShoppingCart, Plus, Minus, Star, Clock, MapPin, Phone, Zap } from 'lucide-react'
@@ -12,6 +13,9 @@ import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
 
 export default function ProductPage() {
+  const t = useTranslations('productDetail')
+  const tn = useTranslations('nav')
+  const tc = useTranslations('common')
   const params = useParams()
   const router = useRouter()
   const { addItem } = useCart()
@@ -174,14 +178,14 @@ export default function ProductPage() {
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <div className="text-6xl mb-4">😔</div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Товар не найден</h1>
-            <p className="text-gray-600 mb-6">Возможно, товар был удален или не существует</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">{t('notFoundTitle')}</h1>
+            <p className="text-gray-600 mb-6">{t('notFoundDesc')}</p>
             <Link 
               href="/products" 
               className="inline-flex items-center bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Вернуться к каталогу
+              {t('backToCatalog')}
             </Link>
           </div>
         </div>
@@ -201,9 +205,9 @@ export default function ProductPage() {
       <div className="bg-white pt-20 md:pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex items-center space-x-2 text-sm">
-            <Link href="/" className="text-gray-500 hover:text-orange-500">Главная</Link>
+            <Link href="/" className="text-gray-500 hover:text-orange-500">{tn('home')}</Link>
             <span className="text-gray-400">/</span>
-            <Link href="/products" className="text-gray-500 hover:text-orange-500">Меню</Link>
+            <Link href="/products" className="text-gray-500 hover:text-orange-500">{tn('menu')}</Link>
             <span className="text-gray-400">/</span>
             <span className="text-gray-900 font-medium">{product.name}</span>
           </nav>
@@ -217,7 +221,7 @@ export default function ProductPage() {
           className="inline-flex items-center text-gray-600 hover:text-orange-500 mb-8 group"
         >
           <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          Назад к каталогу
+          {t('backToCatalog')}
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
@@ -284,7 +288,7 @@ export default function ProductPage() {
                       backdropFilter: 'blur(10px)',
                     }}
                   >
-                    {product.category?.name || 'Без категории'}
+                    {product.category?.name || tc('noCategory')}
                   </div>
                   
                   {/* 3D Special Badge */}
@@ -297,7 +301,7 @@ export default function ProductPage() {
                       }}
                     >
                       <Star className="w-3 h-3" />
-                      ХИТ ПРОДАЖ
+                      {t('statusHit')}
                     </div>
                   )}
                   
@@ -310,7 +314,7 @@ export default function ProductPage() {
                       }}
                     >
                       <Zap className="w-3 h-3" />
-                      НОВИНКА
+                      {t('statusNew')}
                     </div>
                   )}
                   
@@ -323,7 +327,7 @@ export default function ProductPage() {
                       }}
                     >
                       <Star className="w-3 h-3" />
-                      КЛАССИКА
+                      {t('statusClassic')}
                     </div>
                   )}
                 </div>
@@ -357,27 +361,27 @@ export default function ProductPage() {
             {/* Additional Info */}
             <div style={{ marginTop: '50px' }}>
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Информация о товаре:</h4>
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">{t('productInfo')}</h4>
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Категория: {product.category?.name || 'Без категории'}
+                    {t('categoryLabel', { name: product.category?.name || tc('noCategory') })}
                   </li>
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Время приготовления: 15-20 минут
+                    {t('cookTime')}
                   </li>
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Вес: ~300г
+                    {t('weight')}
                   </li>
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Только свежие ингредиенты
+                    {t('freshIngredients')}
                   </li>
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Без консервантов
+                    {t('noPreservatives')}
                   </li>
                 </ul>
               </div>
@@ -398,19 +402,19 @@ export default function ProductPage() {
                     <Star key={i} className="h-5 w-5 fill-current" />
                   ))}
                 </div>
-                <span className="text-gray-600">(4.9) • 127 отзывов</span>
+                <span className="text-gray-600">{t('reviews')}</span>
               </div>
 
               {/* Price */}
               <div className="flex items-center space-x-4 mb-8">
                 <span className="text-4xl font-bold text-orange-500">{product.price} ֏</span>
-                <span className="text-lg text-gray-500">за порцию</span>
+                <span className="text-lg text-gray-500">{t('perPortion')}</span>
               </div>
             </div>
 
             {/* Ingredients */}
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Ингредиенты:</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">{t('ingredients')}</h3>
               <div className="flex flex-wrap gap-3">
                 {product.ingredients.map((ingredient, index) => (
                   <span
@@ -426,7 +430,7 @@ export default function ProductPage() {
             {/* Quantity and Add to Cart */}
             <div className="space-y-6">
               <div className="flex items-center space-x-6">
-                <label className="text-lg font-medium text-gray-900">Количество:</label>
+                <label className="text-lg font-medium text-gray-900">{t('quantityLabel')}</label>
                 <div className="flex items-center border-2 border-gray-300 rounded-xl overflow-hidden bg-white shadow-sm">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -455,7 +459,7 @@ export default function ProductPage() {
                 >
                   <ShoppingCart className="h-6 w-6" />
                   <span>
-                    {addedToCart ? '✓ Добавлено в корзину!' : 'Добавить в корзину'}
+                    {addedToCart ? t('addedToCart') : t('addToCart')}
                   </span>
                 </button>
               </div>
@@ -467,8 +471,8 @@ export default function ProductPage() {
                 <div className="flex items-center space-x-3">
                   <Clock className="h-6 w-6 text-orange-500" />
                   <div>
-                    <div className="font-semibold text-gray-900">15-20 мин</div>
-                    <div className="text-sm text-gray-600">Время приготовления</div>
+                    <div className="font-semibold text-gray-900">{t('cookTimeShort')}</div>
+                    <div className="text-sm text-gray-600">{t('cookTimeLabel')}</div>
                   </div>
                 </div>
               </div>
@@ -477,8 +481,8 @@ export default function ProductPage() {
                 <div className="flex items-center space-x-3">
                   <MapPin className="h-6 w-6 text-orange-500" />
                   <div>
-                    <div className="font-semibold text-gray-900">30 мин</div>
-                    <div className="text-sm text-gray-600">Доставка</div>
+                    <div className="font-semibold text-gray-900">{t('deliveryShort')}</div>
+                    <div className="text-sm text-gray-600">{t('deliveryLabel')}</div>
                   </div>
                 </div>
               </div>
@@ -487,8 +491,8 @@ export default function ProductPage() {
                 <div className="flex items-center space-x-3">
                   <Phone className="h-6 w-6 text-orange-500" />
                   <div>
-                    <div className="font-semibold text-gray-900">24/7</div>
-                    <div className="text-sm text-gray-600">Поддержка</div>
+                    <div className="font-semibold text-gray-900">{t('supportShort')}</div>
+                    <div className="text-sm text-gray-600">{t('supportLabel')}</div>
                   </div>
                 </div>
               </div>
@@ -502,14 +506,14 @@ export default function ProductPage() {
           <section className="mb-16">
             <div className="flex items-center space-x-4 mb-8">
               <h2 className="text-3xl font-bold text-gray-900">
-                Похожие товары
+                {t('similarProducts')}
               </h2>
               <div className="w-1 h-8 bg-gradient-to-b from-orange-500 to-red-500 rounded-full"></div>
               <Link 
                 href="/products" 
                 className="group text-orange-500 hover:text-orange-600 text-lg font-bold flex items-center space-x-2 transition-colors duration-300 ml-2"
               >
-                <span>Все</span>
+                <span>{tc('all')}</span>
                 <ArrowLeft className="h-5 w-5 rotate-180 group-hover:translate-x-1 transition-transform duration-300" style={{ strokeWidth: 3 }} />
               </Link>
             </div>

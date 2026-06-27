@@ -61,14 +61,12 @@ API отдаёт поля для текущей locale; fallback: запроше
 - [x] `LanguageSwitcher` в Header (Armenia | English | Russian)
 - [x] Навигация через `@/i18n/navigation`
 
-#### 7.2 — UI-строки (клиент) ⏳ ~80%
+#### 7.2 — UI-строки (клиент) ✅
 - [x] Header, Footer, LanguageSwitcher, ProductCard
 - [x] login, register, cart, checkout, order-success, profile
-- [x] products (поиск, фильтры, empty states)
-- [x] главная — featured, поиск, empty states (hero/отзывы — ещё ru)
-- [ ] about, contact (статические страницы)
-- [ ] products/[id] (страница товара)
-- [ ] hy.json — нативная армянская локализация (сейчас translit)
+- [x] products, products/[id], главная (hero, features, отзывы, CTA)
+- [x] about, contact (getTranslations)
+- [ ] hy.json — доработать about/contact/armenian copy (частично translit)
 
 #### 7.3 — БД + API + seed
 - [ ] Миграция: `ProductTranslation`, `CategoryTranslation`
