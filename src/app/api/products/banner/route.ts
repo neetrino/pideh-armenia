@@ -5,7 +5,7 @@ import { localeFromSearchParams } from '@/lib/content-locale'
 import {
   cacheKeyForLocale,
   localizeProduct,
-  PRODUCT_WITH_TRANSLATIONS_SELECT,
+  PRODUCT_SELECT,
 } from '@/lib/localize-content'
 import { CACHE_KEYS, CACHE_TTL_SECONDS, cacheGet, cacheSet } from '@/lib/redis'
 
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const product = await prisma.product.findFirst({
       where: { isAvailable: true, status: 'BANNER' },
       orderBy: { createdAt: 'desc' },
-      select: PRODUCT_WITH_TRANSLATIONS_SELECT,
+      select: PRODUCT_SELECT,
     })
 
     const localized = product ? localizeProduct(product, locale) : null

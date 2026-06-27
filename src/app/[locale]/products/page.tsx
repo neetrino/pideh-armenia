@@ -11,9 +11,11 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
 
-const ALL_CATEGORY = 'Все'
-const SLUG_PIDE = 'Пиде'
-const SLUG_COMBO = 'Комбо'
+import { CATEGORY_SLUGS, CATEGORY_SLUG_ORDER } from '@/lib/category-slugs'
+
+const ALL_CATEGORY = 'all'
+const SLUG_PIDE = CATEGORY_SLUGS.pide
+const SLUG_COMBO = CATEGORY_SLUGS.combo
 
 export default function ProductsPage() {
   const t = useTranslations('products')
@@ -31,8 +33,7 @@ export default function ProductsPage() {
   const { addItem } = useCart()
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Порядок категорий для сортировки (приоритетные категории)
-  const categoryOrder = ['Комбо', 'Пиде', 'Снэк', 'Соусы', 'Напитки']
+  const categoryOrder = CATEGORY_SLUG_ORDER
 
   const fetchProducts = async () => {
     try {
@@ -278,7 +279,7 @@ export default function ProductsPage() {
                           ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-95'
                       }`}
-                      style={selectedCategory === category.name ? {
+                      style={selectedCategory === category.slug ? {
                         boxShadow: '0 8px 25px rgba(255, 107, 53, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                       } : {}}
                     >
@@ -312,11 +313,11 @@ export default function ProductsPage() {
                   key={`desktop-${category.id}`}
                   onClick={() => setSelectedCategory(category.slug)}
                   className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 ${
-                    selectedCategory === category.name
+                    selectedCategory === category.slug
                       ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-orange-100 hover:text-orange-600'
                   }`}
-                  style={selectedCategory === category.name ? {
+                  style={selectedCategory === category.slug ? {
                     boxShadow: '0 8px 25px rgba(255, 107, 53, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                   } : {}}
                 >

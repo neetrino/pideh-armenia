@@ -7,7 +7,7 @@ import {
   cacheKeyForLocale,
   localizeProduct,
   localizeProducts,
-  PRODUCT_WITH_TRANSLATIONS_SELECT,
+  PRODUCT_SELECT,
 } from '@/lib/localize-content'
 import { CACHE_KEYS, CACHE_TTL_SECONDS, cacheGet, cacheSet } from '@/lib/redis'
 
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     const products = await prisma.product.findMany({
       where: whereClause,
       orderBy: { createdAt: 'desc' },
-      select: PRODUCT_WITH_TRANSLATIONS_SELECT,
+      select: PRODUCT_SELECT,
     })
 
     const localized = localizeProducts(products, locale)

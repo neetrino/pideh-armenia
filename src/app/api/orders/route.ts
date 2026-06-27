@@ -9,7 +9,7 @@ import { checkOrderRateLimit } from '@/lib/rate-limit'
 const ORDER_INCLUDE = {
   items: {
     include: {
-      product: { select: { name: true, image: true } },
+      product: { select: { nameHy: true, image: true } },
     },
   },
 } as const

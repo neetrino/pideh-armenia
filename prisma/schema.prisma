@@ -24,69 +24,48 @@ model User {
 }
 
 model Category {
-  id           String                @id @default(cuid())
-  name         String                @unique
-  description  String?
-  isActive     Boolean               @default(true)
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
-  products     Product[]
-  translations CategoryTranslation[]
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  nameHy        String
+  nameEn        String
+  nameRu        String
+  descriptionHy String?
+  descriptionEn String?
+  descriptionRu String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  products      Product[]
 
   @@map("categories")
 }
 
 model Product {
-  id           String               @id @default(cuid())
-  name         String               @unique
-  description  String
-  price        Int
-  image        String
-  categoryId   String
-  ingredients  String[]
-  isAvailable  Boolean              @default(true)
-  status       ProductStatus        @default(REGULAR)
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
-  orderItems   OrderItem[]
-  category     Category             @relation(fields: [categoryId], references: [id])
-  translations ProductTranslation[]
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  nameHy         String
+  nameEn         String
+  nameRu         String
+  descriptionHy  String
+  descriptionEn  String
+  descriptionRu  String
+  ingredientsHy  String[]
+  ingredientsEn  String[]
+  ingredientsRu  String[]
+  price          Int
+  image          String
+  categoryId     String
+  isAvailable    Boolean       @default(true)
+  status         ProductStatus @default(REGULAR)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  orderItems     OrderItem[]
+  category       Category      @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId])
   @@index([status])
   @@index([isAvailable])
   @@map("products")
-}
-
-model ProductTranslation {
-  id          String        @id @default(cuid())
-  productId   String
-  locale      ContentLocale
-  name        String
-  description String
-  ingredients String[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  product     Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([productId, locale])
-  @@index([locale])
-  @@map("product_translations")
-}
-
-model CategoryTranslation {
-  id          String        @id @default(cuid())
-  categoryId  String
-  locale      ContentLocale
-  name        String
-  description String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  category    Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-
-  @@unique([categoryId, locale])
-  @@index([locale])
-  @@map("category_translations")
 }
 
 model Order {
@@ -152,12 +131,6 @@ enum PaymentMethod {
   ARCA
   IDRAM
   AMERIABANK
-}
-
-enum ContentLocale {
-  hy
-  en
-  ru
 }
 
 model Settings {

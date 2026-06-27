@@ -26,20 +26,17 @@ export async function GET(request: NextRequest) {
         },
       },
       include: {
-        translations: {
-          select: { locale: true, name: true, description: true },
-        },
         _count: {
           select: {
             products: { where: { isAvailable: true } },
           },
         },
       },
-      orderBy: { name: 'asc' },
+      orderBy: { nameHy: 'asc' },
     })
 
-    const localized = categories.map(({ translations, ...category }) => ({
-      ...localizeCategory({ ...category, translations }, locale),
+    const localized = categories.map((category) => ({
+      ...localizeCategory(category, locale),
       _count: category._count,
     }))
 

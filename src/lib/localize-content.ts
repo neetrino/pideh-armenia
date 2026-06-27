@@ -1,132 +1,136 @@
-import type { ContentLocale, Prisma } from '@prisma/client'
-import { CONTENT_LOCALES } from '@/lib/content-locale'
+import type { Prisma } from '@prisma/client'
+import {
+  type ContentLocale,
+  CONTENT_LOCALES,
+  localeFallbackOrder,
+  localizedFieldKey,
+} from '@/lib/content-locale'
 
-type ProductTranslationRow = {
-  locale: ContentLocale
-  name: string
-  description: string
-  ingredients: string[]
-}
-
-type CategoryTranslationRow = {
-  locale: ContentLocale
-  name: string
-  description: string | null
-}
-
-export const PRODUCT_WITH_TRANSLATIONS_SELECT = {
+export const PRODUCT_SELECT = {
   id: true,
-  name: true,
-  description: true,
+  slug: true,
+  nameHy: true,
+  nameEn: true,
+  nameRu: true,
+  descriptionHy: true,
+  descriptionEn: true,
+  descriptionRu: true,
+  ingredientsHy: true,
+  ingredientsEn: true,
+  ingredientsRu: true,
   price: true,
   categoryId: true,
   image: true,
-  ingredients: true,
   isAvailable: true,
   status: true,
   createdAt: true,
   category: {
     select: {
       id: true,
-      name: true,
-      description: true,
+      slug: true,
+      nameHy: true,
+      nameEn: true,
+      nameRu: true,
+      descriptionHy: true,
+      descriptionEn: true,
+      descriptionRu: true,
       isActive: true,
-      translations: {
-        select: { locale: true, name: true, description: true },
-      },
     },
-  },
-  translations: {
-    select: { locale: true, name: true, description: true, ingredients: true },
   },
 } satisfies Prisma.ProductSelect
 
-export type ProductWithTranslations = Prisma.ProductGetPayload<{
-  select: typeof PRODUCT_WITH_TRANSLATIONS_SELECT
-}>
+export type ProductRow = Prisma.ProductGetPayload<{ select: typeof PRODUCT_SELECT }>
+
+export type CategoryRow = NonNullable<ProductRow['category']>
 
 export type LocalizedCategory = {
   id: string
-  name: string
   slug: string
+  name: string
   description: string | null
   isActive: boolean
 }
 
-export type LocalizedProduct = Omit<ProductWithTranslations, 'translations' | 'category'> & {
+export type LocalizedProduct = {
+  id: string
+  slug: string
+  name: string
+  description: string
+  ingredients: string[]
+  price: number
+  categoryId: string
+  image: string
+  isAvailable: boolean
+  status: ProductRow['status']
+  createdAt: Date
   category: LocalizedCategory | null
 }
 
-function fallbackOrder(locale: ContentLocale): ContentLocale[] {
-  const ordered: ContentLocale[] = [locale, 'hy', 'en', 'ru']
-  return [...new Set(ordered)]
+type LocalizedRow = {
+  nameHy: string
+  nameEn: string
+  nameRu: string
+  descriptionHy?: string | null
+  descriptionEn?: string | null
+  descriptionRu?: string | null
+  ingredientsHy?: string[]
+  ingredientsEn?: string[]
+  ingredientsRu?: string[]
 }
 
-function pickProductTranslation(
-  translations: ProductTranslationRow[] | undefined,
+function pickString(
+  row: LocalizedRow,
+  base: 'name' | 'description',
   locale: ContentLocale
-): ProductTranslationRow | null {
-  for (const loc of fallbackOrder(locale)) {
-    const row = translations?.find((t) => t.locale === loc)
-    if (row) return row
+): string {
+  for (const loc of localeFallbackOrder(locale)) {
+    const key = localizedFieldKey(base, loc)
+    const value = row[key]
+    if (value) return value
   }
-  return null
+  return row.nameHy
 }
 
-function pickCategoryTranslation(
-  translations: CategoryTranslationRow[] | undefined,
-  locale: ContentLocale
-): CategoryTranslationRow | null {
-  for (const loc of fallbackOrder(locale)) {
-    const row = translations?.find((t) => t.locale === loc)
-    if (row) return row
+function pickIngredients(row: LocalizedRow, locale: ContentLocale): string[] {
+  for (const loc of localeFallbackOrder(locale)) {
+    const key = localizedFieldKey('ingredients', loc)
+    const value = row[key]
+    if (value && value.length > 0) return value
   }
-  return null
+  return row.ingredientsHy ?? []
 }
 
-/** Map DB category to API shape with localized `name` and stable Russian `slug`. */
-export function localizeCategory(
-  category: {
-    id: string
-    name: string
-    description: string | null
-    isActive: boolean
-    translations?: CategoryTranslationRow[]
-  },
-  locale: ContentLocale
-): LocalizedCategory {
-  const slug = category.name
-  const translation = pickCategoryTranslation(category.translations, locale)
+/** Map DB category to API shape with localized fields. */
+export function localizeCategory(category: CategoryRow, locale: ContentLocale): LocalizedCategory {
   return {
     id: category.id,
-    slug,
+    slug: category.slug,
     isActive: category.isActive,
-    name: translation?.name ?? category.name,
-    description: translation?.description ?? category.description,
+    name: pickString(category, 'name', locale),
+    description: pickString(category, 'description', locale) || null,
   }
 }
 
-/** Apply locale fallback chain to product fields; strips raw translations. */
-export function localizeProduct(
-  product: ProductWithTranslations,
-  locale: ContentLocale
-): LocalizedProduct {
-  const { translations, category, ...base } = product
-  const translation = pickProductTranslation(translations, locale)
-
+/** Apply locale fallback to product fields for public API. */
+export function localizeProduct(product: ProductRow, locale: ContentLocale): LocalizedProduct {
+  const { category, ...base } = product
   return {
-    ...base,
-    name: translation?.name ?? base.name,
-    description: translation?.description ?? base.description,
-    ingredients: translation?.ingredients ?? base.ingredients,
+    id: base.id,
+    slug: base.slug,
+    price: base.price,
+    categoryId: base.categoryId,
+    image: base.image,
+    isAvailable: base.isAvailable,
+    status: base.status,
+    createdAt: base.createdAt,
+    name: pickString(base, 'name', locale),
+    description: pickString(base, 'description', locale),
+    ingredients: pickIngredients(base, locale),
     category: category ? localizeCategory(category, locale) : null,
   }
 }
 
-export function localizeProducts(
-  products: ProductWithTranslations[],
-  locale: ContentLocale
-): LocalizedProduct[] {
+export function localizeProducts(products: ProductRow[], locale: ContentLocale): LocalizedProduct[] {
   return products.map((p) => localizeProduct(p, locale))
 }
 
@@ -138,4 +142,19 @@ export function cacheKeyForLocale(baseKey: string, locale: ContentLocale): strin
 /** All locale-specific cache keys for invalidation. */
 export function allLocaleCacheKeys(baseKey: string): string[] {
   return CONTENT_LOCALES.map((locale) => cacheKeyForLocale(baseKey, locale))
+}
+
+/** Prisma OR filter for product search across all locales. */
+export function productSearchFilter(search: string): Prisma.ProductWhereInput {
+  const contains = { contains: search, mode: 'insensitive' as const }
+  return {
+    OR: [
+      { nameHy: contains },
+      { nameEn: contains },
+      { nameRu: contains },
+      { descriptionHy: contains },
+      { descriptionEn: contains },
+      { descriptionRu: contains },
+    ],
+  }
 }

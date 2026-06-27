@@ -1,7 +1,9 @@
 import fs from 'fs'
 import path from 'path'
-import { PrismaClient, ProductStatus, type ContentLocale } from '@prisma/client'
+import { PrismaClient, ProductStatus } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import { CATEGORY_SLUG_BY_RU_NAME } from '../src/lib/category-slugs'
+import { productSlugFromImage } from '../src/lib/product-slug'
 import { invalidateCategoryCaches, invalidateProductCaches } from '../src/lib/redis'
 
 const prisma = new PrismaClient()
@@ -9,24 +11,23 @@ const PASSWORD_SALT_ROUNDS = 12
 const PRODUCTS_JSON = path.join(__dirname, '../data/buy-am-products.json')
 const PRODUCT_TRANSLATIONS_JSON = path.join(__dirname, '../data/product-translations.json')
 const IMAGE_MAP_JSON = path.join(__dirname, '../data/image-map.json')
-const BANNER_PRODUCT_NAME = 'Пиде с говядиной'
+const BANNER_PRODUCT_SLUG = 'pide-s-govyadinoj'
 
-/** Featured statuses for homepage sections (exact product names from buy-am-products.json). */
-const PRODUCT_STATUS_BY_NAME: Record<string, ProductStatus> = {
-  '2 мяса пиде': 'HIT',
-  'Комбо «Я один»': 'HIT',
-  'Пепперони пиде': 'HIT',
-  'Пиде с бастурмой': 'NEW',
-  'Комбо «Мы вдвоем»': 'NEW',
-  'Классическое сырное пиде': 'CLASSIC',
-  'Овощное пиде': 'CLASSIC',
+/** Featured statuses keyed by product slug (from image filename). */
+const PRODUCT_STATUS_BY_SLUG: Record<string, ProductStatus> = {
+  '2-myasa-pide': 'HIT',
+  'kombo-ya-odin': 'HIT',
+  'pepperoni-pide': 'HIT',
+  'pide-s-basturmoj': 'NEW',
+  'kombo-my-vdvoyom': 'NEW',
+  'classic-chees': 'CLASSIC',
+  'ovoshchnoe-pide': 'CLASSIC',
 }
 
-/** Default Armenian category labels (canonical slug = Russian name in DB). */
 const CATEGORY_NAMES_HY: Record<string, string> = {
   Пиде: 'Փիդե',
   Комбо: 'Կոմբո',
-  Снэк: 'Сնэք',
+  Снэк: 'Սնэք',
   Соусы: 'Սոուսներ',
   Напитки: 'Խմիչքներ',
 }
@@ -67,30 +68,6 @@ function loadImageMap(): Record<string, string> {
   return JSON.parse(fs.readFileSync(IMAGE_MAP_JSON, 'utf8')) as Record<string, string>
 }
 
-async function upsertProductTranslation(
-  productId: string,
-  locale: ContentLocale,
-  data: { name: string; description: string; ingredients: string[] }
-): Promise<void> {
-  await prisma.productTranslation.upsert({
-    where: { productId_locale: { productId, locale } },
-    update: data,
-    create: { productId, locale, ...data },
-  })
-}
-
-async function upsertCategoryTranslation(
-  categoryId: string,
-  locale: ContentLocale,
-  data: { name: string; description?: string | null }
-): Promise<void> {
-  await prisma.categoryTranslation.upsert({
-    where: { categoryId_locale: { categoryId, locale } },
-    update: data,
-    create: { categoryId, locale, name: data.name, description: data.description ?? null },
-  })
-}
-
 async function main() {
   const imageMap = loadImageMap()
   const productsData: ProductSeed[] = JSON.parse(fs.readFileSync(PRODUCTS_JSON, 'utf8'))
@@ -99,40 +76,39 @@ async function main() {
   )
   const categories = ['Пиде', 'Комбо', 'Снэк', 'Соусы', 'Напитки']
 
-  for (const name of categories) {
-    const category = await prisma.category.upsert({
-      where: { name },
-      update: { isActive: true },
-      create: { name, description: `Категория ${name}`, isActive: true },
-    })
-
-    await upsertCategoryTranslation(category.id, 'ru', {
-      name,
-      description: `Категория ${name}`,
-    })
-
-    const hyName = CATEGORY_NAMES_HY[name]
-    if (hyName) {
-      await upsertCategoryTranslation(category.id, 'hy', {
-        name: hyName,
-        description: null,
-      })
+  for (const ruName of categories) {
+    const slug = CATEGORY_SLUG_BY_RU_NAME[ruName]
+    if (!slug) {
+      console.warn(`Skip category (no slug): ${ruName}`)
+      continue
     }
 
-    const enName = CATEGORY_NAMES_EN[name]
-    if (enName) {
-      await upsertCategoryTranslation(category.id, 'en', {
-        name: enName,
-        description: null,
-      })
-    }
+    await prisma.category.upsert({
+      where: { slug },
+      update: {
+        isActive: true,
+        nameHy: CATEGORY_NAMES_HY[ruName] ?? ruName,
+        nameEn: CATEGORY_NAMES_EN[ruName] ?? ruName,
+        nameRu: ruName,
+        descriptionRu: `Категория ${ruName}`,
+      },
+      create: {
+        slug,
+        nameHy: CATEGORY_NAMES_HY[ruName] ?? ruName,
+        nameEn: CATEGORY_NAMES_EN[ruName] ?? ruName,
+        nameRu: ruName,
+        descriptionRu: `Категория ${ruName}`,
+        isActive: true,
+      },
+    })
   }
 
   const categoryRows = await prisma.category.findMany()
-  const categoryByName = new Map(categoryRows.map((c) => [c.name, c.id]))
+  const categoryIdBySlug = new Map(categoryRows.map((c) => [c.slug, c.id]))
 
   for (const item of productsData) {
-    const categoryId = categoryByName.get(item.category)
+    const categorySlug = CATEGORY_SLUG_BY_RU_NAME[item.category]
+    const categoryId = categorySlug ? categoryIdBySlug.get(categorySlug) : undefined
     if (!categoryId) {
       console.warn(`Skip (no category): ${item.name}`)
       continue
@@ -144,52 +120,58 @@ async function main() {
       continue
     }
 
-    const product = await prisma.product.upsert({
-      where: { name: item.name },
-      update: {
-        description: item.description,
-        price: Math.round(item.price),
-        image,
-        categoryId,
-        ingredients: item.ingredients,
-        isAvailable: item.isAvailable,
-      },
-      create: {
-        name: item.name,
-        description: item.description,
-        price: Math.round(item.price),
-        image,
-        categoryId,
-        ingredients: item.ingredients,
-        isAvailable: item.isAvailable,
-      },
-    })
-
-    await upsertProductTranslation(product.id, 'ru', {
-      name: item.name,
-      description: item.description,
-      ingredients: item.ingredients,
-    })
-
+    const slug = productSlugFromImage(item.image)
     const localized = productTranslations[item.name]
     if (!localized) {
-      console.warn(`Skip translations (no hy/en map): ${item.name}`)
+      console.warn(`Skip (no hy/en map): ${item.name}`)
       continue
     }
 
-    await upsertProductTranslation(product.id, 'hy', localized.hy)
-    await upsertProductTranslation(product.id, 'en', localized.en)
+    await prisma.product.upsert({
+      where: { slug },
+      update: {
+        nameHy: localized.hy.name,
+        nameEn: localized.en.name,
+        nameRu: item.name,
+        descriptionHy: localized.hy.description,
+        descriptionEn: localized.en.description,
+        descriptionRu: item.description,
+        ingredientsHy: localized.hy.ingredients,
+        ingredientsEn: localized.en.ingredients,
+        ingredientsRu: item.ingredients,
+        price: Math.round(item.price),
+        image,
+        categoryId,
+        isAvailable: item.isAvailable,
+      },
+      create: {
+        slug,
+        nameHy: localized.hy.name,
+        nameEn: localized.en.name,
+        nameRu: item.name,
+        descriptionHy: localized.hy.description,
+        descriptionEn: localized.en.description,
+        descriptionRu: item.description,
+        ingredientsHy: localized.hy.ingredients,
+        ingredientsEn: localized.en.ingredients,
+        ingredientsRu: item.ingredients,
+        price: Math.round(item.price),
+        image,
+        categoryId,
+        isAvailable: item.isAvailable,
+      },
+    })
   }
 
   await prisma.product.updateMany({ data: { status: 'REGULAR' } })
 
-  for (const [name, status] of Object.entries(PRODUCT_STATUS_BY_NAME)) {
-    await prisma.product.updateMany({ where: { name }, data: { status } })
+  for (const [slug, status] of Object.entries(PRODUCT_STATUS_BY_SLUG)) {
+    await prisma.product.updateMany({ where: { slug }, data: { status } })
   }
 
   await prisma.product.updateMany({ where: { status: 'BANNER' }, data: { status: 'REGULAR' } })
   await prisma.product.updateMany({
-    where: { name: BANNER_PRODUCT_NAME },
+    where: { slug: BANNER_PRODUCT_SLUG },
     data: { status: 'BANNER' },
   })
 
@@ -202,7 +184,7 @@ async function main() {
     update: { role: 'ADMIN', password: adminHash, deletedAt: null },
     create: {
       email: adminEmail,
-      name: 'Администратор',
+      name: 'Administrator',
       phone: '+374 95 044 888',
       password: adminHash,
       role: 'ADMIN',

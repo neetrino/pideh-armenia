@@ -39,13 +39,34 @@ export const updateProfileSchema = z.object({
   address: z.string().trim().optional(),
 })
 
-export const productInputSchema = z.object({
-  name: z.string().trim().min(1),
-  description: z.string().trim().min(1),
+const localizedProductTextSchema = z.object({
+  nameHy: z.string().trim().min(1),
+  nameEn: z.string().trim().min(1),
+  nameRu: z.string().trim().min(1),
+  descriptionHy: z.string().trim().min(1),
+  descriptionEn: z.string().trim().min(1),
+  descriptionRu: z.string().trim().min(1),
+  ingredientsHy: z.array(z.string().trim().min(1)).min(1),
+  ingredientsEn: z.array(z.string().trim().min(1)).min(1),
+  ingredientsRu: z.array(z.string().trim().min(1)).min(1),
+})
+
+export const productInputSchema = localizedProductTextSchema.extend({
+  slug: z.string().trim().min(1),
   price: z.number().int().positive(),
   categoryId: z.string().min(1),
   image: z.string().optional(),
-  ingredients: z.array(z.string()).optional(),
   isAvailable: z.boolean().optional(),
   status: z.enum(['REGULAR', 'HIT', 'NEW', 'CLASSIC', 'BANNER', '']).optional(),
+})
+
+export const categoryInputSchema = z.object({
+  slug: z.string().trim().min(1).regex(/^[a-z0-9-]+$/, 'Slug must be lowercase latin letters, digits, hyphens'),
+  nameHy: z.string().trim().min(1),
+  nameEn: z.string().trim().min(1),
+  nameRu: z.string().trim().min(1),
+  descriptionHy: z.string().trim().optional(),
+  descriptionEn: z.string().trim().optional(),
+  descriptionRu: z.string().trim().optional(),
+  isActive: z.boolean().optional(),
 })

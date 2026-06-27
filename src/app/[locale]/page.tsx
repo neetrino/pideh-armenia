@@ -10,6 +10,7 @@ import { withLocale } from "@/lib/api-path";
 import { ProductWithCategory } from "@/types";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { CATEGORY_SLUGS, CATEGORY_SLUG_ORDER } from '@/lib/category-slugs'
 import ProductCard from "@/components/ProductCard";
 
 export default function Home() {
@@ -22,7 +23,7 @@ export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<ProductWithCategory[]>([])
   const [bannerProduct, setBannerProduct] = useState<ProductWithCategory | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeCategory, setActiveCategory] = useState('Пиде')
+  const [activeCategory, setActiveCategory] = useState(CATEGORY_SLUGS.pide)
   const [searchQuery, setSearchQuery] = useState('')
   const [addedToCart, setAddedToCart] = useState<Set<string>>(new Set())
   const [addedToCartHits, setAddedToCartHits] = useState<Set<string>>(new Set())
@@ -51,7 +52,7 @@ export default function Home() {
       if (Array.isArray(productsData)) {
         setProducts(productsData)
         const combos = productsData.filter(
-          (product: ProductWithCategory) => product.category?.slug === 'Комбо'
+          (product: ProductWithCategory) => product.category?.slug === CATEGORY_SLUGS.combo
         )
         setComboProducts(combos.slice(0, 4))
       } else {
@@ -146,7 +147,7 @@ export default function Home() {
     return popularNames.some(name => product.name.toLowerCase().includes(name.toLowerCase()))
   }
 
-  const categories = ['Пиде', 'Комбо', 'Снэк', 'Соусы', 'Напитки']
+  const categories = CATEGORY_SLUG_ORDER
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">

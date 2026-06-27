@@ -5,7 +5,7 @@ import { authOptions } from '@/lib/auth'
 import { logger } from '@/lib/logger'
 import { invalidateProductCaches } from '@/lib/redis'
 import { localeFromSearchParams } from '@/lib/content-locale'
-import { localizeProduct, PRODUCT_WITH_TRANSLATIONS_SELECT } from '@/lib/localize-content'
+import { localizeProduct, PRODUCT_SELECT } from '@/lib/localize-content'
 
 // GET /api/products/[id] — ?locale=hy|en|ru
 export async function GET(
@@ -21,7 +21,7 @@ export async function GET(
         id,
         isAvailable: true,
       },
-      select: PRODUCT_WITH_TRANSLATIONS_SELECT,
+      select: PRODUCT_SELECT,
     })
 
     if (!product) {

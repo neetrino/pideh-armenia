@@ -39,7 +39,7 @@ export default function AdminProducts() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('/api/products?locale=ru')
+      const response = await fetch('/api/products?locale=hy')
       if (response.ok) {
         const data = await response.json()
         setProducts(data)

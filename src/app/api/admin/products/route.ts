@@ -21,27 +21,37 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { name, description, price, categoryId, image, ingredients, isAvailable, status } =
-      parsed.data
-
-    const category = await prisma.category.findUnique({ where: { id: categoryId } })
+    const data = parsed.data
+    const category = await prisma.category.findUnique({ where: { id: data.categoryId } })
     if (!category) {
       return NextResponse.json({ error: 'Category not found' }, { status: 400 })
     }
 
+    const slugTaken = await prisma.product.findUnique({ where: { slug: data.slug } })
+    if (slugTaken) {
+      return NextResponse.json({ error: 'Product with this slug already exists' }, { status: 400 })
+    }
+
     const product = await prisma.product.create({
       data: {
-        name,
-        description,
-        price,
-        categoryId,
-        image: image ?? '',
-        ingredients: ingredients ?? [],
-        isAvailable: isAvailable ?? true,
-        status: status && status !== '' ? status : 'REGULAR',
+        slug: data.slug,
+        nameHy: data.nameHy,
+        nameEn: data.nameEn,
+        nameRu: data.nameRu,
+        descriptionHy: data.descriptionHy,
+        descriptionEn: data.descriptionEn,
+        descriptionRu: data.descriptionRu,
+        ingredientsHy: data.ingredientsHy,
+        ingredientsEn: data.ingredientsEn,
+        ingredientsRu: data.ingredientsRu,
+        price: data.price,
+        categoryId: data.categoryId,
+        image: data.image ?? '',
+        isAvailable: data.isAvailable ?? true,
+        status: data.status && data.status !== '' ? data.status : 'REGULAR',
       },
       include: {
-        category: { select: { id: true, name: true, isActive: true } },
+        category: { select: { id: true, slug: true, nameHy: true, isActive: true } },
       },
     })
 

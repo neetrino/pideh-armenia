@@ -1,6 +1,7 @@
 import type {
   User,
   Product,
+  Category as DbCategory,
   Order,
   OrderItem,
   OrderStatus,
@@ -9,13 +10,25 @@ import type {
 } from '@prisma/client'
 import type { LocalizedCategory, LocalizedProduct } from '@/lib/localize-content'
 
-export type { Product, User, Order, OrderItem, OrderStatus, ProductStatus, PaymentMethod }
+export type {
+  Product,
+  User,
+  Order,
+  OrderItem,
+  OrderStatus,
+  ProductStatus,
+  PaymentMethod,
+  DbCategory,
+}
 
 /** Category from public API (localized name + stable slug). */
 export type Category = LocalizedCategory
 
 /** Product from public API with localized fields. */
 export type ProductWithCategory = LocalizedProduct
+
+/** Full DB category row for admin forms. */
+export type AdminCategory = DbCategory
 
 export interface CartItem {
   product: ProductWithCategory
@@ -47,20 +60,18 @@ export interface ContactFormData {
 }
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-  PENDING: 'Ожидает подтверждения',
-  CONFIRMED: 'Подтвержден',
-  PREPARING: 'Готовится',
-  READY: 'Готов к выдаче',
-  DELIVERED: 'Доставлен',
-  CANCELLED: 'Отменен',
+  PENDING: 'Սպասման մեջ',
+  CONFIRMED: 'Հաստատված',
+  PREPARING: 'Պատրաստվում է',
+  READY: 'Պատրաստ է',
+  DELIVERED: 'Առաքված',
+  CANCELLED: 'Չեղարկված',
 }
 
 export const PRODUCT_STATUS_LABELS: Record<ProductStatus, string> = {
-  REGULAR: 'Обычный',
-  HIT: 'Хит продаж',
-  NEW: 'Новинка',
-  CLASSIC: 'Классика',
-  BANNER: 'Баннер',
+  REGULAR: 'Սովորական',
+  HIT: 'Հիթ',
+  NEW: 'Նոր',
+  CLASSIC: 'Դասական',
+  BANNER: 'Բաններ',
 }
-
-export type CategoryName = 'Комбо' | 'Пиде' | 'Снэк' | 'Соусы' | 'Напитки'

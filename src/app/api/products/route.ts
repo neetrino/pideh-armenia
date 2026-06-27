@@ -5,7 +5,8 @@ import { logger } from '@/lib/logger'
 import { localeFromSearchParams } from '@/lib/content-locale'
 import {
   localizeProducts,
-  PRODUCT_WITH_TRANSLATIONS_SELECT,
+  PRODUCT_SELECT,
+  productSearchFilter,
 } from '@/lib/localize-content'
 
 // GET /api/products — public list; ?locale=hy|en|ru
@@ -21,8 +22,8 @@ export async function GET(request: NextRequest) {
       isAvailable: true,
     }
 
-    if (category && category !== 'Все') {
-      whereClause.category = { name: category }
+    if (category && category !== 'all') {
+      whereClause.category = { slug: category }
     }
 
     if (status) {
@@ -30,26 +31,13 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
-      whereClause.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-        {
-          translations: {
-            some: {
-              OR: [
-                { name: { contains: search, mode: 'insensitive' } },
-                { description: { contains: search, mode: 'insensitive' } },
-              ],
-            },
-          },
-        },
-      ]
+      whereClause.AND = [productSearchFilter(search)]
     }
 
     const products = await prisma.product.findMany({
       where: whereClause,
       orderBy: { createdAt: 'desc' },
-      select: PRODUCT_WITH_TRANSLATIONS_SELECT,
+      select: PRODUCT_SELECT,
     })
 
     const response = NextResponse.json(localizeProducts(products, locale))

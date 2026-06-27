@@ -76,10 +76,11 @@ API отдаёт поля для текущей locale; fallback: запроше
 - [x] Redis cache per locale
 - [x] Storefront fetch с `useLocale()` + `withLocale()`
 
-#### 7.4 — Admin (вкладки перевода)
-- [ ] Товар create/edit: табы **Armenia | English | Russian**, одни и те же поля (name, description, ingredients)
-- [ ] Категории — то же
-- [ ] Shell admin (навигация, кнопки) — можно оставить ru или hy (уточнить при реализации)
+#### 7.4 — Admin (вкладки перевода) ✅
+- [x] Товар create/edit: табы **Armenia | English | Russian**, одни и те же поля (name, description, ingredients)
+- [x] Категории — то же
+- [x] Admin API: `nameHy/En/Ru`, slug, Zod validation
+- [x] Shell admin (навигация, кнопки) — ru
 
 #### 7.5 — Форматирование и SEO
 - [ ] Цены AMD через `Intl` per locale
