@@ -279,12 +279,13 @@ export default function CheckoutPage() {
                     <MapPin className="inline h-4 w-4 mr-1" />
                     {t('deliveryAddress')} *
                   </label>
-                  <textarea
+                  <input
+                    type="text"
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
-                    rows={3}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-none text-gray-900 ${
+                    autoComplete="street-address"
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-gray-900 ${
                       errors.address ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder={t('addressPlaceholder')}
@@ -510,12 +511,13 @@ export default function CheckoutPage() {
                       <MapPin className="inline h-4 w-4 mr-1" />
                       {t('deliveryAddress')} *
                     </label>
-                    <textarea
+                    <input
+                      type="text"
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
-                      rows={3}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-none text-gray-900 ${
+                      autoComplete="street-address"
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-gray-900 ${
                         errors.address ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder={t('addressPlaceholder')}
