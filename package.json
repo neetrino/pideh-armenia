@@ -9,8 +9,6 @@
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:seed": "tsx --env-file=.env scripts/seed.ts",
-    "db:seed:full": "tsx --env-file=.env scripts/seed.ts --upload-images",
-    "images:r2": "tsx --env-file=.env scripts/migrate-images-to-r2.ts",
     "db:migrate": "prisma migrate deploy",
     "db:reset": "prisma migrate reset --force && npm run db:seed"
   },

@@ -2,12 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import { PrismaClient, ProductStatus } from '@prisma/client'
 import bcrypt from 'bcryptjs'
-import { uploadImageWebp } from '../src/lib/storage'
 import { invalidateCategoryCaches, invalidateProductCaches } from '../src/lib/redis'
 
 const prisma = new PrismaClient()
 const PASSWORD_SALT_ROUNDS = 12
-const IMAGES_DIR = path.join(__dirname, '../public/images')
 const PRODUCTS_JSON = path.join(__dirname, '../data/buy-am-products.json')
 const IMAGE_MAP_JSON = path.join(__dirname, '../data/image-map.json')
 const BANNER_PRODUCT_NAME = 'Пиде с говядиной'
@@ -33,37 +31,15 @@ type ProductSeed = {
   isAvailable: boolean
 }
 
-async function uploadLocalImages(): Promise<Record<string, string>> {
-  const map: Record<string, string> = {}
-  if (!fs.existsSync(IMAGES_DIR)) return map
-
-  const files = fs.readdirSync(IMAGES_DIR).filter((f) => /\.(png|jpe?g|webp)$/i.test(f))
-  console.info(`Uploading ${files.length} images to R2 as webp...`)
-
-  for (const file of files) {
-    const localPath = `/images/${file}`
-    const buffer = fs.readFileSync(path.join(IMAGES_DIR, file))
-    const baseName = file.replace(/\.[^.]+$/, '')
-    const key = `images/${baseName}.webp`
-    const url = await uploadImageWebp(buffer, key)
-    map[localPath] = url
-    console.info(`  ${localPath} → ${url}`)
+function loadImageMap(): Record<string, string> {
+  if (!fs.existsSync(IMAGE_MAP_JSON)) {
+    throw new Error(`Missing ${IMAGE_MAP_JSON}. Product images live on R2 — run db:seed only after image-map exists.`)
   }
-
-  fs.writeFileSync(IMAGE_MAP_JSON, JSON.stringify(map, null, 2))
-  return map
+  return JSON.parse(fs.readFileSync(IMAGE_MAP_JSON, 'utf8')) as Record<string, string>
 }
 
 async function main() {
-  const shouldUploadImages = process.argv.includes('--upload-images')
-  let imageMap: Record<string, string> = {}
-
-  if (shouldUploadImages) {
-    imageMap = await uploadLocalImages()
-  } else if (fs.existsSync(IMAGE_MAP_JSON)) {
-    imageMap = JSON.parse(fs.readFileSync(IMAGE_MAP_JSON, 'utf8'))
-  }
-
+  const imageMap = loadImageMap()
   const productsData: ProductSeed[] = JSON.parse(fs.readFileSync(PRODUCTS_JSON, 'utf8'))
   const categories = ['Пиде', 'Комбо', 'Снэк', 'Соусы', 'Напитки']
 
@@ -85,7 +61,11 @@ async function main() {
       continue
     }
 
-    const image = imageMap[item.image] ?? item.image
+    const image = imageMap[item.image]
+    if (!image) {
+      console.warn(`Skip (no R2 mapping): ${item.name} → ${item.image}`)
+      continue
+    }
 
     await prisma.product.upsert({
       where: { name: item.name },
