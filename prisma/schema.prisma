@@ -8,16 +8,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String    @id @default(cuid())
+  email     String    @unique
   name      String?
   phone     String?
   address   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-  password  String   @db.VarChar(255)
-  role      UserRole @default(USER)
+  password  String    @db.VarChar(255)
+  role      UserRole  @default(USER)
   orders    Order[]
 
   @@map("users")
@@ -37,9 +37,9 @@ model Category {
 
 model Product {
   id          String        @id @default(cuid())
-  name        String
+  name        String        @unique
   description String
-  price       Float
+  price       Int
   image       String
   categoryId  String
   ingredients String[]
@@ -50,25 +50,31 @@ model Product {
   orderItems  OrderItem[]
   category    Category      @relation(fields: [categoryId], references: [id])
 
+  @@index([categoryId])
+  @@index([status])
+  @@index([isAvailable])
   @@map("products")
 }
 
 model Order {
-  id            String      @id @default(cuid())
+  id            String        @id @default(cuid())
   userId        String?
-  status        OrderStatus @default(PENDING)
-  total         Float
+  status        OrderStatus   @default(PENDING)
+  total         Int
   address       String
   phone         String
   notes         String?
-  paymentMethod String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  paymentMethod PaymentMethod
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   deliveryTime  String?
-  name          String      @default("Unknown Customer")
+  name          String        @default("Unknown Customer")
   items         OrderItem[]
-  user          User?       @relation(fields: [userId], references: [id])
+  user          User?         @relation(fields: [userId], references: [id])
 
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
   @@map("orders")
 }
 
@@ -77,10 +83,12 @@ model OrderItem {
   orderId   String
   productId String
   quantity  Int
-  price     Float
+  price     Int
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product @relation(fields: [productId], references: [id])
 
+  @@index([orderId])
+  @@index([productId])
   @@map("order_items")
 }
 
@@ -104,6 +112,13 @@ enum ProductStatus {
   NEW
   CLASSIC
   BANNER
+}
+
+enum PaymentMethod {
+  CASH
+  ARCA
+  IDRAM
+  AMERIABANK
 }
 
 model Settings {

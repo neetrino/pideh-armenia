@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger'
+import { invalidateProductCaches } from '@/lib/redis'
 
 // GET /api/admin/products/[id] - получить товар по ID для админки
 export async function GET(
@@ -51,7 +53,7 @@ export async function GET(
 
     return NextResponse.json(product)
   } catch (error) {
-    console.error('Error fetching product:', error)
+    logger.error('Error fetching admin product', error)
     return NextResponse.json(
       { error: 'Failed to fetch product' },
       { status: 500 }
@@ -102,9 +104,9 @@ export async function PUT(
     }
 
     // Валидация цены
-    if (price !== undefined && (typeof price !== 'number' || price <= 0)) {
+    if (price !== undefined && (!Number.isInteger(price) || price <= 0)) {
       return NextResponse.json(
-        { error: 'Price must be a positive number' },
+        { error: 'Price must be a positive integer (AMD)' },
         { status: 400 }
       )
     }
@@ -158,9 +160,10 @@ export async function PUT(
       }
     })
 
+    await invalidateProductCaches()
     return NextResponse.json(updatedProduct)
   } catch (error) {
-    console.error('Error updating product:', error)
+    logger.error('Error updating product', error)
     return NextResponse.json(
       { error: 'Failed to update product' },
       { status: 500 }

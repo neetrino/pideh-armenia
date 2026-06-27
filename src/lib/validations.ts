@@ -1,3 +1,4 @@
+import { PaymentMethod } from '@prisma/client'
 import { z } from 'zod'
 
 export const registerSchema = z.object({
@@ -12,19 +13,17 @@ export type RegisterInput = z.infer<typeof registerSchema>
 export const orderItemSchema = z.object({
   productId: z.string().min(1),
   quantity: z.number().int().positive(),
-  price: z.number().nonnegative(),
+  price: z.number().int().nonnegative(),
 })
 
-// NOTE: paymentMethod stays a free string and prices stay floats in Phase 1.
-// Phase 2 (money → Int, paymentMethod → enum) will tighten these.
 export const orderSchema = z.object({
   name: z.string().trim().min(1).optional(),
   phone: z.string().trim().min(1, 'Телефон обязателен'),
   address: z.string().trim().min(1, 'Адрес обязателен'),
-  paymentMethod: z.string().trim().min(1, 'Способ оплаты обязателен'),
+  paymentMethod: z.nativeEnum(PaymentMethod),
   notes: z.string().trim().optional(),
   deliveryTime: z.string().trim().optional(),
-  total: z.number().nonnegative(),
+  total: z.number().int().nonnegative(),
   items: z.array(orderItemSchema).min(1, 'Корзина пуста'),
 })
 
@@ -38,4 +37,15 @@ export const updateProfileSchema = z.object({
   name: z.string().trim().min(1).optional(),
   phone: z.string().trim().optional(),
   address: z.string().trim().optional(),
+})
+
+export const productInputSchema = z.object({
+  name: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  price: z.number().int().positive(),
+  categoryId: z.string().min(1),
+  image: z.string().optional(),
+  ingredients: z.array(z.string()).optional(),
+  isAvailable: z.boolean().optional(),
+  status: z.enum(['REGULAR', 'HIT', 'NEW', 'CLASSIC', 'BANNER', '']).optional(),
 })

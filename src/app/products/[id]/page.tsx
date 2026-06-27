@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, ShoppingCart, Plus, Minus, Star, Clock, MapPin, Phone, Zap } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
-import { Product } from '@/types'
+import { ProductWithCategory } from '@/types'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
@@ -15,8 +15,8 @@ export default function ProductPage() {
   const params = useParams()
   const router = useRouter()
   const { addItem } = useCart()
-  const [product, setProduct] = useState<Product | null>(null)
-  const [similarProducts, setSimilarProducts] = useState<Product[]>([])
+  const [product, setProduct] = useState<ProductWithCategory | null>(null)
+  const [similarProducts, setSimilarProducts] = useState<ProductWithCategory[]>([])
   const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
   const [addedToCart, setAddedToCart] = useState(false)
@@ -47,12 +47,11 @@ export default function ProductPage() {
         const products = await similarResponse.json()
         // Фильтруем похожие товары (исключаем текущий и берем первые 4)
         const similar = products
-          .filter((p: Product) => p.id !== id)
+          .filter((p: ProductWithCategory) => p.id !== id)
           .slice(0, 4)
         setSimilarProducts(similar)
       }
-    } catch (error) {
-      console.error('Error fetching product data:', error)
+    } catch {
       router.push('/products')
     } finally {
       setLoading(false)
@@ -250,9 +249,7 @@ export default function ProductPage() {
                         priority
                         className="relative w-full h-full object-contain group-hover:scale-125 group-hover:-translate-y-3 group-hover:rotate-2 transition-all duration-700 ease-out"
                         style={{
-                          filter: 'none',
                           transform: 'perspective(1000px) rotateX(5deg) rotateY(-2deg)',
-                          imageRendering: 'crisp-edges',
                           imageRendering: '-webkit-optimize-contrast',
                         }}
                         onError={(e) => {

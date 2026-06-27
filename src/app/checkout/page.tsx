@@ -17,6 +17,17 @@ interface UserProfile {
   address: string | null
 }
 
+import type { PaymentMethod } from '@/types'
+
+interface CheckoutFormData {
+  name: string
+  phone: string
+  address: string
+  deliveryTime: string
+  paymentMethod: PaymentMethod
+  notes: string
+}
+
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, getTotalPrice, clearCart, validateCart } = useCart()
@@ -24,13 +35,12 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   
-  // Form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CheckoutFormData>({
     name: '',
     phone: '',
     address: '',
-    deliveryTime: 'asap', // Дефолтное значение "Как можно скорее"
-    paymentMethod: 'cash',
+    deliveryTime: 'asap',
+    paymentMethod: 'CASH',
     notes: ''
   })
 
@@ -39,10 +49,8 @@ export default function CheckoutPage() {
   // Redirect if cart is empty and validate cart
   useEffect(() => {
     if (items.length === 0) {
-      console.log('Cart is empty, redirecting to cart page')
       router.push('/cart')
     } else {
-      // Валидируем корзину при загрузке страницы
       validateCart()
     }
   }, [items, router, validateCart])
@@ -52,34 +60,22 @@ export default function CheckoutPage() {
     const loadUserProfile = async () => {
       if (status === 'loading') return
       
-      if (!session) {
-        console.log('Guest user - no profile to load')
-        return
-      }
+      if (!session) return
 
       try {
-        console.log('Loading user profile for authenticated user')
         const response = await fetch('/api/user/profile')
-        
         if (response.ok) {
           const profile = await response.json()
           setUserProfile(profile)
-          
-          // Автоматически заполняем форму данными пользователя
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             name: profile.name || '',
             phone: profile.phone || '',
-            address: profile.address || ''
+            address: profile.address || '',
           }))
-          console.log('User profile loaded and form auto-filled:', profile)
-        } else if (response.status === 401) {
-          console.log('User session expired, continuing as guest')
-        } else {
-          console.log('Profile not found, continuing as guest')
         }
-      } catch (error) {
-        console.log('Error loading profile, continuing as guest:', error)
+      } catch {
+        // Guest checkout continues without profile
       }
     }
 
@@ -90,7 +86,7 @@ export default function CheckoutPage() {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: name === 'paymentMethod' ? (value as PaymentMethod) : value
     }))
     
     // Clear error when user starts typing
@@ -166,22 +162,12 @@ export default function CheckoutPage() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        console.error('Order creation failed:', {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorData
-        })
         throw new Error(`Failed to create order: ${errorData.error || response.statusText}`)
       }
-      
-      console.log('Order created successfully, redirecting to order-success page')
-      
-      // Clear cart first
+
       clearCart()
-      // Force redirect to success page using window.location
       window.location.href = '/order-success'
-    } catch (error) {
-      console.error('Error submitting order:', error)
+    } catch {
       alert('Произошла ошибка при оформлении заказа. Попробуйте еще раз.')
     } finally {
       setIsSubmitting(false)
@@ -334,15 +320,15 @@ export default function CheckoutPage() {
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Способ оплаты</h2>
               <div className="space-y-4">
                 <label className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
-                  formData.paymentMethod === 'cash' 
+                  formData.paymentMethod === 'CASH' 
                     ? 'border-orange-500 bg-orange-50' 
                     : 'border-gray-300'
                 }`}>
                   <input
                     type="radio"
                     name="paymentMethod"
-                    value="cash"
-                    checked={formData.paymentMethod === 'cash'}
+                    value="CASH"
+                    checked={formData.paymentMethod === 'CASH'}
                     onChange={handleInputChange}
                     className="sr-only"
                   />
@@ -356,7 +342,7 @@ export default function CheckoutPage() {
                       <h3 className="text-base font-semibold text-gray-900">Наличные</h3>
                       <p className="text-sm text-gray-600">Оплата курьеру наличными</p>
                     </div>
-                    {formData.paymentMethod === 'cash' && (
+                    {formData.paymentMethod === 'CASH' && (
                       <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
                         <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -367,15 +353,15 @@ export default function CheckoutPage() {
                 </label>
                 
                 <label className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
-                  formData.paymentMethod === 'card' 
+                  formData.paymentMethod === 'ARCA' 
                     ? 'border-orange-500 bg-orange-50' 
                     : 'border-gray-300'
                 }`}>
                   <input
                     type="radio"
                     name="paymentMethod"
-                    value="card"
-                    checked={formData.paymentMethod === 'card'}
+                    value="ARCA"
+                    checked={formData.paymentMethod === 'ARCA'}
                     onChange={handleInputChange}
                     className="sr-only"
                   />
@@ -387,7 +373,7 @@ export default function CheckoutPage() {
                       <h3 className="text-base font-semibold text-gray-900">Карта</h3>
                       <p className="text-sm text-gray-600">Оплата картой через терминал</p>
                     </div>
-                    {formData.paymentMethod === 'card' && (
+                    {formData.paymentMethod === 'ARCA' && (
                       <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
                         <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -566,15 +552,15 @@ export default function CheckoutPage() {
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <label className={`relative p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                        formData.paymentMethod === 'cash' 
+                        formData.paymentMethod === 'CASH' 
                           ? 'border-orange-500 bg-orange-50 shadow-md' 
                           : 'border-gray-300 hover:border-orange-300'
                       }`}>
                         <input
                           type="radio"
                           name="paymentMethod"
-                          value="cash"
-                          checked={formData.paymentMethod === 'cash'}
+                          value="CASH"
+                          checked={formData.paymentMethod === 'CASH'}
                           onChange={handleInputChange}
                           className="sr-only"
                         />
@@ -586,7 +572,7 @@ export default function CheckoutPage() {
                           </div>
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">Наличные</h3>
                           <p className="text-sm text-gray-600">Оплата курьеру наличными при доставке</p>
-                          {formData.paymentMethod === 'cash' && (
+                          {formData.paymentMethod === 'CASH' && (
                             <div className="absolute top-4 right-4">
                               <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
                                 <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -599,15 +585,15 @@ export default function CheckoutPage() {
                       </label>
                       
                       <label className={`relative p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                        formData.paymentMethod === 'card' 
+                        formData.paymentMethod === 'ARCA' 
                           ? 'border-orange-500 bg-orange-50 shadow-md' 
                           : 'border-gray-300 hover:border-orange-300'
                       }`}>
                         <input
                           type="radio"
                           name="paymentMethod"
-                          value="card"
-                          checked={formData.paymentMethod === 'card'}
+                          value="ARCA"
+                          checked={formData.paymentMethod === 'ARCA'}
                           onChange={handleInputChange}
                           className="sr-only"
                         />
@@ -617,7 +603,7 @@ export default function CheckoutPage() {
                           </div>
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">Карта</h3>
                           <p className="text-sm text-gray-600">Оплата картой через терминал курьера</p>
-                          {formData.paymentMethod === 'card' && (
+                          {formData.paymentMethod === 'ARCA' && (
                             <div className="absolute top-4 right-4">
                               <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
                                 <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">

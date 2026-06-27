@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger'
+import { invalidateCategoryCaches } from '@/lib/redis'
 
 // GET /api/admin/categories - получить все категории
 export async function GET(request: NextRequest) {
@@ -29,7 +31,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(categories)
   } catch (error) {
-    console.error('Error fetching categories:', error)
+    logger.error('Error fetching admin categories', error)
     return NextResponse.json(
       { error: 'Failed to fetch categories' },
       { status: 500 }
@@ -81,9 +83,11 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    await invalidateCategoryCaches()
+
     return NextResponse.json(category, { status: 201 })
   } catch (error) {
-    console.error('Error creating category:', error)
+    logger.error('Error creating category', error)
     return NextResponse.json(
       { error: 'Failed to create category' },
       { status: 500 }

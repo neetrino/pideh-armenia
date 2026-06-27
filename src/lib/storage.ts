@@ -3,10 +3,9 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3'
-import { mkdir, readdir, writeFile } from 'fs/promises'
-import { join } from 'path'
+import sharp from 'sharp'
 
-const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'] as const
+const WEBP_QUALITY = 85
 
 export type StoredFile = {
   name: string
@@ -14,141 +13,95 @@ export type StoredFile = {
   category: string
 }
 
-export function isR2Configured(): boolean {
-  return Boolean(
-    process.env.R2_ACCOUNT_ID &&
-      process.env.R2_ACCESS_KEY_ID &&
-      process.env.R2_SECRET_ACCESS_KEY &&
-      process.env.R2_BUCKET_NAME &&
-      process.env.R2_PUBLIC_URL
-  )
+function requireR2Config(): {
+  accountId: string
+  accessKeyId: string
+  secretAccessKey: string
+  bucket: string
+  publicUrl: string
+} {
+  const accountId = process.env.R2_ACCOUNT_ID
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY
+  const bucket = process.env.R2_BUCKET_NAME
+  const publicUrl = process.env.R2_PUBLIC_URL
+
+  if (!accountId || !accessKeyId || !secretAccessKey || !bucket || !publicUrl) {
+    throw new Error('R2 is not configured. Set R2_* environment variables.')
+  }
+
+  return { accountId, accessKeyId, secretAccessKey, bucket, publicUrl }
 }
 
-function getR2Client(): S3Client {
+function getR2Client(accountId: string, accessKeyId: string, secretAccessKey: string): S3Client {
   return new S3Client({
     region: 'auto',
-    endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-    credentials: {
-      accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-    },
+    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    credentials: { accessKeyId, secretAccessKey },
   })
 }
 
 export function getPublicUrl(key: string): string {
-  const base = process.env.R2_PUBLIC_URL!.replace(/\/$/, '')
-  return `${base}/${key}`
+  const { publicUrl } = requireR2Config()
+  return `${publicUrl.replace(/\/$/, '')}/${key}`
 }
 
-export async function uploadFile(
-  buffer: Buffer,
-  key: string,
-  contentType: string
-): Promise<string> {
-  if (isR2Configured()) {
-    const client = getR2Client()
-    await client.send(
-      new PutObjectCommand({
-        Bucket: process.env.R2_BUCKET_NAME!,
-        Key: key,
-        Body: buffer,
-        ContentType: contentType,
-      })
-    )
-    return getPublicUrl(key)
-  }
+async function putObject(key: string, body: Buffer, contentType: string): Promise<string> {
+  const config = requireR2Config()
+  const client = getR2Client(config.accountId, config.accessKeyId, config.secretAccessKey)
 
-  const segments = key.split('/')
-  const filename = segments.pop()!
-  const folder = segments.join('/') || 'uploads'
-  const uploadDir = join(process.cwd(), 'public', folder)
+  await client.send(
+    new PutObjectCommand({
+      Bucket: config.bucket,
+      Key: key,
+      Body: body,
+      ContentType: contentType,
+    })
+  )
 
-  await mkdir(uploadDir, { recursive: true })
-  await writeFile(join(uploadDir, filename), buffer)
+  return getPublicUrl(key)
+}
 
-  return `/${folder}/${filename}`
+/** Convert image buffer to webp and upload to R2. Returns public URL. */
+export async function uploadImageWebp(buffer: Buffer, key: string): Promise<string> {
+  const webp = await sharp(buffer).webp({ quality: WEBP_QUALITY }).toBuffer()
+  const normalizedKey = key.endsWith('.webp') ? key : `${key.replace(/\.[^.]+$/, '')}.webp`
+  return putObject(normalizedKey, webp, 'image/webp')
+}
+
+export function buildImageKey(baseName: string): string {
+  const safe = baseName.replace(/[^a-zA-Z0-9.-]/g, '_').replace(/\.[^.]+$/, '')
+  const suffix = Math.random().toString(36).slice(2, 8)
+  return `images/${Date.now()}-${safe}-${suffix}.webp`
 }
 
 export async function listImages(): Promise<StoredFile[]> {
-  if (isR2Configured()) {
-    const client = getR2Client()
-    const response = await client.send(
-      new ListObjectsV2Command({
-        Bucket: process.env.R2_BUCKET_NAME!,
-        Prefix: 'images/',
-      })
-    )
+  const config = requireR2Config()
+  const client = getR2Client(config.accountId, config.accessKeyId, config.secretAccessKey)
 
-    return (response.Contents ?? [])
-      .map((item) => item.Key)
-      .filter((key): key is string => Boolean(key))
-      .filter((key) => {
-        const ext = key.split('.').pop()?.toLowerCase()
-        return ext ? IMAGE_EXTENSIONS.includes(ext as (typeof IMAGE_EXTENSIONS)[number]) : false
-      })
-      .map((key) => {
-        const name = key.replace(/^images\//, '')
-        return {
-          name,
-          path: getPublicUrl(key),
-          category: getImageCategory(name),
-        }
-      })
-      .sort((a, b) => a.name.localeCompare(b.name))
-  }
-
-  const imagesDir = join(process.cwd(), 'public', 'images')
-  const files = await readdir(imagesDir, { withFileTypes: true })
-
-  return files
-    .filter((file) => {
-      if (!file.isFile()) return false
-      const ext = file.name.toLowerCase().split('.').pop()
-      return ext ? IMAGE_EXTENSIONS.includes(ext as (typeof IMAGE_EXTENSIONS)[number]) : false
+  const response = await client.send(
+    new ListObjectsV2Command({
+      Bucket: config.bucket,
+      Prefix: 'images/',
     })
-    .map((file) => ({
-      name: file.name,
-      path: `/images/${file.name}`,
-      category: getImageCategory(file.name),
-    }))
+  )
+
+  return (response.Contents ?? [])
+    .map((item) => item.Key)
+    .filter((key): key is string => Boolean(key) && key.endsWith('.webp'))
+    .map((key) => {
+      const name = key.replace(/^images\//, '')
+      return { name, path: getPublicUrl(key), category: getImageCategory(name) }
+    })
     .sort((a, b) => a.name.localeCompare(b.name))
 }
 
 function getImageCategory(filename: string): string {
   const name = filename.toLowerCase()
-
   if (name.includes('pide') || name.includes('пиде')) return 'Пиде'
   if (name.includes('kombo') || name.includes('комбо')) return 'Комбо'
   if (name.includes('sauce') || name.includes('соус')) return 'Соусы'
-  if (
-    name.includes('drink') ||
-    name.includes('напиток') ||
-    name.includes('cola') ||
-    name.includes('juice')
-  ) {
-    return 'Напитки'
-  }
-  if (
-    name.includes('snack') ||
-    name.includes('снэк') ||
-    name.includes('popcorn') ||
-    name.includes('fries')
-  ) {
-    return 'Снэк'
-  }
-
+  if (name.includes('drink') || name.includes('cola') || name.includes('juice')) return 'Напитки'
+  if (name.includes('snack') || name.includes('popcorn') || name.includes('fries')) return 'Снэк'
   return 'Другое'
-}
-
-export function buildImageKey(fileName: string): string {
-  const timestamp = Date.now()
-  const randomString = Math.random().toString(36).substring(2, 8)
-  const extension = fileName.split('.').pop() ?? 'jpg'
-  return `images/${timestamp}-${randomString}.${extension}`
-}
-
-export function buildUploadKey(folder: string, fileName: string): string {
-  const timestamp = Date.now()
-  const safeName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_')
-  return `${folder}/${timestamp}-${safeName}`
 }

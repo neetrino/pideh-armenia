@@ -15,12 +15,12 @@ import {
 } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { Product, ProductStatus } from '@/types'
+import { ProductWithCategory, ProductStatus } from '@/types'
 
 export default function AdminProducts() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [products, setProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<ProductWithCategory[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')

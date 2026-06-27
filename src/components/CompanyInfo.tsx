@@ -23,19 +23,19 @@ export default function CompanyInfo({ className = '' }: CompanyInfoProps) {
             Контактная информация
           </h3>
           
-          {companyInfo.address && (
-            <div className="flex items-start space-x-3">
+          {companyInfo.addresses.map((location) => (
+            <div key={location.name} className="flex items-start space-x-3">
               <div className="w-6 h-6 text-orange-500 mt-1">
                 <svg fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                 </svg>
               </div>
               <div>
-                <p className="text-gray-600">Адрес:</p>
-                <p className="text-gray-800 font-medium">{companyInfo.address}</p>
+                <p className="text-gray-600">{location.name}:</p>
+                <p className="text-gray-800 font-medium">{location.address}</p>
               </div>
             </div>
-          )}
+          ))}
 
           {companyInfo.phone && (
             <div className="flex items-start space-x-3">

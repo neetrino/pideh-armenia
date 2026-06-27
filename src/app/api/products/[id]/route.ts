@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { logger } from '@/lib/logger'
+import { invalidateProductCaches } from '@/lib/redis'
 
 // GET /api/products/[id] - получить товар по ID
 export async function GET(
@@ -91,9 +92,8 @@ export async function DELETE(
     }
 
     // Удаляем товар
-    await prisma.product.delete({
-      where: { id }
-    })
+    await prisma.product.delete({ where: { id } })
+    await invalidateProductCaches()
 
     return NextResponse.json(
       { message: 'Product deleted successfully' },

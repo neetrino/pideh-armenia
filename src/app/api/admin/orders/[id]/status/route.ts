@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger'
 
 // PATCH /api/admin/orders/[id]/status - изменить статус заказа (только для админов)
 export async function PATCH(
@@ -91,7 +92,7 @@ export async function PATCH(
       totalAmount
     })
   } catch (error) {
-    console.error('Error updating order status:', error)
+    logger.error('Error updating order status', error)
     return NextResponse.json(
       { error: 'Failed to update order status' },
       { status: 500 }

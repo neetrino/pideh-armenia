@@ -3,11 +3,11 @@
 import { memo } from 'react'
 import Link from 'next/link'
 import { ShoppingCart, Star, Zap } from 'lucide-react'
-import { Product } from '@/types'
+import { ProductWithCategory } from '@/types'
 
 interface ProductCardProps {
-  product: Product
-  onAddToCart: (product: Product) => void
+  product: ProductWithCategory
+  onAddToCart: (product: ProductWithCategory) => void
   variant?: 'default' | 'compact'
   addedToCart?: Set<string>
 }
@@ -66,16 +66,14 @@ const ProductCard = memo(({ product, onAddToCart, variant = 'default', addedToCa
                 alt={product.name}
                 className="relative w-full h-full object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:rotate-1 transition-all duration-500 ease-out"
                 style={{
-                  filter: 'none',
                   transform: 'perspective(1000px) rotateX(8deg) rotateY(-3deg)',
-                  imageRendering: 'crisp-edges',
                   imageRendering: '-webkit-optimize-contrast',
                 }}
                 loading="lazy"
                 onError={(e) => {
-                  console.error('Ошибка загрузки изображения:', product.image);
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling.style.display = 'flex';
+                  e.currentTarget.style.display = 'none'
+                  const sibling = e.currentTarget.nextElementSibling as HTMLElement | null
+                  if (sibling) sibling.style.display = 'flex'
                 }}
               />
               

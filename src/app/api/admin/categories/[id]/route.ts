@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger'
+import { invalidateCategoryCaches } from '@/lib/redis'
 
 // GET /api/admin/categories/[id] - получить категорию по ID
 export async function GET(
@@ -35,7 +37,7 @@ export async function GET(
 
     return NextResponse.json(category)
   } catch (error) {
-    console.error('Error fetching category:', error)
+    logger.error('Error fetching category', error)
     return NextResponse.json(
       { error: 'Failed to fetch category' },
       { status: 500 }
@@ -106,9 +108,11 @@ export async function PUT(
       }
     })
 
+    await invalidateCategoryCaches()
+
     return NextResponse.json(updatedCategory)
   } catch (error) {
-    console.error('Error updating category:', error)
+    logger.error('Error updating category', error)
     return NextResponse.json(
       { error: 'Failed to update category' },
       { status: 500 }
@@ -159,9 +163,11 @@ export async function DELETE(
       where: { id }
     })
 
+    await invalidateCategoryCaches()
+
     return NextResponse.json({ message: 'Category deleted successfully' })
   } catch (error) {
-    console.error('Error deleting category:', error)
+    logger.error('Error deleting category', error)
     return NextResponse.json(
       { error: 'Failed to delete category' },
       { status: 500 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
 
 // GET - получить все настройки
 export async function GET() {
@@ -22,7 +23,7 @@ export async function GET() {
 
     return NextResponse.json(settingsObj)
   } catch (error) {
-    console.error('Error fetching settings:', error)
+    logger.error('Error fetching settings', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(setting)
   } catch (error) {
-    console.error('Error updating setting:', error)
+    logger.error('Error updating setting', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

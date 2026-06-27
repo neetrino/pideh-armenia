@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { logger } from '@/lib/logger'
 import { orderSchema } from '@/lib/validations'
+import { checkOrderRateLimit } from '@/lib/rate-limit'
 
 const ORDER_INCLUDE = {
   items: {
@@ -36,6 +37,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!(await checkOrderRateLimit(request))) {
+      return NextResponse.json({ error: 'Слишком много заказов. Попробуйте позже.' }, { status: 429 })
+    }
+
     const session = await getServerSession(authOptions)
 
     const parsed = orderSchema.safeParse(await request.json())

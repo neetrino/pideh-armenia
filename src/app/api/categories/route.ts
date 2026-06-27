@@ -1,42 +1,41 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
+import { CACHE_KEYS, CACHE_TTL_SECONDS, cacheGet, cacheSet } from '@/lib/redis'
 
-// GET /api/categories - получить все активные категории с количеством товаров
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
+    const cached = await cacheGet<unknown[]>(CACHE_KEYS.categories)
+    if (cached) {
+      const response = NextResponse.json(cached)
+      response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
+      return response
+    }
+
     const categories = await prisma.category.findMany({
       where: {
         isActive: true,
         products: {
-          some: {
-            isAvailable: true
-          }
-        }
+          some: { isAvailable: true },
+        },
       },
       include: {
         _count: {
-          select: { 
-            products: {
-              where: {
-                isAvailable: true
-              }
-            }
-          }
-        }
+          select: {
+            products: { where: { isAvailable: true } },
+          },
+        },
       },
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     })
 
-    // Добавляем кэширование на 5 минут
+    await cacheSet(CACHE_KEYS.categories, categories, CACHE_TTL_SECONDS)
+
     const response = NextResponse.json(categories)
     response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
-    
     return response
   } catch (error) {
-    console.error('Error fetching categories:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch categories' },
-      { status: 500 }
-    )
+    logger.error('Error fetching categories', error)
+    return NextResponse.json({ error: 'Failed to fetch categories' }, { status: 500 })
   }
 }

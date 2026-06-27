@@ -90,7 +90,7 @@ export default function NewProductPage() {
       // Подготавливаем данные
       const productData = {
         ...formData,
-        price: parseFloat(formData.price),
+        price: parseInt(formData.price, 10),
         ingredients: formData.ingredients ? formData.ingredients.split(',').map(i => i.trim()) : []
       }
 

@@ -5,16 +5,16 @@ import Link from "next/link";
 import { Phone, MapPin, Clock, ShoppingCart, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/hooks/useCart";
-import { Product } from "@/types";
+import { ProductWithCategory } from "@/types";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [comboProducts, setComboProducts] = useState<Product[]>([])
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
-  const [bannerProduct, setBannerProduct] = useState<Product | null>(null)
+  const [products, setProducts] = useState<ProductWithCategory[]>([])
+  const [comboProducts, setComboProducts] = useState<ProductWithCategory[]>([])
+  const [featuredProducts, setFeaturedProducts] = useState<ProductWithCategory[]>([])
+  const [bannerProduct, setBannerProduct] = useState<ProductWithCategory | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('Пиде')
   const [searchQuery, setSearchQuery] = useState('')
@@ -29,81 +29,35 @@ export default function Home() {
   const fetchProducts = async () => {
     try {
       const [productsResponse, featuredResponse, bannerResponse] = await Promise.all([
-        fetch('/api/products', { 
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        }),
-        fetch('/api/products/featured', { 
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        }),
-        fetch('/api/products/banner', { 
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        })
+        fetch('/api/products', { cache: 'no-store' }),
+        fetch('/api/products/featured', { cache: 'no-store' }),
+        fetch('/api/products/banner', { cache: 'no-store' }),
       ])
-      
-      // Проверяем статус ответов
-      if (!productsResponse.ok) {
-        const errorText = await productsResponse.text()
-        console.error('Products API error:', productsResponse.status, errorText)
-        throw new Error(`Products API error: ${productsResponse.status} - ${errorText}`)
+
+      if (!productsResponse.ok || !featuredResponse.ok || !bannerResponse.ok) {
+        throw new Error('Failed to load products')
       }
-      if (!featuredResponse.ok) {
-        const errorText = await featuredResponse.text()
-        console.error('Featured API error:', featuredResponse.status, errorText)
-        throw new Error(`Featured API error: ${featuredResponse.status} - ${errorText}`)
-      }
-      if (!bannerResponse.ok) {
-        const errorText = await bannerResponse.text()
-        console.error('Banner API error:', bannerResponse.status, errorText)
-        throw new Error(`Banner API error: ${bannerResponse.status} - ${errorText}`)
-      }
-      
+
       const productsData = await productsResponse.json()
       const featuredData = await featuredResponse.json()
       const bannerData = await bannerResponse.json()
-      
-      console.log('API Responses:', {
-        productsData: Array.isArray(productsData) ? `Array(${productsData.length})` : typeof productsData,
-        featuredData: Array.isArray(featuredData) ? `Array(${featuredData.length})` : typeof featuredData,
-        bannerData: bannerData ? typeof bannerData : 'null'
-      })
-      
-      // Проверяем, что productsData является массивом
+
       if (Array.isArray(productsData)) {
         setProducts(productsData)
-        
-        // Фильтруем комбо товары для секции хитов
-        const combos = productsData.filter((product: Product) => product.category?.name === 'Комбо')
-        setComboProducts(combos.slice(0, 4)) // Берем первые 4 комбо
+        const combos = productsData.filter(
+          (product: ProductWithCategory) => product.category?.name === 'Комбо'
+        )
+        setComboProducts(combos.slice(0, 4))
       } else {
-        console.error('Products API returned non-array:', productsData)
         setProducts([])
         setComboProducts([])
       }
-      
-      // Проверяем, что featuredData является массивом
-      if (Array.isArray(featuredData)) {
-        setFeaturedProducts(featuredData) // Показываем все товары-хиты
-      } else {
-        console.error('Featured products API returned non-array:', featuredData)
-        setFeaturedProducts([])
-      }
-      
-      // Устанавливаем товар-баннер (может быть null)
+
+      setFeaturedProducts(Array.isArray(featuredData) ? featuredData : [])
       setBannerProduct(bannerData)
-    } catch (error) {
-      console.error('Error fetching products:', error)
+    } catch {
+      setProducts([])
+      setComboProducts([])
       setFeaturedProducts([])
       setBannerProduct(null)
     } finally {
@@ -111,7 +65,7 @@ export default function Home() {
     }
   }
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (product: ProductWithCategory) => {
     addItem(product, 1)
     setAddedToCart(prev => new Set(prev).add(product.id))
     
@@ -125,7 +79,7 @@ export default function Home() {
     }, 2000)
   }
 
-  const handleAddToCartHits = (product: Product) => {
+  const handleAddToCartHits = (product: ProductWithCategory) => {
     addItem(product, 1)
     setAddedToCartHits(prev => new Set(prev).add(product.id))
     
@@ -175,7 +129,7 @@ export default function Home() {
     return products.filter(product => product.category?.name === activeCategory)
   }
 
-  const isPopularProduct = (product: Product) => {
+  const isPopularProduct = (product: ProductWithCategory) => {
     // Определяем популярные товары по названию или другим критериям
     const popularNames = ['Мясная пиде', 'Пепперони пиде', 'Классическая сырная пиде', 'Грибная пиде']
     return popularNames.some(name => product.name.toLowerCase().includes(name.toLowerCase()))
@@ -399,16 +353,14 @@ export default function Home() {
                       alt={bannerProduct.name}
                       className="relative w-full h-full object-contain group-hover:scale-140 group-hover:translate-y-8 group-hover:rotate-3 transition-all duration-700 ease-out z-50"
                       style={{
-                        filter: 'none',
                         transform: 'perspective(1000px) rotateX(8deg) rotateY(-3deg)',
-                        imageRendering: 'crisp-edges',
                         imageRendering: '-webkit-optimize-contrast',
                       }}
                       loading="lazy"
                       onError={(e) => {
-                        console.error('Ошибка загрузки изображения:', bannerProduct.image);
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling.style.display = 'flex';
+                        e.currentTarget.style.display = 'none'
+                        const sibling = e.currentTarget.nextElementSibling as HTMLElement | null
+                        if (sibling) sibling.style.display = 'flex'
                       }}
                     />
 
@@ -503,13 +455,8 @@ export default function Home() {
               />
             </div>
             <button 
-              onClick={() => {
-                // Если есть поисковый запрос, показываем результаты
-                if (searchQuery.trim()) {
-                  // Можно добавить дополнительную логику здесь
-                  console.log('Поиск:', searchQuery)
-                }
-              }}
+              type="button"
+              aria-label="Поиск"
               className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
               style={{
                 boxShadow: '0 8px 25px rgba(255, 107, 53, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)',

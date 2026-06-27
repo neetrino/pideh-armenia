@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { uploadFile } from '@/lib/storage'
+import { uploadImageWebp } from '@/lib/storage'
+import { logger } from '@/lib/logger'
+
+const MAX_LOGO_BYTES = 2 * 1024 * 1024
+const LOGO_KEY = 'logo.webp'
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,34 +14,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const formData = await request.formData()
-    const file = formData.get('file') as File | null
-
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 })
-    }
-
-    if (!file.type.startsWith('image/')) {
+    const file = (await request.formData()).get('file') as File | null
+    if (!file || !file.type.startsWith('image/')) {
       return NextResponse.json({ error: 'File must be an image' }, { status: 400 })
     }
 
-    if (file.size > 2 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: 'File size must be less than 2MB' },
-        { status: 400 }
-      )
+    if (file.size > MAX_LOGO_BYTES) {
+      return NextResponse.json({ error: 'File size must be less than 2MB' }, { status: 400 })
     }
 
     const buffer = Buffer.from(await file.arrayBuffer())
-    const logoUrl = await uploadFile(buffer, 'logo.png', file.type)
+    const url = await uploadImageWebp(buffer, LOGO_KEY)
 
-    return NextResponse.json({
-      success: true,
-      message: 'Logo updated successfully',
-      url: logoUrl,
-    })
+    return NextResponse.json({ success: true, message: 'Logo updated successfully', url })
   } catch (error) {
-    console.error('Logo upload error:', error)
+    logger.error('Logo upload error', error)
     return NextResponse.json({ error: 'Failed to update logo' }, { status: 500 })
   }
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Order, OrderItem, User } from '@/types'
+import { PAYMENT_METHOD_LABELS } from '@/constants/payments'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -596,7 +597,9 @@ export default function AdminOrdersPage() {
                     <div className="text-lg font-semibold text-orange-600">
                       {selectedOrder.totalAmount.toLocaleString()} ֏
                     </div>
-                    <div className="text-sm font-medium text-gray-700">{selectedOrder.paymentMethod}</div>
+                    <div className="text-sm font-medium text-gray-700">
+                      {PAYMENT_METHOD_LABELS[selectedOrder.paymentMethod]}
+                    </div>
                   </div>
                 </div>
 

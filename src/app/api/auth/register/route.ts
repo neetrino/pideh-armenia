@@ -3,11 +3,16 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { logger } from '@/lib/logger'
 import { registerSchema } from '@/lib/validations'
+import { checkRegisterRateLimit } from '@/lib/rate-limit'
 
 const PASSWORD_SALT_ROUNDS = 12
 
 export async function POST(request: NextRequest) {
   try {
+    if (!(await checkRegisterRateLimit(request))) {
+      return NextResponse.json({ error: 'Слишком много попыток. Попробуйте позже.' }, { status: 429 })
+    }
+
     const parsed = registerSchema.safeParse(await request.json())
     if (!parsed.success) {
       return NextResponse.json(

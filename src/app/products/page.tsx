@@ -4,14 +4,14 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { Search, Filter, ShoppingCart } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
-import { Product, Category } from '@/types'
+import { ProductWithCategory, Category } from '@/types'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<ProductWithCategory[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<ProductWithCategory[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>('Все')
   const [searchQuery, setSearchQuery] = useState('')
@@ -30,8 +30,8 @@ export default function ProductsPage() {
       const response = await fetch('/api/products')
       const data = await response.json()
       setProducts(data)
-    } catch (error) {
-      console.error('Error fetching products:', error)
+    } catch {
+      // keep empty list on fetch failure
     } finally {
       setLoading(false)
     }
@@ -42,8 +42,8 @@ export default function ProductsPage() {
       const response = await fetch('/api/categories')
       const data = await response.json()
       setCategories(data)
-    } catch (error) {
-      console.error('Error fetching categories:', error)
+    } catch {
+      // keep empty list on fetch failure
     }
   }
 
@@ -107,10 +107,10 @@ export default function ProductsPage() {
   }, [filterProducts])
 
   // Группировка товаров по категориям
-  const groupProductsByCategory = useCallback((products: Product[]) => {
-    const grouped: Record<string, Product[]> = {}
+  const groupProductsByCategory = useCallback((items: ProductWithCategory[]) => {
+    const grouped: Record<string, ProductWithCategory[]> = {}
     
-    products.forEach(product => {
+    items.forEach(product => {
       const categoryName = product.category?.name || 'Без категории'
       if (!grouped[categoryName]) {
         grouped[categoryName] = []
@@ -129,7 +129,7 @@ export default function ProductsPage() {
     }))
   }, [])
 
-  const handleAddToCart = useCallback((product: Product) => {
+  const handleAddToCart = useCallback((product: ProductWithCategory) => {
     addItem(product, 1)
     setAddedToCart(prev => new Set(prev).add(product.id))
     
