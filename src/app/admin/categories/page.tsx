@@ -1,15 +1,15 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Plus, Edit, Trash2, ArrowLeft, Package, Eye, EyeOff } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Input } from '@/components/ui/input'
 import { ContentLocaleTabs } from '@/components/admin/ContentLocaleTabs'
 import { LocalizedCategoryFields } from '@/components/admin/LocalizedCategoryFields'
+import { useAdminAuth } from '@/hooks/useAdminAuth'
 import type { ContentLocale } from '@/lib/content-locale'
 import {
   emptyCategoryTranslations,
@@ -26,8 +26,8 @@ type AdminCategoryWithCount = AdminCategory & {
 }
 
 export default function CategoriesPage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+  const t = useTranslations('admin')
+  const { isAdmin, isLoading: authLoading } = useAdminAuth()
   const [categories, setCategories] = useState<AdminCategoryWithCount[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showInactive, setShowInactive] = useState(false)
@@ -41,13 +41,9 @@ export default function CategoriesPage() {
   const [isActive, setIsActive] = useState(true)
 
   useEffect(() => {
-    if (status === 'loading') return
-    if (!session || session.user?.role !== 'ADMIN') {
-      router.push('/login')
-      return
-    }
+    if (authLoading || !isAdmin) return
     fetchCategories()
-  }, [session, status, router, showInactive])
+  }, [isAdmin, authLoading, showInactive])
 
   const fetchCategories = async () => {
     try {
@@ -118,7 +114,7 @@ export default function CategoriesPage() {
   }
 
   const handleDelete = async (categoryId: string) => {
-    if (!confirm('Вы уверены, что хотите удалить эту категорию?')) return
+    if (!confirm(t('deleteCategoryConfirm'))) return
     try {
       const response = await fetch(`/api/admin/categories/${categoryId}`, { method: 'DELETE' })
       if (response.ok) {
@@ -155,7 +151,7 @@ export default function CategoriesPage() {
     setTranslations((prev) => ({ ...prev, [locale]: fields }))
   }
 
-  if (status === 'loading' || isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
@@ -163,7 +159,7 @@ export default function CategoriesPage() {
     )
   }
 
-  if (!session || session.user?.role !== 'ADMIN') return null
+  if (!isAdmin) return null
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -174,15 +170,15 @@ export default function CategoriesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Управление категориями</h1>
-            <p className="text-gray-600">Переводы на Armenia, English, Russian</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('categoriesTitle')}</h1>
+            <p className="text-gray-600">{t('categoriesSubtitle')}</p>
           </div>
           <Link
             href="/admin"
             className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Назад к админке
+            {t('backToAdmin')}
           </Link>
         </div>
 
@@ -196,7 +192,7 @@ export default function CategoriesPage() {
               }`}
             >
               {showInactive ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
-              {showInactive ? 'Показать все' : 'Скрыть неактивные'}
+              {showInactive ? t('showAllCategories') : t('hideInactiveCategories')}
             </button>
             <button
               type="button"
@@ -208,7 +204,7 @@ export default function CategoriesPage() {
               className="flex items-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-colors"
             >
               <Plus className="h-5 w-5 mr-2" />
-              Добавить категорию
+              {t('addCategory')}
             </button>
           </div>
         </div>
@@ -216,7 +212,7 @@ export default function CategoriesPage() {
         {(isCreating || editingCategory) && (
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              {isCreating ? 'Создать категорию' : 'Редактировать категорию'}
+              {isCreating ? t('createCategory') : t('editCategory')}
             </h2>
 
             <form onSubmit={isCreating ? handleCreate : handleUpdate} className="space-y-6">
@@ -228,7 +224,7 @@ export default function CategoriesPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Slug *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('fieldSlug')} *</label>
                   <Input
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
@@ -237,7 +233,7 @@ export default function CategoriesPage() {
                     readOnly={!!editingCategory}
                     className={editingCategory ? 'bg-gray-100' : undefined}
                   />
-                  <p className="text-sm text-gray-500 mt-1">Латиница, цифры, дефис (ключ для фильтров)</p>
+                  <p className="text-sm text-gray-500 mt-1">{t('slugHintCategory')}</p>
                 </div>
 
                 <div className="flex items-center pt-6">
@@ -249,7 +245,7 @@ export default function CategoriesPage() {
                     className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
                   />
                   <label htmlFor="isActive" className="ml-2 text-sm text-gray-700">
-                    Активная категория
+                    {t('activeCategory')}
                   </label>
                 </div>
               </div>
@@ -259,14 +255,14 @@ export default function CategoriesPage() {
                   type="submit"
                   className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-colors"
                 >
-                  {isCreating ? 'Создать' : 'Сохранить'}
+                  {isCreating ? t('create') : t('save')}
                 </button>
                 <button
                   type="button"
                   onClick={cancelEdit}
                   className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-colors"
                 >
-                  Отмена
+                  {t('cancel')}
                 </button>
               </div>
             </form>
@@ -275,13 +271,15 @@ export default function CategoriesPage() {
 
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Категории ({categories.length})</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {t('categoriesList', { count: categories.length })}
+            </h2>
           </div>
 
           {categories.length === 0 ? (
             <div className="p-8 text-center">
               <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">Категории не найдены</p>
+              <p className="text-gray-500">{t('noCategories')}</p>
             </div>
           ) : (
             <div className="divide-y divide-gray-200">
@@ -297,15 +295,15 @@ export default function CategoriesPage() {
                             category.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                           }`}
                         >
-                          {category.isActive ? 'Активна' : 'Неактивна'}
+                          {category.isActive ? t('categoryActive') : t('categoryInactive')}
                         </span>
                       </div>
                       <p className="text-sm text-gray-500 mb-1">
                         HY: {category.nameHy} · EN: {category.nameEn}
                       </p>
                       <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span>Товаров: {category._count.products}</span>
-                        <span>Создана: {new Date(category.createdAt).toLocaleDateString()}</span>
+                        <span>{t('productsCount', { count: category._count.products })}</span>
+                        <span>{t('createdAt', { date: new Date(category.createdAt).toLocaleDateString() })}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Save, X, Trash2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,11 +20,15 @@ import {
   translationsToProductPayload,
 } from '@/lib/admin-form-mappers'
 import type { AdminCategory } from '@/types'
-import { PRODUCT_STATUS_LABELS } from '@/types'
 
-const STATUSES = Object.entries(PRODUCT_STATUS_LABELS)
-  .filter(([value]) => value !== 'REGULAR')
-  .map(([value, label]) => ({ value, label }))
+const PRODUCT_STATUS_KEYS = ['HIT', 'NEW', 'CLASSIC', 'BANNER'] as const
+
+const STATUS_LABEL_KEY: Record<(typeof PRODUCT_STATUS_KEYS)[number], 'statusHit' | 'statusNew' | 'statusClassic' | 'statusBanner'> = {
+  HIT: 'statusHit',
+  NEW: 'statusNew',
+  CLASSIC: 'statusClassic',
+  BANNER: 'statusBanner',
+}
 
 export type ProductFormValues = {
   slug: string
@@ -56,6 +61,7 @@ export function ProductForm({
   onDelete,
   cancelHref = '/admin/products',
 }: ProductFormProps) {
+  const t = useTranslations('admin')
   const [activeLocale, setActiveLocale] = useState<ContentLocale>('hy')
   const [slug, setSlug] = useState(initialValues.slug)
   const [translations, setTranslations] = useState<ProductTranslationsForm>(
@@ -93,7 +99,7 @@ export function ProductForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Информация о товаре</CardTitle>
+        <CardTitle>{t('productInfoTitle')}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -114,7 +120,7 @@ export function ProductForm({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-200">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Slug *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fieldSlug')} *</label>
               <Input
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
@@ -124,12 +130,12 @@ export function ProductForm({
                 className={mode === 'edit' ? 'bg-gray-100' : undefined}
               />
               {mode === 'create' && (
-                <p className="text-sm text-gray-500 mt-1">Генерируется из имени файла изображения</p>
+                <p className="text-sm text-gray-500 mt-1">{t('slugHintCreate')}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Цена (֏) *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fieldPrice')} *</label>
               <Input
                 type="number"
                 min="1"
@@ -141,14 +147,14 @@ export function ProductForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Категория *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fieldCategory')} *</label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900 bg-white"
                 required
               >
-                <option value="">Выберите категорию</option>
+                <option value="">{t('selectCategory')}</option>
                 {categories.filter((cat) => cat.isActive).map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.nameHy}
@@ -158,23 +164,23 @@ export function ProductForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Статус</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fieldStatus')}</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900 bg-white"
               >
-                <option value="">Обычный товар</option>
-                {STATUSES.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
+                <option value="">{t('statusRegular')}</option>
+                {PRODUCT_STATUS_KEYS.map((value) => (
+                  <option key={value} value={value}>
+                    {t(STATUS_LABEL_KEY[value])}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Изображение</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('fieldImage')}</label>
               <ImageSelector value={image} onChange={handleImageChange} />
             </div>
 
@@ -186,7 +192,7 @@ export function ProductForm({
                   onChange={(e) => setIsAvailable(e.target.checked)}
                   className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
                 />
-                <span className="text-sm font-medium text-gray-700">Товар доступен для заказа</span>
+                <span className="text-sm font-medium text-gray-700">{t('availableForOrder')}</span>
               </label>
             </div>
           </div>
@@ -201,7 +207,7 @@ export function ProductForm({
                 className="flex items-center gap-2"
               >
                 <Trash2 className="h-4 w-4" />
-                Удалить товар
+                {t('deleteProduct')}
               </Button>
             ) : (
               <div />
@@ -210,7 +216,7 @@ export function ProductForm({
             <div className="flex items-center gap-4">
               <Link href={cancelHref}>
                 <Button type="button" variant="outline">
-                  Отмена
+                  {t('cancel')}
                 </Button>
               </Link>
               <Button type="submit" disabled={loading} className="flex items-center gap-2">
@@ -221,11 +227,11 @@ export function ProductForm({
                 )}
                 {loading
                   ? mode === 'create'
-                    ? 'Создание...'
-                    : 'Сохранение...'
+                    ? t('creating')
+                    : t('saving')
                   : mode === 'create'
-                    ? 'Создать товар'
-                    : 'Сохранить'}
+                    ? t('createProduct')
+                    : t('saveProduct')}
               </Button>
             </div>
           </div>

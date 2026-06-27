@@ -1,15 +1,14 @@
 'use client'
 
 import Image from 'next/image'
-import { ShoppingCart, User, LogOut } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useCart } from '@/hooks/useCart'
 import { useHydration } from '@/hooks/useHydration'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { Link, usePathname } from '@/i18n/navigation'
-import LinkNext from 'next/link'
-import { usePathname as useFullPathname } from 'next/navigation'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { UserMenu } from '@/components/UserMenu'
 
 export default function DesktopHeader() {
   const t = useTranslations('nav')
@@ -17,7 +16,6 @@ export default function DesktopHeader() {
   const { getTotalItems } = useCart()
   const { data: session, status } = useSession()
   const pathname = usePathname()
-  const fullPathname = useFullPathname()
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -89,41 +87,10 @@ export default function DesktopHeader() {
             {status === 'loading' ? (
               <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
             ) : session ? (
-              <div className="flex items-center space-x-2">
-                <Link
-                  href="/profile"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-300 ${
-                    isActive('/profile')
-                      ? 'text-orange-500 bg-orange-50 shadow-md'
-                      : 'text-gray-900 hover:text-orange-500 hover:bg-orange-50'
-                  }`}
-                >
-                  <User className="h-5 w-5" />
-                  <span className="hidden sm:block font-medium">{session.user?.name}</span>
-                </Link>
-
-                {session.user?.role === 'ADMIN' && (
-                  <LinkNext
-                    href="/admin"
-                    className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                      fullPathname.startsWith('/admin')
-                        ? 'text-orange-500 bg-orange-50 shadow-md'
-                        : 'bg-orange-100 text-orange-600 hover:bg-orange-200'
-                    }`}
-                  >
-                    {t('admin')}
-                  </LinkNext>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => signOut()}
-                  className="p-2 text-gray-900 hover:text-orange-500 transition-colors"
-                  title={t('logout')}
-                >
-                  <LogOut className="h-5 w-5" />
-                </button>
-              </div>
+              <UserMenu
+                userName={session.user?.name ?? t('profile')}
+                isAdmin={session.user?.role === 'ADMIN'}
+              />
             ) : (
               <div className="flex items-center space-x-2">
                 <Link

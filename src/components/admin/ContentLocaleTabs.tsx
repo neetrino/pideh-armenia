@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { ContentLocale } from '@/lib/content-locale'
 import { ADMIN_LOCALE_TABS } from '@/lib/admin-content-locales'
 
@@ -8,11 +9,13 @@ type ContentLocaleTabsProps = {
   onChange: (locale: ContentLocale) => void
 }
 
-/** Armenia | English | Russian tabs for admin translation forms. */
+/** Content locale tabs (Armenia | English | Russian) for admin translation forms. */
 export function ContentLocaleTabs({ activeLocale, onChange }: ContentLocaleTabsProps) {
+  const t = useTranslations('language')
+
   return (
     <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-4">
-      {ADMIN_LOCALE_TABS.map(({ locale, label }) => (
+      {ADMIN_LOCALE_TABS.map(({ locale }) => (
         <button
           key={locale}
           type="button"
@@ -23,7 +26,7 @@ export function ContentLocaleTabs({ activeLocale, onChange }: ContentLocaleTabsP
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          {label}
+          {t(locale)}
         </button>
       ))}
     </div>

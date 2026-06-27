@@ -2,6 +2,7 @@ import createIntlMiddleware from 'next-intl/middleware'
 import { NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { routing } from '@/i18n/routing'
+import { LOCALE_COOKIE_NAME, resolveLocale } from '@/lib/locale-cookie'
 
 const intlMiddleware = createIntlMiddleware(routing)
 
@@ -35,14 +36,15 @@ export async function middleware(request: NextRequest) {
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
     })
+    const loginLocale = resolveLocale(request.cookies.get(LOCALE_COOKIE_NAME)?.value)
     if (!token) {
       return NextResponse.redirect(
-        new URL(`/${routing.defaultLocale}/login`, request.url)
+        new URL(`/${loginLocale}/login`, request.url)
       )
     }
     if (token.role !== 'ADMIN') {
       return NextResponse.redirect(
-        new URL(`/${routing.defaultLocale}/login`, request.url)
+        new URL(`/${loginLocale}/login`, request.url)
       )
     }
     return NextResponse.next()

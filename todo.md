@@ -80,7 +80,8 @@ API отдаёт поля для текущей locale; fallback: запроше
 - [x] Товар create/edit: табы **Armenia | English | Russian**, одни и те же поля (name, description, ingredients)
 - [x] Категории — то же
 - [x] Admin API: `nameHy/En/Ru`, slug, Zod validation
-- [x] Shell admin (навигация, кнопки) — ru
+- [x] Admin UI: `admin` namespace + locale из cookie (`NEXT_LOCALE`), переключатель не ломает `/admin`
+- [x] Fallback переводов UI: missing key → другие locales (hy/en/ru)
 
 #### 7.5 — Форматирование и SEO ✅
 - [x] Цены AMD через `Intl` per locale (`formatPrice`, `useFormatPrice`)
