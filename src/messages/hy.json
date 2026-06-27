@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Գլխավոր",
+    "menu": "Մենյու",
+    "about": "Մեր մասին",
+    "contact": "Կապ",
+    "cart": "Զամբյուղ",
+    "profile": "Պրոֆիլ",
+    "login": "Մուտք",
+    "register": "Գրանցում",
+    "logout": "Ելք",
+    "admin": "Ադմին"
+  },
+  "language": {
+    "hy": "Armenia",
+    "en": "English",
+    "ru": "Russian"
+  }
+}

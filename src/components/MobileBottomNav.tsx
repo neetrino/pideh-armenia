@@ -1,12 +1,13 @@
 'use client'
 
-import Link from 'next/link'
 import { Home, ShoppingCart, User } from 'lucide-react'
-import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useCart } from '@/hooks/useCart'
 import { useHydration } from '@/hooks/useHydration'
+import { Link, usePathname } from '@/i18n/navigation'
 
 export default function MobileBottomNav() {
+  const t = useTranslations('nav')
   const pathname = usePathname()
   const isHydrated = useHydration()
   const { getTotalItems } = useCart()
@@ -19,9 +20,9 @@ export default function MobileBottomNav() {
   }
 
   const navItems = [
-    { href: '/', label: 'Главная', icon: Home },
-    { href: '/cart', label: 'Корзина', icon: ShoppingCart, showBadge: true },
-    { href: '/profile', label: 'Профиль', icon: User },
+    { href: '/' as const, label: t('home'), icon: Home },
+    { href: '/cart' as const, label: t('cart'), icon: ShoppingCart, showBadge: true },
+    { href: '/profile' as const, label: t('profile'), icon: User },
   ]
 
   return (
@@ -30,7 +31,7 @@ export default function MobileBottomNav() {
         {navItems.map((item) => {
           const Icon = item.icon
           const active = isActive(item.href)
-          
+
           return (
             <Link
               key={item.href}
@@ -49,11 +50,11 @@ export default function MobileBottomNav() {
                   </span>
                 )}
               </div>
-              <span className={`text-xs font-semibold mt-1 transition-all duration-300 ${active ? 'text-orange-600' : ''}`}>{item.label}</span>
-              
-              {/* Active indicator */}
+              <span className={`text-xs font-semibold mt-1 ${active ? 'text-orange-600' : ''}`}>
+                {item.label}
+              </span>
               {active && (
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-b-full shadow-lg"></div>
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-b-full shadow-lg" />
               )}
             </Link>
           )

@@ -1,7 +1,7 @@
 'use client'
 
 import { memo } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { ShoppingCart, Star, Zap } from 'lucide-react'
 import { ProductWithCategory } from '@/types'
 

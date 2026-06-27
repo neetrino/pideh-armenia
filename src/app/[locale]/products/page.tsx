@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Search, Filter, ShoppingCart } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
 import { ProductWithCategory, Category } from '@/types'

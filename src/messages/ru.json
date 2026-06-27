@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Главная",
+    "menu": "Меню",
+    "about": "О нас",
+    "contact": "Контакты",
+    "cart": "Корзина",
+    "profile": "Профиль",
+    "login": "Войти",
+    "register": "Регистрация",
+    "logout": "Выйти",
+    "admin": "Админ"
+  },
+  "language": {
+    "hy": "Armenia",
+    "en": "English",
+    "ru": "Russian"
+  }
+}

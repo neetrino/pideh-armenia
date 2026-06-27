@@ -1,29 +1,73 @@
-import { withAuth } from "next-auth/middleware"
-import { NextResponse } from "next/server"
+import createIntlMiddleware from 'next-intl/middleware'
+import { NextRequest, NextResponse } from 'next/server'
+import { getToken } from 'next-auth/jwt'
+import { routing } from '@/i18n/routing'
 
-export default withAuth(
-  function middleware(req) {
-    // Проверяем, если пользователь пытается зайти в админку
-    if (req.nextUrl.pathname.startsWith('/admin')) {
-      // Проверяем роль пользователя
-      if (req.nextauth.token?.role !== 'ADMIN') {
-        return NextResponse.redirect(new URL('/login', req.url))
-      }
-    }
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        // Если пользователь пытается зайти в админку или профиль, проверяем авторизацию
-        if (req.nextUrl.pathname.startsWith('/admin') || req.nextUrl.pathname.startsWith('/profile')) {
-          return !!token
-        }
-        return true
-      },
-    },
+const intlMiddleware = createIntlMiddleware(routing)
+
+const LEGACY_STOREFRONT_PATHS = [
+  '/login',
+  '/register',
+  '/cart',
+  '/checkout',
+  '/profile',
+  '/products',
+  '/about',
+  '/contact',
+  '/order-success',
+]
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  if (pathname.startsWith('/api') || pathname.startsWith('/_next')) {
+    return NextResponse.next()
   }
-)
+
+  if (LEGACY_STOREFRONT_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    return NextResponse.redirect(
+      new URL(`/${routing.defaultLocale}${pathname}`, request.url)
+    )
+  }
+
+  if (pathname.startsWith('/admin')) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    })
+    if (!token) {
+      return NextResponse.redirect(
+        new URL(`/${routing.defaultLocale}/login`, request.url)
+      )
+    }
+    if (token.role !== 'ADMIN') {
+      return NextResponse.redirect(
+        new URL(`/${routing.defaultLocale}/login`, request.url)
+      )
+    }
+    return NextResponse.next()
+  }
+
+  const profileMatch = pathname.match(/^\/(hy|en|ru)\/profile(\/|$)/)
+  if (profileMatch) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    })
+    if (!token) {
+      return NextResponse.redirect(
+        new URL(`/${profileMatch[1]}/login`, request.url)
+      )
+    }
+  }
+
+  if (pathname.includes('.')) {
+    return NextResponse.next()
+  }
+
+  return intlMiddleware(request)
+}
 
 export const config = {
-  matcher: ['/admin/:path*', '/profile/:path*']
+  matcher: ['/', '/(hy|en|ru)/:path*', '/admin/:path*', '/login', '/register', '/cart/:path*', '/checkout', '/profile/:path*', '/products/:path*', '/about', '/contact', '/order-success'],
 }

@@ -55,10 +55,11 @@ API отдаёт поля для текущей locale; fallback: запроше
 
 ### Фазы i18n
 
-#### 7.1 — Инфраструктура
-- [ ] `next-intl`, locales `['hy','en','ru']`, default `hy`
-- [ ] `src/app/[locale]/...`, middleware, redirect `/` → `/hy`
-- [ ] Компонент `LanguageSwitcher` в Header (Armenia | English | Russian)
+#### 7.1 — Инфраструктура ✅
+- [x] `next-intl`, locales `hy`, `en`, `ru`, default `hy`
+- [x] `src/app/[locale]/...`, middleware, redirect `/` → `/hy`
+- [x] `LanguageSwitcher` в Header (Armenia | English | Russian)
+- [x] Навигация через `@/i18n/navigation`
 
 #### 7.2 — UI-строки (клиент)
 - [ ] Header, Footer, главная, каталог, карточка, корзина, checkout, auth, profile

@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { Link, useRouter } from '@/i18n/navigation'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'

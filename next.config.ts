@@ -1,33 +1,33 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 function getR2RemotePattern() {
-  const publicUrl = process.env.R2_PUBLIC_URL;
-  if (!publicUrl) return null;
+  const publicUrl = process.env.R2_PUBLIC_URL
+  if (!publicUrl) return null
 
   try {
-    const { protocol, hostname } = new URL(publicUrl);
+    const { protocol, hostname } = new URL(publicUrl)
     return {
-      protocol: protocol.replace(":", "") as "https" | "http",
+      protocol: protocol.replace(':', '') as 'https' | 'http',
       hostname,
-      pathname: "/**" as const,
-    };
+      pathname: '/**' as const,
+    }
   } catch {
-    return null;
+    return null
   }
 }
 
-const r2Pattern = getR2RemotePattern();
+const r2Pattern = getR2RemotePattern()
 
 const nextConfig: NextConfig = {
   eslint: {
-    // Отключаем ESLint во время сборки для продакшена
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Отключаем проверку типов во время сборки
     ignoreBuildErrors: true,
   },
-  // Оптимизация изображений
   images: {
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -37,7 +37,6 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: r2Pattern ? [r2Pattern] : [],
   },
-  // Экспериментальные функции для производительности
   experimental: {
     optimizePackageImports: ['lucide-react'],
     turbo: {
@@ -49,9 +48,7 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  // Компрессия
   compress: true,
-  // Кэширование
   async headers() {
     return [
       {
@@ -63,8 +60,8 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
-};
+}
 
-export default nextConfig;
+export default withNextIntl(nextConfig)
