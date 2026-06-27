@@ -37,6 +37,10 @@ ents/
 # Archive contains sensitive dev notes — keep local only if needed
 # archive/docs/account.md
 
+# Docs temp
+docs/archive/*
+!docs/archive/.gitkeep
+
 # Logs
 logs
 *.log

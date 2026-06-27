@@ -80,9 +80,9 @@ src/
 └── types/        # TypeScript types
 prisma/           # Schema & migrations
 scripts/          # seed.ts
-public/           # Static assets (logo, sw.js)
-archive/          # Dev docs & legacy scripts (не для production)
-data/             # Seed data (buy-am-products.json)
+docs/             # BRIEF, TECH_CARD, reference (payments, security)
+.cursor/rules/    # Cursor AI development rules
+archive/          # Legacy docs & scripts
 ```
 
 ## Команды
