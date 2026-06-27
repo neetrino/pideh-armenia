@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
 
 export async function DELETE(request: NextRequest) {
   try {
@@ -63,7 +62,7 @@ export async function DELETE(request: NextRequest) {
       { status: 200 }
     )
   } catch (error) {
-    console.error('Delete account API error:', error)
+    logger.error('Delete account API error', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

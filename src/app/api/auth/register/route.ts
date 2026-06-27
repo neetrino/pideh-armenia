@@ -1,36 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
+import { registerSchema } from '@/lib/validations'
 
-const prisma = new PrismaClient()
+const PASSWORD_SALT_ROUNDS = 12
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, phone, password } = await request.json()
-
-    // Валидация обязательных полей
-    if (!name || !email || !password) {
+    const parsed = registerSchema.safeParse(await request.json())
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Имя, email и пароль обязательны для заполнения' },
+        { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
         { status: 400 }
       )
     }
 
-    // Валидация пароля
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: 'Пароль должен содержать минимум 6 символов' },
-        { status: 400 }
-      )
-    }
-
-    // Проверяем, что пароль не пустой
-    if (password.trim().length === 0) {
-      return NextResponse.json(
-        { error: 'Пароль не может быть пустым' },
-        { status: 400 }
-      )
-    }
+    const { name, email, phone, password } = parsed.data
 
     // Проверяем, существует ли пользователь
     const existingUser = await prisma.user.findUnique({
@@ -45,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Хешируем пароль
-    const hashedPassword = await bcrypt.hash(password, 12)
+    const hashedPassword = await bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
 
     // Создаем пользователя
     const user = await prisma.user.create({
@@ -66,7 +52,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('Registration error:', error)
+    logger.error('Registration error', error)
     return NextResponse.json(
       { error: 'Внутренняя ошибка сервера' },
       { status: 500 }

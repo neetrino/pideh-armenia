@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
 
 // GET /api/products/banner - получить товар для баннера
 export async function GET(request: NextRequest) {
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
     
     return response
   } catch (error) {
-    console.error('Error fetching banner product:', error)
+    logger.error('Error fetching banner product', error)
     return NextResponse.json(
       { error: 'Failed to fetch banner product' },
       { status: 500 }

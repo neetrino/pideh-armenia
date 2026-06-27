@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
+import { logger } from '@/lib/logger'
 
 // GET /api/products/[id] - получить товар по ID
 export async function GET(
@@ -43,7 +44,7 @@ export async function GET(
     
     return response
   } catch (error) {
-    console.error('Error fetching product:', error)
+    logger.error('Error fetching product', error)
     return NextResponse.json(
       { error: 'Failed to fetch product' },
       { status: 500 }
@@ -99,7 +100,7 @@ export async function DELETE(
       { status: 200 }
     )
   } catch (error) {
-    console.error('Error deleting product:', error)
+    logger.error('Error deleting product', error)
     return NextResponse.json(
       { error: 'Failed to delete product' },
       { status: 500 }

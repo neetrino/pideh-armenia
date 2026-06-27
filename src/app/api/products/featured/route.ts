@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
 
 // GET /api/products/featured - получить товары-хиты
 export async function GET(request: NextRequest) {
@@ -7,12 +9,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status') // HIT, NEW, CLASSIC
 
-    const whereClause: any = {
+    const whereClause: Prisma.ProductWhereInput = {
       isAvailable: true
     }
 
     if (status) {
-      whereClause.status = status
+      whereClause.status = status as Prisma.EnumProductStatusFilter['equals']
     } else {
       // Если статус не указан, возвращаем все товары с особыми статусами (кроме BANNER)
       whereClause.status = {
@@ -52,7 +54,7 @@ export async function GET(request: NextRequest) {
     
     return response
   } catch (error) {
-    console.error('Error fetching featured products:', error)
+    logger.error('Error fetching featured products', error)
     return NextResponse.json(
       { error: 'Failed to fetch featured products' },
       { status: 500 }

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/logger'
+import { updateProfileSchema } from '@/lib/validations'
 
 export async function GET(request: NextRequest) {
   try {
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(user)
   } catch (error) {
-    console.error('User profile API error:', error)
+    logger.error('User profile API error', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -60,7 +60,14 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    const { name, phone, address } = await request.json()
+    const parsed = updateProfileSchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      )
+    }
+    const { name, phone, address } = parsed.data
 
     // Обновляем данные пользователя (только не удаленных)
     const updatedUser = await prisma.user.update({
@@ -85,7 +92,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(updatedUser)
   } catch (error) {
-    console.error('User profile update API error:', error)
+    logger.error('User profile update API error', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
