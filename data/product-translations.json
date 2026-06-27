@@ -26,7 +26,7 @@
   "Горчица": {
     "hy": {
       "name": "Մանանեխ",
-      "description": "Հրча մանանեխ",
+      "description": "Կծու մանանեխ",
       "ingredients": ["Մանանեխի հատիկներ", "Քացախ", "Աղ", "Համեմունքներ"]
     },
     "en": {
@@ -38,8 +38,8 @@
   "Грибное пиде": {
     "hy": {
       "name": "Սունկով փիդե",
-      "description": "Փիդե տապակած սունկերով և зелeni",
-      "ingredients": ["Խմոր", "Տապակած սունկեր", "Կանաչ", "Պаниր"]
+      "description": "Փիդե տապակած սնկով և կանաչեղենով",
+      "ingredients": ["Խմոր", "Տապակած սունկ", "Կանաչեղեն", "Պանիր"]
     },
     "en": {
       "name": "Mushroom pide",
@@ -49,9 +49,9 @@
   },
   "Кавказский пиде": {
     "hy": {
-      "name": "Կովկասyan փիդե",
-      "description": "Փիդե սպիտակ պaniրով, зелeni և կերազի լոլիկներով",
-      "ingredients": ["Խմոր", "Սպիտակ պаниր", "Կանաչ", "Կերազի լոլիկ"]
+      "name": "Կովկասյան փիդե",
+      "description": "Փիդե սպիտակ պանրով, կանաչեղենով և չերի լոլիկով",
+      "ingredients": ["Խմոր", "Սպիտակ պանիր", "Կանաչեղեն", "Չերի լոլիկ"]
     },
     "en": {
       "name": "Caucasian pide",
@@ -61,8 +61,8 @@
   },
   "Картофель фри": {
     "hy": {
-      "name": "Կարտոֆիլ фri",
-      "description": "Хрустящий картофель фри",
+      "name": "Կարտոֆիլ ֆրի",
+      "description": "Խրթխրթան կարտոֆիլ ֆրի",
       "ingredients": ["Կարտոֆիլ", "Յուղ", "Աղ"]
     },
     "en": {
@@ -74,8 +74,8 @@
   "Кетчуп": {
     "hy": {
       "name": "Կետչուպ",
-      "description": "Դasakan tomatny ketchup",
-      "ingredients": ["Տomati matsuk", "Shakar", "Qatsakh", "Hamemunqner"]
+      "description": "Դասական տոմատի կետչուպ",
+      "ingredients": ["Տոմատի մածուկ", "Շաքար", "Քացախ", "Համեմունքներ"]
     },
     "en": {
       "name": "Ketchup",
@@ -85,9 +85,9 @@
   },
   "Классическое сырное пиде": {
     "hy": {
-      "name": "Dasakan panirov pide",
-      "description": "Avandakan pide zhulvats panirov ev kerazi loliknerov",
-      "ingredients": ["Xmor", "Panir", "Kerazi lolik"]
+      "name": "Դասական պանրով փիդե",
+      "description": "Ավանդական փիդե հալած պանրով և չերի լոլիկով",
+      "ingredients": ["Խմոր", "Պանիր", "Չերի լոլիկ"]
     },
     "en": {
       "name": "Classic cheese pide",
@@ -97,9 +97,9 @@
   },
   "Кока-Кола": {
     "hy": {
-      "name": "Koka-Kola",
-      "description": "Gazavorvats khmichk Koka-Kola",
-      "ingredients": ["Jur", "Shakar", "Kofein"]
+      "name": "Կոկա-Կոլա",
+      "description": "Գազավորված Կոկա-Կոլա ըմպելիք",
+      "ingredients": ["Ջուր", "Շաքար", "Կոֆեին"]
     },
     "en": {
       "name": "Coca-Cola",
@@ -109,9 +109,9 @@
   },
   "Коктейль соус": {
     "hy": {
-      "name": "Kokteyl sos",
-      "description": "Dasakan kokteylny sos",
-      "ingredients": ["Mayonez", "Ketchup", "Konjak", "Hamemunqner"]
+      "name": "Կոկտեյլ սոուս",
+      "description": "Դասական կոկտեյլ սոուս",
+      "ingredients": ["Մայոնեզ", "Կետչուպ", "Կոնյակ", "Համեմունքներ"]
     },
     "en": {
       "name": "Cocktail sauce",
@@ -121,9 +121,9 @@
   },
   "Комбо «Мы вдвоем»": {
     "hy": {
-      "name": "Kombo «Menq erkusov»",
-      "description": "2 pide (pepperoni + 2 myasa) + 2 khmichk Tan",
-      "ingredients": ["Pide pepperoni", "Pide 2 myasa", "2 khmichk Tan"]
+      "name": "Կոմբո «Մենք երկուսով»",
+      "description": "2 փիդե (պեպպերոնի + 2 մսով) + 2 թան",
+      "ingredients": ["Պեպպերոնի փիդե", "2 մսով փիդե", "2 թան"]
     },
     "en": {
       "name": "Combo «Just the two of us»",
@@ -133,9 +133,9 @@
   },
   "Комбо «Мы голодны»": {
     "hy": {
-      "name": "Kombo «Menq sovats enq»",
-      "description": "2 pide basturmayov + 2 havi teghe pide + kartofil fri + koka-kola",
-      "ingredients": ["2 pide basturmayov", "2 havi teghe pide", "Kartofil fri", "Koka-Kola"]
+      "name": "Կոմբո «Մենք քաղցած ենք»",
+      "description": "2 բաստուրմայով փիդե + 2 թեթև հավով փիդե + կարտոֆիլ ֆրի + Կոկա-Կոլա",
+      "ingredients": ["2 բաստուրմայով փիդե", "2 թեթև հավով փիդե", "Կարտոֆիլ ֆրի", "Կոկա-Կոլա"]
     },
     "en": {
       "name": "Combo «We're hungry»",
@@ -145,9 +145,9 @@
   },
   "Комбо «Мы очень голодны»": {
     "hy": {
-      "name": "Kombo «Menq shat sovats enq»",
-      "description": "4 pide pepperoni + 4 dasakan panir pide + kartofil fri + havi popkorn",
-      "ingredients": ["4 pide pepperoni", "4 dasakan panir pide", "Kartofil fri", "Havi popkorn"]
+      "name": "Կոմբո «Մենք շատ քաղցած ենք»",
+      "description": "4 պեպպերոնի փիդե + 4 դասական պանրով փիդե + կարտոֆիլ ֆրի + հավի պոպկորն",
+      "ingredients": ["4 պեպպերոնի փիդե", "4 դասական պանրով փիդե", "Կարտոֆիլ ֆրի", "Հավի պոպկորն"]
     },
     "en": {
       "name": "Combo «We're very hungry»",
@@ -157,9 +157,9 @@
   },
   "Комбо «Я один»": {
     "hy": {
-      "name": "Kombo «Es miaynake em»",
-      "description": "Pide bekonov + kartofil fri + khmichk Tan",
-      "ingredients": ["Pide bekonov", "Kartofil fri", "Khmichk Tan"]
+      "name": "Կոմբո «Ես մենակ եմ»",
+      "description": "Բեկոնով փիդե + կարտոֆիլ ֆրի + թան",
+      "ingredients": ["Բեկոնով փիդե", "Կարտոֆիլ ֆրի", "Թան"]
     },
     "en": {
       "name": "Combo «Solo»",
@@ -169,9 +169,9 @@
   },
   "Куриные легкие пиде": {
     "hy": {
-      "name": "Havi teghe pide",
-      "description": "Pide havov, qaghtsr pgpgheghov ev kerazi loliknerov",
-      "ingredients": ["Xmor", "Hav", "Qaghtsr pgpghegh", "Kerazi lolik", "Panir"]
+      "name": "Թեթև հավով փիդե",
+      "description": "Փիդե հավով, քաղցր պղպեղով և չերի լոլիկով",
+      "ingredients": ["Խմոր", "Հավ", "Քաղցր պղպեղ", "Չերի լոլիկ", "Պանիր"]
     },
     "en": {
       "name": "Light chicken pide",
@@ -181,9 +181,9 @@
   },
   "Куриный попкорн": {
     "hy": {
-      "name": "Havi popkorn",
-      "description": "Xrustyats havi kser panirovkov",
-      "ingredients": ["Hav", "Panirovka", "Hamemunqner"]
+      "name": "Հավի պոպկորն",
+      "description": "Խրթխրթան հավի կտորներ պանրապատմամբ",
+      "ingredients": ["Հավ", "Պանրապատում", "Համեմունքներ"]
     },
     "en": {
       "name": "Chicken popcorn",
@@ -193,9 +193,9 @@
   },
   "Майонез": {
     "hy": {
-      "name": "Mayonez",
-      "description": "Dasakan mayonez",
-      "ingredients": ["Tsukh zheltok", "Yug", "Qatsakh", "Mananegh"]
+      "name": "Մայոնեզ",
+      "description": "Դասական մայոնեզ",
+      "ingredients": ["Ձվի դեղնուց", "Յուղ", "Քացախ", "Մանանեխ"]
     },
     "en": {
       "name": "Mayonnaise",
@@ -205,9 +205,9 @@
   },
   "Минеральная вода": {
     "hy": {
-      "name": "Hankayin jur",
-      "description": "Apaki hankayin jur",
-      "ingredients": ["Hankayin jur"]
+      "name": "Հանքային ջուր",
+      "description": "Շշալցված հանքային ջուր",
+      "ingredients": ["Հանքային ջուր"]
     },
     "en": {
       "name": "Mineral water",
@@ -217,9 +217,9 @@
   },
   "Овощное пиде": {
     "hy": {
-      "name": "Banjaraghen pide",
-      "description": "Pide sunkerov, kanaсh soxov ev kerazi loliknerov",
-      "ingredients": ["Xmor", "Sunker", "Kanaсh sox", "Kerazi lolik", "Panir"]
+      "name": "Բանջարեղենային փիդե",
+      "description": "Փիդե սնկով, կանաչ սոխով և չերի լոլիկով",
+      "ingredients": ["Խմոր", "Սունկ", "Կանաչ սոխ", "Չերի լոլիկ", "Պանիր"]
     },
     "en": {
       "name": "Vegetable pide",
@@ -229,9 +229,9 @@
   },
   "Пепперони пиде": {
     "hy": {
-      "name": "Pepperoni pide",
-      "description": "Pide pepperoni, panirov ev kanaсh pgpgheghov",
-      "ingredients": ["Xmor", "Pepperoni", "Panir", "Kanaсh pgpghegh"]
+      "name": "Պեպպերոնի փիդե",
+      "description": "Փիդե պեպպերոնիով, պանրով և կանաչ պղպեղով",
+      "ingredients": ["Խմոր", "Պեպպերոնի", "Պանիր", "Կանաչ պղպեղ"]
     },
     "en": {
       "name": "Pepperoni pide",
@@ -241,9 +241,9 @@
   },
   "Пиде Blue Pear": {
     "hy": {
-      "name": "Blue Pear pide",
-      "description": "Pide tandzov ev teghe sosov",
-      "ingredients": ["Xmor", "Tandz", "Teghe sos", "Panir"]
+      "name": "Բլու Փեր փիդե",
+      "description": "Փիդե տանձով և թեթև սոուսով",
+      "ingredients": ["Խմոր", "Տանձ", "Թեթև սոուս", "Պանիր"]
     },
     "en": {
       "name": "Blue Pear pide",
@@ -253,9 +253,9 @@
   },
   "Пиде с бастурмой": {
     "hy": {
-      "name": "Basturmayov pide",
-      "description": "Pide basturmayov, panirov ev kanaсh pgpgheghov",
-      "ingredients": ["Xmor", "Basturma", "Panir", "Kanaсh pgpghegh"]
+      "name": "Բաստուրմայով փիդե",
+      "description": "Փիդե բաստուրմայով, պանրով և կանաչ պղպեղով",
+      "ingredients": ["Խմոր", "Բաստուրմա", "Պանիր", "Կանաչ պղպեղ"]
     },
     "en": {
       "name": "Basturma pide",
@@ -265,9 +265,9 @@
   },
   "Пиде с беконом": {
     "hy": {
-      "name": "Bekonov pide",
-      "description": "Pide xrustyats bekonov, panirov ev marinovats tursov",
-      "ingredients": ["Xmor", "Bekon", "Panir", "Marinovats turs"]
+      "name": "Բեկոնով փիդե",
+      "description": "Փիդե խրթխրթան բեկոնով, պանրով և մարինացված վարունգով",
+      "ingredients": ["Խմոր", "Բեկոն", "Պանիր", "Մարինացված վարունգ"]
     },
     "en": {
       "name": "Bacon pide",
@@ -277,9 +277,9 @@
   },
   "Пиде с говядиной": {
     "hy": {
-      "name": "Tavarayin farshev pide",
-      "description": "Pide tavarayin farshev, kanaсhov ev kerazi loliknerov",
-      "ingredients": ["Xmor", "Tavarayin farshe", "Kanaсh", "Kerazi lolik", "Panir"]
+      "name": "Տավարի ֆարշով փիդե",
+      "description": "Փիդե տավարի ֆարշով, կանաչեղենով և չերի լոլիկով",
+      "ingredients": ["Խմոր", "Տավարի ֆարշ", "Կանաչեղեն", "Չերի լոլիկ", "Պանիր"]
     },
     "en": {
       "name": "Beef pide",
@@ -289,9 +289,9 @@
   },
   "Пиде с пхали": {
     "hy": {
-      "name": "Phaliov pide",
-      "description": "Pide vrastakan banjaraghen pastay phali ev kinzayov",
-      "ingredients": ["Xmor", "Phali", "Kinza", "Panir"]
+      "name": "Փխալիով փիդե",
+      "description": "Փիդե վրացական բանջարեղենային փխալի մածուկով և կիլանտրոյով",
+      "ingredients": ["Խմոր", "Փխալի", "Կիլանտրո", "Պանիր"]
     },
     "en": {
       "name": "Phali pide",
@@ -301,9 +301,9 @@
   },
   "Пиде Хот Дог": {
     "hy": {
-      "name": "Hot Dog pide",
-      "description": "Pide sosisov, panirov ev marinovats tursov",
-      "ingredients": ["Xmor", "Sosis", "Panir", "Marinovats turs"]
+      "name": "Հոթ դոգ փիդե",
+      "description": "Փիդե սոսիսով, պանրով և մարինացված վարունգով",
+      "ingredients": ["Խմոր", "Սոսիս", "Պանիր", "Մարինացված վարունգ"]
     },
     "en": {
       "name": "Hot Dog pide",
@@ -313,9 +313,9 @@
   },
   "Сладкий пиде": {
     "hy": {
-      "name": "Qaghtsr pide",
-      "description": "Ananun pide shokolad konfetnerov ev qaghtsr sosov",
-      "ingredients": ["Xmor", "Shokolad konfetner", "Qaghtsr sos"]
+      "name": "Քաղցր փիդե",
+      "description": "Աղանդերային փիդե շոկոլադե կոնֆետներով և քաղցր սոուսով",
+      "ingredients": ["Խմոր", "Շոկոլադե կոնֆետներ", "Քաղցր սոուս"]
     },
     "en": {
       "name": "Sweet pide",
@@ -325,9 +325,9 @@
   },
   "Сок (ассорти)": {
     "hy": {
-      "name": "H juice (assorti)",
-      "description": "H juice tesakits",
-      "ingredients": ["Mrgayin h juice"]
+      "name": "Հյութ (ասորտի)",
+      "description": "Տարբեր տեսակի հյութ",
+      "ingredients": ["Մրգային հյութ"]
     },
     "en": {
       "name": "Juice (assorted)",
@@ -337,9 +337,9 @@
   },
   "Спрайт": {
     "hy": {
-      "name": "Sprite",
-      "description": "Gazavorvats khmichk Sprite",
-      "ingredients": ["Jur", "Shakar", "Limon h juice"]
+      "name": "Սփրայթ",
+      "description": "Գազավորված Սփրայթ ըմպելիք",
+      "ingredients": ["Ջուր", "Շաքար", "Կիտրոնի հյութ"]
     },
     "en": {
       "name": "Sprite",
@@ -349,9 +349,9 @@
   },
   "Сырный соус": {
     "hy": {
-      "name": "Panirayin sos",
-      "description": "Slivochny panirayin sos",
-      "ingredients": ["Panir", "Slivki", "Yug", "Hamemunqner"]
+      "name": "Պանրային սոուս",
+      "description": "Սերուցքային պանրային սոուս",
+      "ingredients": ["Պանիր", "Սերուցք", "Կարագ", "Համեմունքներ"]
     },
     "en": {
       "name": "Cheese sauce",
@@ -361,9 +361,9 @@
   },
   "Тан": {
     "hy": {
-      "name": "Tan",
-      "description": "Avandakan haykakan khmichk Tan",
-      "ingredients": ["Matsun", "Jur", "Agh"]
+      "name": "Թան",
+      "description": "Ավանդական հայկական թան",
+      "ingredients": ["Մածուն", "Ջուր", "Աղ"]
     },
     "en": {
       "name": "Tan",
@@ -373,9 +373,9 @@
   },
   "Фанта": {
     "hy": {
-      "name": "Fanta",
-      "description": "Gazavorvats khmichk Fanta",
-      "ingredients": ["Jur", "Shakar", "Narinj h juice"]
+      "name": "Ֆանտա",
+      "description": "Գազավորված Ֆանտա ըմպելիք",
+      "ingredients": ["Ջուր", "Շաքար", "Նարնջի հյութ"]
     },
     "en": {
       "name": "Fanta",
@@ -385,9 +385,9 @@
   },
   "Чесночный соус": {
     "hy": {
-      "name": "Skhtorot sos",
-      "description": "Hormonal skhtorot sos kanaсhov",
-      "ingredients": ["Skhtorot", "Mayonez", "Kanaсh", "Limon h juice"]
+      "name": "Սխտորային սոուս",
+      "description": "Բուրավետ սխտորային սոուս կանաչեղենով",
+      "ingredients": ["Սխտոր", "Մայոնեզ", "Կանաչեղեն", "Կիտրոնի հյութ"]
     },
     "en": {
       "name": "Garlic sauce",
@@ -397,9 +397,9 @@
   },
   "Шпинат пиде": {
     "hy": {
-      "name": "Shpinat pide",
-      "description": "Pide shpinatov, panirov ev kerazi loliknerov",
-      "ingredients": ["Xmor", "Shpinat", "Panir", "Kerazi lolik"]
+      "name": "Սպանախով փիդե",
+      "description": "Փիդե սպանախով, պանրով և չերի լոլիկով",
+      "ingredients": ["Խմոր", "Սպանախ", "Պանիր", "Չերի լոլիկ"]
     },
     "en": {
       "name": "Spinach pide",
