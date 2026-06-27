@@ -11,7 +11,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
 
-import { CATEGORY_SLUGS, CATEGORY_SLUG_ORDER } from '@/lib/category-slugs'
+import { CATEGORY_SLUGS, CATEGORY_SLUG_ORDER, type CategorySlug } from '@/lib/category-slugs'
 
 const ALL_CATEGORY = 'all'
 const SLUG_PIDE = CATEGORY_SLUGS.pide
@@ -130,7 +130,9 @@ export default function ProductsPage() {
     })
 
     const priorityCategories = categoryOrder.filter((cat) => grouped[cat])
-    const otherCategories = Object.keys(grouped).filter((cat) => !categoryOrder.includes(cat))
+    const otherCategories = Object.keys(grouped).filter(
+      (cat) => !categoryOrder.includes(cat as CategorySlug)
+    )
     const sortedCategories = [...priorityCategories, ...otherCategories]
 
     return sortedCategories.map((category) => ({

@@ -83,7 +83,7 @@ export default function DeleteAccountModal({ isOpen, onClose, onConfirm }: Delet
 
           <div className="space-y-3">
             <p className="text-gray-700">
-              Если вы уверены, что хотите удалить свой аккаунт, введите <strong>"УДАЛИТЬ"</strong> в поле ниже:
+              Если вы уверены, что хотите удалить свой аккаунт, введите <strong>&quot;УДАЛИТЬ&quot;</strong> в поле ниже:
             </p>
             
             <div>

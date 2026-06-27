@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { Order, OrderItem, User } from '@/types'
+import { Order, OrderItem, OrderStatus, User } from '@/types'
 import { PAYMENT_METHOD_LABELS } from '@/constants/payments'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -207,13 +207,13 @@ export default function AdminOrdersPage() {
       // Обновляем локальное состояние
       setOrders(prevOrders =>
         prevOrders.map(order =>
-          order.id === orderId ? { ...order, status: newStatus as any } : order
+          order.id === orderId ? { ...order, status: newStatus as OrderStatus } : order
         )
       )
 
       // Обновляем выбранный заказ в модальном окне
       if (selectedOrder && selectedOrder.id === orderId) {
-        setSelectedOrder(prev => prev ? { ...prev, status: newStatus as any } : null)
+        setSelectedOrder(prev => prev ? { ...prev, status: newStatus as OrderStatus } : null)
       }
     } catch (error) {
       console.error('Error updating order status:', error)
@@ -629,7 +629,7 @@ export default function AdminOrdersPage() {
                     )}
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Адрес доставки</p>
-                      <p className="font-medium text-gray-900">{selectedOrder.deliveryAddress}</p>
+                      <p className="font-medium text-gray-900">{selectedOrder.address}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Время доставки</p>

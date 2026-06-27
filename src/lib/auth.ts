@@ -1,9 +1,9 @@
-import NextAuth from "next-auth"
+import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -66,5 +66,3 @@ export const authOptions = {
     signIn: '/hy/login',
   },
 }
-
-export default NextAuth(authOptions)

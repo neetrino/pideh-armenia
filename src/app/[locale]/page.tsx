@@ -10,7 +10,7 @@ import { withLocale } from "@/lib/api-path";
 import { ProductWithCategory } from "@/types";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { CATEGORY_SLUGS, CATEGORY_SLUG_ORDER } from '@/lib/category-slugs'
+import { CATEGORY_SLUGS, CATEGORY_SLUG_ORDER, type CategorySlug } from '@/lib/category-slugs'
 import ProductCard from "@/components/ProductCard";
 import { useFormatPrice } from '@/hooks/useFormatPrice'
 
@@ -24,7 +24,7 @@ export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<ProductWithCategory[]>([])
   const [bannerProduct, setBannerProduct] = useState<ProductWithCategory | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeCategory, setActiveCategory] = useState(CATEGORY_SLUGS.pide)
+  const [activeCategory, setActiveCategory] = useState<CategorySlug>(CATEGORY_SLUGS.pide)
   const [searchQuery, setSearchQuery] = useState('')
   const [addedToCart, setAddedToCart] = useState<Set<string>>(new Set())
   const [addedToCartHits, setAddedToCartHits] = useState<Set<string>>(new Set())
@@ -582,7 +582,7 @@ export default function Home() {
                       {t('clearSearch')}
                     </button>
                     <button
-                      onClick={() => setActiveCategory('Комбо')}
+                      onClick={() => setActiveCategory(CATEGORY_SLUGS.combo)}
                       className="bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors"
                     >
                       {t('showCombos')}
@@ -598,7 +598,7 @@ export default function Home() {
                     {t('categoryEmptyHint')}
                   </p>
                   <button
-                    onClick={() => setActiveCategory('Комбо')}
+                    onClick={() => setActiveCategory(CATEGORY_SLUGS.combo)}
                     className="bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors"
                   >
                     {t('showCombos')}

@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useReducer, ReactNode, useEffect, useState, useCallback } from 'react'
-import { Product, CartItem, CartContextType } from '@/types'
+import { CartItem, CartContextType, ProductWithCategory } from '@/types'
 import { useHydration } from './useHydration'
 
 // Ключ для localStorage
@@ -36,7 +36,7 @@ const clearCartFromStorage = () => {
 
 // Типы для reducer
 type CartAction =
-  | { type: 'ADD_ITEM'; payload: { product: Product; quantity?: number } }
+  | { type: 'ADD_ITEM'; payload: { product: ProductWithCategory; quantity?: number } }
   | { type: 'REMOVE_ITEM'; payload: { productId: string } }
   | { type: 'UPDATE_QUANTITY'; payload: { productId: string; quantity: number } }
   | { type: 'CLEAR_CART' }
@@ -126,7 +126,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [isHydrated])
 
-  const addItem = (product: Product, quantity: number = 1) => {
+  const addItem = (product: ProductWithCategory, quantity: number = 1) => {
     dispatch({ type: 'ADD_ITEM', payload: { product, quantity } })
   }
 

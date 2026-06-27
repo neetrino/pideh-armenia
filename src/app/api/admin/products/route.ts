@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
         categoryId: data.categoryId,
         image: data.image ?? '',
         isAvailable: data.isAvailable ?? true,
-        status: data.status && data.status !== '' ? data.status : 'REGULAR',
+        status: data.status,
       },
       include: {
         category: { select: { id: true, slug: true, nameHy: true, isActive: true } },

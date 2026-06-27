@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
           items: {
             include: {
               product: {
-                select: { id: true, name: true, price: true, image: true },
+                select: { id: true, nameRu: true, price: true, image: true },
               },
             },
           },
@@ -56,6 +56,15 @@ export async function GET(request: NextRequest) {
 
     const ordersWithTotal = orders.map((order) => ({
       ...order,
+      items: order.items.map((item) => ({
+        ...item,
+        product: {
+          id: item.product.id,
+          name: item.product.nameRu,
+          price: item.product.price,
+          image: item.product.image,
+        },
+      })),
       totalAmount: order.items.reduce(
         (sum, item) => sum + item.product.price * item.quantity,
         0

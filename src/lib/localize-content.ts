@@ -85,8 +85,8 @@ function pickString(
 ): string {
   for (const loc of localeFallbackOrder(locale)) {
     const key = localizedFieldKey(base, loc)
-    const value = row[key]
-    if (value) return value
+    const value = row[key as keyof LocalizedRow]
+    if (typeof value === 'string' && value) return value
   }
   return row.nameHy
 }
@@ -94,8 +94,8 @@ function pickString(
 function pickIngredients(row: LocalizedRow, locale: ContentLocale): string[] {
   for (const loc of localeFallbackOrder(locale)) {
     const key = localizedFieldKey('ingredients', loc)
-    const value = row[key]
-    if (value && value.length > 0) return value
+    const value = row[key as keyof LocalizedRow]
+    if (Array.isArray(value) && value.length > 0) return value
   }
   return row.ingredientsHy ?? []
 }
