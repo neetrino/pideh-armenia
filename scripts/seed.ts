@@ -7,6 +7,7 @@ import { invalidateCategoryCaches, invalidateProductCaches } from '../src/lib/re
 const prisma = new PrismaClient()
 const PASSWORD_SALT_ROUNDS = 12
 const PRODUCTS_JSON = path.join(__dirname, '../data/buy-am-products.json')
+const PRODUCT_TRANSLATIONS_JSON = path.join(__dirname, '../data/product-translations.json')
 const IMAGE_MAP_JSON = path.join(__dirname, '../data/image-map.json')
 const BANNER_PRODUCT_NAME = 'Пиде с говядиной'
 
@@ -48,6 +49,17 @@ type ProductSeed = {
   isAvailable: boolean
 }
 
+type ProductTranslationSeed = {
+  name: string
+  description: string
+  ingredients: string[]
+}
+
+type ProductTranslationsMap = Record<
+  string,
+  { hy: ProductTranslationSeed; en: ProductTranslationSeed }
+>
+
 function loadImageMap(): Record<string, string> {
   if (!fs.existsSync(IMAGE_MAP_JSON)) {
     throw new Error(`Missing ${IMAGE_MAP_JSON}. Product images live on R2 — run db:seed only after image-map exists.`)
@@ -82,6 +94,9 @@ async function upsertCategoryTranslation(
 async function main() {
   const imageMap = loadImageMap()
   const productsData: ProductSeed[] = JSON.parse(fs.readFileSync(PRODUCTS_JSON, 'utf8'))
+  const productTranslations: ProductTranslationsMap = JSON.parse(
+    fs.readFileSync(PRODUCT_TRANSLATIONS_JSON, 'utf8')
+  )
   const categories = ['Пиде', 'Комбо', 'Снэк', 'Соусы', 'Напитки']
 
   for (const name of categories) {
@@ -155,6 +170,15 @@ async function main() {
       description: item.description,
       ingredients: item.ingredients,
     })
+
+    const localized = productTranslations[item.name]
+    if (!localized) {
+      console.warn(`Skip translations (no hy/en map): ${item.name}`)
+      continue
+    }
+
+    await upsertProductTranslation(product.id, 'hy', localized.hy)
+    await upsertProductTranslation(product.id, 'en', localized.en)
   }
 
   await prisma.product.updateMany({ data: { status: 'REGULAR' } })

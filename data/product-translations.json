@@ -1,0 +1,410 @@
+{
+  "2 мяса пиде": {
+    "hy": {
+      "name": "2 միսով փիդե",
+      "description": "Փիդե երկու տեսակի մսով, կանաչ պղպեղով և կերազի լոլիկներով",
+      "ingredients": ["Խմոր", "2 տեսակի միս", "Կանաչ պղպեղ", "Կերազի լոլիկ", "Պանիր"]
+    },
+    "en": {
+      "name": "Two-meat pide",
+      "description": "Pide with two types of meat, green pepper and cherry tomatoes",
+      "ingredients": ["Dough", "Two types of meat", "Green pepper", "Cherry tomatoes", "Cheese"]
+    }
+  },
+  "Барбекю соус": {
+    "hy": {
+      "name": "Բարբեկյու սոուս",
+      "description": "Թթվահամ բարբեկյու սոուս",
+      "ingredients": ["Տոմատի մածուկ", "Շաքար", "Քացախ", "Համեմունքներ"]
+    },
+    "en": {
+      "name": "BBQ sauce",
+      "description": "Tangy barbecue sauce",
+      "ingredients": ["Tomato paste", "Sugar", "Vinegar", "Spices"]
+    }
+  },
+  "Горчица": {
+    "hy": {
+      "name": "Մանանեխ",
+      "description": "Հրча մանանեխ",
+      "ingredients": ["Մանանեխի հատիկներ", "Քացախ", "Աղ", "Համեմունքներ"]
+    },
+    "en": {
+      "name": "Mustard",
+      "description": "Spicy mustard",
+      "ingredients": ["Mustard seeds", "Vinegar", "Salt", "Spices"]
+    }
+  },
+  "Грибное пиде": {
+    "hy": {
+      "name": "Սունկով փիդե",
+      "description": "Փիդե տապակած սունկերով և зелeni",
+      "ingredients": ["Խմոր", "Տապակած սունկեր", "Կանաչ", "Պаниր"]
+    },
+    "en": {
+      "name": "Mushroom pide",
+      "description": "Pide with sautéed mushrooms and herbs",
+      "ingredients": ["Dough", "Sautéed mushrooms", "Herbs", "Cheese"]
+    }
+  },
+  "Кавказский пиде": {
+    "hy": {
+      "name": "Կովկասyan փիդե",
+      "description": "Փիդե սպիտակ պaniրով, зелeni և կերազի լոլիկներով",
+      "ingredients": ["Խմոր", "Սպիտակ պаниր", "Կանաչ", "Կերազի լոլիկ"]
+    },
+    "en": {
+      "name": "Caucasian pide",
+      "description": "Pide with white cheese, herbs and cherry tomatoes",
+      "ingredients": ["Dough", "White cheese", "Herbs", "Cherry tomatoes"]
+    }
+  },
+  "Картофель фри": {
+    "hy": {
+      "name": "Կարտոֆիլ фri",
+      "description": "Хрустящий картофель фри",
+      "ingredients": ["Կարտոֆիլ", "Յուղ", "Աղ"]
+    },
+    "en": {
+      "name": "French fries",
+      "description": "Crispy french fries",
+      "ingredients": ["Potatoes", "Oil", "Salt"]
+    }
+  },
+  "Кетчуп": {
+    "hy": {
+      "name": "Կետչուպ",
+      "description": "Դasakan tomatny ketchup",
+      "ingredients": ["Տomati matsuk", "Shakar", "Qatsakh", "Hamemunqner"]
+    },
+    "en": {
+      "name": "Ketchup",
+      "description": "Classic tomato ketchup",
+      "ingredients": ["Tomato paste", "Sugar", "Vinegar", "Spices"]
+    }
+  },
+  "Классическое сырное пиде": {
+    "hy": {
+      "name": "Dasakan panirov pide",
+      "description": "Avandakan pide zhulvats panirov ev kerazi loliknerov",
+      "ingredients": ["Xmor", "Panir", "Kerazi lolik"]
+    },
+    "en": {
+      "name": "Classic cheese pide",
+      "description": "Traditional pide with melted cheese and cherry tomatoes",
+      "ingredients": ["Dough", "Cheese", "Cherry tomatoes"]
+    }
+  },
+  "Кока-Кола": {
+    "hy": {
+      "name": "Koka-Kola",
+      "description": "Gazavorvats khmichk Koka-Kola",
+      "ingredients": ["Jur", "Shakar", "Kofein"]
+    },
+    "en": {
+      "name": "Coca-Cola",
+      "description": "Coca-Cola carbonated drink",
+      "ingredients": ["Water", "Sugar", "Caffeine"]
+    }
+  },
+  "Коктейль соус": {
+    "hy": {
+      "name": "Kokteyl sos",
+      "description": "Dasakan kokteylny sos",
+      "ingredients": ["Mayonez", "Ketchup", "Konjak", "Hamemunqner"]
+    },
+    "en": {
+      "name": "Cocktail sauce",
+      "description": "Classic cocktail sauce",
+      "ingredients": ["Mayonnaise", "Ketchup", "Cognac", "Spices"]
+    }
+  },
+  "Комбо «Мы вдвоем»": {
+    "hy": {
+      "name": "Kombo «Menq erkusov»",
+      "description": "2 pide (pepperoni + 2 myasa) + 2 khmichk Tan",
+      "ingredients": ["Pide pepperoni", "Pide 2 myasa", "2 khmichk Tan"]
+    },
+    "en": {
+      "name": "Combo «Just the two of us»",
+      "description": "2 pides (pepperoni + two-meat) + 2 Tan drinks",
+      "ingredients": ["Pepperoni pide", "Two-meat pide", "2 Tan drinks"]
+    }
+  },
+  "Комбо «Мы голодны»": {
+    "hy": {
+      "name": "Kombo «Menq sovats enq»",
+      "description": "2 pide basturmayov + 2 havi teghe pide + kartofil fri + koka-kola",
+      "ingredients": ["2 pide basturmayov", "2 havi teghe pide", "Kartofil fri", "Koka-Kola"]
+    },
+    "en": {
+      "name": "Combo «We're hungry»",
+      "description": "2 basturma pides + 2 light chicken pides + fries + Coca-Cola",
+      "ingredients": ["2 basturma pides", "2 light chicken pides", "French fries", "Coca-Cola"]
+    }
+  },
+  "Комбо «Мы очень голодны»": {
+    "hy": {
+      "name": "Kombo «Menq shat sovats enq»",
+      "description": "4 pide pepperoni + 4 dasakan panir pide + kartofil fri + havi popkorn",
+      "ingredients": ["4 pide pepperoni", "4 dasakan panir pide", "Kartofil fri", "Havi popkorn"]
+    },
+    "en": {
+      "name": "Combo «We're very hungry»",
+      "description": "4 pepperoni pides + 4 classic cheese pides + fries + chicken popcorn",
+      "ingredients": ["4 pepperoni pides", "4 classic cheese pides", "French fries", "Chicken popcorn"]
+    }
+  },
+  "Комбо «Я один»": {
+    "hy": {
+      "name": "Kombo «Es miaynake em»",
+      "description": "Pide bekonov + kartofil fri + khmichk Tan",
+      "ingredients": ["Pide bekonov", "Kartofil fri", "Khmichk Tan"]
+    },
+    "en": {
+      "name": "Combo «Solo»",
+      "description": "Bacon pide + fries + Tan drink",
+      "ingredients": ["Bacon pide", "French fries", "Tan drink"]
+    }
+  },
+  "Куриные легкие пиде": {
+    "hy": {
+      "name": "Havi teghe pide",
+      "description": "Pide havov, qaghtsr pgpgheghov ev kerazi loliknerov",
+      "ingredients": ["Xmor", "Hav", "Qaghtsr pgpghegh", "Kerazi lolik", "Panir"]
+    },
+    "en": {
+      "name": "Light chicken pide",
+      "description": "Pide with chicken, sweet pepper and cherry tomatoes",
+      "ingredients": ["Dough", "Chicken", "Sweet pepper", "Cherry tomatoes", "Cheese"]
+    }
+  },
+  "Куриный попкорн": {
+    "hy": {
+      "name": "Havi popkorn",
+      "description": "Xrustyats havi kser panirovkov",
+      "ingredients": ["Hav", "Panirovka", "Hamemunqner"]
+    },
+    "en": {
+      "name": "Chicken popcorn",
+      "description": "Crispy breaded chicken bites",
+      "ingredients": ["Chicken", "Breading", "Spices"]
+    }
+  },
+  "Майонез": {
+    "hy": {
+      "name": "Mayonez",
+      "description": "Dasakan mayonez",
+      "ingredients": ["Tsukh zheltok", "Yug", "Qatsakh", "Mananegh"]
+    },
+    "en": {
+      "name": "Mayonnaise",
+      "description": "Classic mayonnaise",
+      "ingredients": ["Egg yolk", "Oil", "Vinegar", "Mustard"]
+    }
+  },
+  "Минеральная вода": {
+    "hy": {
+      "name": "Hankayin jur",
+      "description": "Apaki hankayin jur",
+      "ingredients": ["Hankayin jur"]
+    },
+    "en": {
+      "name": "Mineral water",
+      "description": "Bottled mineral water",
+      "ingredients": ["Mineral water"]
+    }
+  },
+  "Овощное пиде": {
+    "hy": {
+      "name": "Banjaraghen pide",
+      "description": "Pide sunkerov, kanaсh soxov ev kerazi loliknerov",
+      "ingredients": ["Xmor", "Sunker", "Kanaсh sox", "Kerazi lolik", "Panir"]
+    },
+    "en": {
+      "name": "Vegetable pide",
+      "description": "Pide with mushrooms, green onion and cherry tomatoes",
+      "ingredients": ["Dough", "Mushrooms", "Green onion", "Cherry tomatoes", "Cheese"]
+    }
+  },
+  "Пепперони пиде": {
+    "hy": {
+      "name": "Pepperoni pide",
+      "description": "Pide pepperoni, panirov ev kanaсh pgpgheghov",
+      "ingredients": ["Xmor", "Pepperoni", "Panir", "Kanaсh pgpghegh"]
+    },
+    "en": {
+      "name": "Pepperoni pide",
+      "description": "Pide with pepperoni, cheese and green pepper",
+      "ingredients": ["Dough", "Pepperoni", "Cheese", "Green pepper"]
+    }
+  },
+  "Пиде Blue Pear": {
+    "hy": {
+      "name": "Blue Pear pide",
+      "description": "Pide tandzov ev teghe sosov",
+      "ingredients": ["Xmor", "Tandz", "Teghe sos", "Panir"]
+    },
+    "en": {
+      "name": "Blue Pear pide",
+      "description": "Pide with pears and light sauce",
+      "ingredients": ["Dough", "Pears", "Light sauce", "Cheese"]
+    }
+  },
+  "Пиде с бастурмой": {
+    "hy": {
+      "name": "Basturmayov pide",
+      "description": "Pide basturmayov, panirov ev kanaсh pgpgheghov",
+      "ingredients": ["Xmor", "Basturma", "Panir", "Kanaсh pgpghegh"]
+    },
+    "en": {
+      "name": "Basturma pide",
+      "description": "Pide with basturma, cheese and green pepper",
+      "ingredients": ["Dough", "Basturma", "Cheese", "Green pepper"]
+    }
+  },
+  "Пиде с беконом": {
+    "hy": {
+      "name": "Bekonov pide",
+      "description": "Pide xrustyats bekonov, panirov ev marinovats tursov",
+      "ingredients": ["Xmor", "Bekon", "Panir", "Marinovats turs"]
+    },
+    "en": {
+      "name": "Bacon pide",
+      "description": "Pide with crispy bacon, cheese and pickled cucumbers",
+      "ingredients": ["Dough", "Bacon", "Cheese", "Pickled cucumbers"]
+    }
+  },
+  "Пиде с говядиной": {
+    "hy": {
+      "name": "Tavarayin farshev pide",
+      "description": "Pide tavarayin farshev, kanaсhov ev kerazi loliknerov",
+      "ingredients": ["Xmor", "Tavarayin farshe", "Kanaсh", "Kerazi lolik", "Panir"]
+    },
+    "en": {
+      "name": "Beef pide",
+      "description": "Pide with ground beef, herbs and cherry tomatoes",
+      "ingredients": ["Dough", "Ground beef", "Herbs", "Cherry tomatoes", "Cheese"]
+    }
+  },
+  "Пиде с пхали": {
+    "hy": {
+      "name": "Phaliov pide",
+      "description": "Pide vrastakan banjaraghen pastay phali ev kinzayov",
+      "ingredients": ["Xmor", "Phali", "Kinza", "Panir"]
+    },
+    "en": {
+      "name": "Phali pide",
+      "description": "Pide with Georgian vegetable paste phali and cilantro",
+      "ingredients": ["Dough", "Phali", "Cilantro", "Cheese"]
+    }
+  },
+  "Пиде Хот Дог": {
+    "hy": {
+      "name": "Hot Dog pide",
+      "description": "Pide sosisov, panirov ev marinovats tursov",
+      "ingredients": ["Xmor", "Sosis", "Panir", "Marinovats turs"]
+    },
+    "en": {
+      "name": "Hot Dog pide",
+      "description": "Pide with sausages, cheese and pickled cucumbers",
+      "ingredients": ["Dough", "Sausages", "Cheese", "Pickled cucumbers"]
+    }
+  },
+  "Сладкий пиде": {
+    "hy": {
+      "name": "Qaghtsr pide",
+      "description": "Ananun pide shokolad konfetnerov ev qaghtsr sosov",
+      "ingredients": ["Xmor", "Shokolad konfetner", "Qaghtsr sos"]
+    },
+    "en": {
+      "name": "Sweet pide",
+      "description": "Dessert pide with chocolate candies and sweet sauce",
+      "ingredients": ["Dough", "Chocolate candies", "Sweet sauce"]
+    }
+  },
+  "Сок (ассорти)": {
+    "hy": {
+      "name": "H juice (assorti)",
+      "description": "H juice tesakits",
+      "ingredients": ["Mrgayin h juice"]
+    },
+    "en": {
+      "name": "Juice (assorted)",
+      "description": "Assorted juice",
+      "ingredients": ["Fruit juice"]
+    }
+  },
+  "Спрайт": {
+    "hy": {
+      "name": "Sprite",
+      "description": "Gazavorvats khmichk Sprite",
+      "ingredients": ["Jur", "Shakar", "Limon h juice"]
+    },
+    "en": {
+      "name": "Sprite",
+      "description": "Sprite carbonated drink",
+      "ingredients": ["Water", "Sugar", "Lemon juice"]
+    }
+  },
+  "Сырный соус": {
+    "hy": {
+      "name": "Panirayin sos",
+      "description": "Slivochny panirayin sos",
+      "ingredients": ["Panir", "Slivki", "Yug", "Hamemunqner"]
+    },
+    "en": {
+      "name": "Cheese sauce",
+      "description": "Creamy cheese sauce",
+      "ingredients": ["Cheese", "Cream", "Butter", "Spices"]
+    }
+  },
+  "Тан": {
+    "hy": {
+      "name": "Tan",
+      "description": "Avandakan haykakan khmichk Tan",
+      "ingredients": ["Matsun", "Jur", "Agh"]
+    },
+    "en": {
+      "name": "Tan",
+      "description": "Traditional Armenian Tan drink",
+      "ingredients": ["Matsoni", "Water", "Salt"]
+    }
+  },
+  "Фанта": {
+    "hy": {
+      "name": "Fanta",
+      "description": "Gazavorvats khmichk Fanta",
+      "ingredients": ["Jur", "Shakar", "Narinj h juice"]
+    },
+    "en": {
+      "name": "Fanta",
+      "description": "Fanta carbonated drink",
+      "ingredients": ["Water", "Sugar", "Orange juice"]
+    }
+  },
+  "Чесночный соус": {
+    "hy": {
+      "name": "Skhtorot sos",
+      "description": "Hormonal skhtorot sos kanaсhov",
+      "ingredients": ["Skhtorot", "Mayonez", "Kanaсh", "Limon h juice"]
+    },
+    "en": {
+      "name": "Garlic sauce",
+      "description": "Aromatic garlic sauce with herbs",
+      "ingredients": ["Garlic", "Mayonnaise", "Herbs", "Lemon juice"]
+    }
+  },
+  "Шпинат пиде": {
+    "hy": {
+      "name": "Shpinat pide",
+      "description": "Pide shpinatov, panirov ev kerazi loliknerov",
+      "ingredients": ["Xmor", "Shpinat", "Panir", "Kerazi lolik"]
+    },
+    "en": {
+      "name": "Spinach pide",
+      "description": "Pide with spinach, cheese and cherry tomatoes",
+      "ingredients": ["Dough", "Spinach", "Cheese", "Cherry tomatoes"]
+    }
+  }
+}
