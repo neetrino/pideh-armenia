@@ -8,6 +8,7 @@ import ClientProviders from '@/components/ClientProviders'
 import ServiceWorkerProvider from '@/components/ServiceWorkerProvider'
 import { loadMessages } from '@/i18n/load-messages'
 import type { Locale } from '@/i18n/routing'
+import { BRAND_ICONS_METADATA } from '@/lib/brand-assets'
 import { LOCALE_COOKIE_NAME, resolveLocale } from '@/lib/locale-cookie'
 
 const inter = Inter({
@@ -18,6 +19,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Pideh Armenia — Admin',
   robots: { index: false, follow: false },
+  icons: BRAND_ICONS_METADATA,
 }
 
 type AdminLayoutProps = {

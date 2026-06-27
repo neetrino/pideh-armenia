@@ -7,6 +7,7 @@ import '../globals.css'
 import ClientProviders from '@/components/ClientProviders'
 import MobileBottomNav from '@/components/MobileBottomNav'
 import ServiceWorkerProvider from '@/components/ServiceWorkerProvider'
+import { BRAND_ICONS_METADATA } from '@/lib/brand-assets'
 import { buildLocaleMetadata } from '@/lib/locale-metadata'
 import { routing, type Locale } from '@/i18n/routing'
 
@@ -53,6 +54,7 @@ export async function generateMetadata({
       title: titles[lang],
       description: descriptions[lang],
     }),
+    icons: BRAND_ICONS_METADATA,
   }
 }
 
