@@ -4,6 +4,13 @@ export type ContentLocale = 'hy' | 'en' | 'ru'
 
 export const CONTENT_LOCALES: readonly ContentLocale[] = ['hy', 'en', 'ru']
 
+/** Endonym for each locale — always shown in that language (e.g. language switcher). */
+export const LOCALE_NATIVE_LABEL: Record<ContentLocale, string> = {
+  hy: 'Հայերեն',
+  en: 'English',
+  ru: 'Русский',
+}
+
 const LOCALE_SET = new Set<string>(CONTENT_LOCALES)
 
 const LOCALE_SUFFIX: Record<ContentLocale, 'Hy' | 'En' | 'Ru'> = {

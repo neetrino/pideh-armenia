@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ChevronDown, Languages } from 'lucide-react'
-import { useLocale, useTranslations } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { usePathname as useNextPathname } from 'next/navigation'
 import { usePathname, useRouter } from '@/i18n/navigation'
 import { routing, type Locale } from '@/i18n/routing'
+import { LOCALE_NATIVE_LABEL } from '@/lib/content-locale'
 import { setLocaleCookie } from '@/lib/locale-cookie'
 
 const LOCALE_CODES: Locale[] = ['hy', 'en', 'ru']
@@ -17,7 +18,6 @@ const LOCALE_SHORT_LABEL: Record<Locale, string> = {
 }
 
 export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
-  const t = useTranslations('language')
   const locale = useLocale() as Locale
   const router = useRouter()
   const pathname = usePathname()
@@ -114,7 +114,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
                   locale === code ? 'bg-orange-50 text-orange-600' : 'text-gray-700'
                 }`}
               >
-                <span>{t(code)}</span>
+                <span>{LOCALE_NATIVE_LABEL[code]}</span>
                 <span className="text-xs font-semibold uppercase text-gray-400">{LOCALE_SHORT_LABEL[code]}</span>
               </button>
             </li>
