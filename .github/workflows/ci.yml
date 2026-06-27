@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 15
 
     env:
-      NODE_ENV: production
+      HUSKY: 0
       NEXTAUTH_SECRET: ci-build-secret-minimum-32-characters-long
       NEXTAUTH_URL: http://localhost:3000
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
