@@ -43,12 +43,12 @@ function CartSheetItem({
   const formatPrice = useFormatPrice()
 
   return (
-    <div className="flex gap-3 py-4 border-b border-gray-100 last:border-b-0">
+    <div className="relative flex gap-3 py-4 border-b border-gray-100 last:border-b-0">
       <div className="w-16 h-16 bg-orange-50 rounded-xl flex items-center justify-center overflow-hidden shrink-0">
         <CartProductImage image={item.product.image} name={item.product.name} />
       </div>
 
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 pr-8">
         <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">
           {item.product.name}
         </h3>
@@ -82,20 +82,20 @@ function CartSheetItem({
             </button>
           </div>
 
-          <div className="text-right">
-            <p className="font-bold text-gray-900 text-sm">
-              {formatPrice(item.product.price * item.quantity)}
-            </p>
-            <button
-              type="button"
-              onClick={() => onRemove(item.product.id)}
-              className="text-red-500 hover:text-red-600 text-xs mt-0.5"
-            >
-              {tc('delete')}
-            </button>
-          </div>
+          <p className="font-bold text-gray-900 text-sm">
+            {formatPrice(item.product.price * item.quantity)}
+          </p>
         </div>
       </div>
+
+      <button
+        type="button"
+        onClick={() => onRemove(item.product.id)}
+        className="absolute top-4 right-0 p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+        aria-label={tc('delete')}
+      >
+        <Trash2 className="h-4 w-4" />
+      </button>
     </div>
   )
 }
