@@ -27,54 +27,55 @@
 
 ## ⏭ Этап 7 — Мультиязычность (i18n)
 
-**Цель:** интерфейс на **русском + армянском** (основные языки аудитории в Армении). Английский — опционально, если нужен.
+### ✅ Решения (зафиксированы)
 
-### Подход (минимальный, production-grade)
+| Приоритет | Локаль | URL | Переключатель |
+|-----------|--------|-----|----------------|
+| 1 | **Армянский** | `/hy/...` | Armenia |
+| 2 | **English** | `/en/...` | English |
+| 3 | **Русский** | `/ru/...` | Russian |
 
-**Библиотека:** `next-intl` (стандарт для App Router)
+- **Default locale:** `hy` (главный язык)
+- **UI сайта:** переключатель языков в header — три пункта **Armenia | English | Russian** → смена locale, тот же URL-путь
+- **Контент меню (БД):** название, описание, ингредиенты — **на всех 3 языках**
+- **Admin:** при редактировании товара/категории — **вкладки сверху** (Armenia | English | Russian); в каждой вкладке **те же поля**, только для выбранного языка (удобно переводить)
 
-**Роутинг:** префикс локали — `/ru/...`, `/hy/...`  
-**Default:** `ru` (как сейчас в BRIEF)
+### Подход
+
+**UI-строки (кнопки, labels):** `next-intl` + `src/messages/{hy,en,ru}.json`
+
+**Контент из БД:** таблица переводов (не дублировать колонки ×3):
+
+```
+ProductTranslation: productId + locale (hy|en|ru) → name, description, ingredients[]
+CategoryTranslation: categoryId + locale → name, description
+```
+
+API отдаёт поля для текущей locale; fallback: запрошенный → hy → en → ru.
 
 ### Фазы i18n
 
 #### 7.1 — Инфраструктура
-- [ ] Установить `next-intl`
-- [ ] Структура: `src/messages/ru.json`, `src/messages/hy.json`
-- [ ] `src/i18n/config.ts` — locales, defaultLocale
-- [ ] Middleware: locale detection + redirect `/` → `/ru`
-- [ ] Перенести `src/app/*` → `src/app/[locale]/*` (layout, pages)
-- [ ] `generateStaticParams` для локалей
+- [ ] `next-intl`, locales `['hy','en','ru']`, default `hy`
+- [ ] `src/app/[locale]/...`, middleware, redirect `/` → `/hy`
+- [ ] Компонент `LanguageSwitcher` в Header (Armenia | English | Russian)
 
 #### 7.2 — UI-строки (клиент)
-- [ ] Header, Footer, MobileHeader, DesktopHeader
-- [ ] Главная, /products, /products/[id]
-- [ ] Cart, Checkout, Order-success
-- [ ] Login, Register, Profile
-- [ ] Contact, About (если есть)
+- [ ] Header, Footer, главная, каталог, карточка, корзина, checkout, auth, profile
 
-#### 7.3 — Admin
-- [ ] Admin-панель: оставить **только ru** (или ru+hy — решить)
-- [ ] API error messages: ru по умолчанию, ключи для клиента
+#### 7.3 — БД + API + seed
+- [ ] Миграция: `ProductTranslation`, `CategoryTranslation`
+- [ ] API products/categories — locale query или из `[locale]`
+- [ ] Seed: текущий русский контент → `ru`; `hy`/`en` — копия или пусто для ручного перевода в admin
 
-#### 7.4 — Контент из БД
-- [ ] **Фаза A (быстро):** названия/описания товаров остаются как в БД (русский контент)
-- [ ] **Фаза B (позже, если нужно):** поля `nameHy`, `descriptionHy` в Product/Category или отдельная таблица переводов
+#### 7.4 — Admin (вкладки перевода)
+- [ ] Товар create/edit: табы **Armenia | English | Russian**, одни и те же поля (name, description, ingredients)
+- [ ] Категории — то же
+- [ ] Shell admin (навигация, кнопки) — можно оставить ru или hy (уточнить при реализации)
 
-#### 7.5 — Форматирование
-- [ ] Цены: `Intl.NumberFormat('hy-AM', { style: 'currency', currency: 'AMD' })` — без копеек
-- [ ] Даты заказов в admin/profile
-
-#### 7.6 — SEO
-- [ ] `hreflang` в layout
-- [ ] `<html lang={locale}>`
-- [ ] Metadata per locale
-
-### Решения перед стартом (нужно подтвердить)
-
-1. **Локали:** `ru` + `hy` достаточно? Нужен `en`?
-2. **Контент меню:** переводить названия пиде в БД сейчас или только UI-оболочку?
-3. **Admin:** один язык (ru) или тоже hy?
+#### 7.5 — Форматирование и SEO
+- [ ] Цены AMD через `Intl` per locale
+- [ ] `hreflang`, `<html lang={locale}>`, metadata
 
 ---
 
