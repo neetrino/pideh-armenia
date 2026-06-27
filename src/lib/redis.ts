@@ -1,4 +1,5 @@
 import { Redis } from '@upstash/redis'
+import { allLocaleCacheKeys } from '@/lib/localize-content'
 
 let client: Redis | null = null
 
@@ -36,18 +37,20 @@ export const CACHE_KEYS = {
 
 export const CACHE_TTL_SECONDS = 300
 
+const FEATURED_STATUS_SUFFIXES = ['', ':HIT', ':NEW', ':CLASSIC'] as const
+
 /** Invalidate product-related caches after admin mutations. */
 export async function invalidateProductCaches(): Promise<void> {
-  await cacheDel(
-    CACHE_KEYS.productsFeatured,
-    `${CACHE_KEYS.productsFeatured}:HIT`,
-    `${CACHE_KEYS.productsFeatured}:NEW`,
-    `${CACHE_KEYS.productsFeatured}:CLASSIC`,
-    CACHE_KEYS.productsBanner
-  )
+  const keys = [
+    ...allLocaleCacheKeys(CACHE_KEYS.productsBanner),
+    ...FEATURED_STATUS_SUFFIXES.flatMap((suffix) =>
+      allLocaleCacheKeys(`${CACHE_KEYS.productsFeatured}${suffix}`)
+    ),
+  ]
+  await cacheDel(...keys)
 }
 
 /** Invalidate category list cache after admin mutations. */
 export async function invalidateCategoryCaches(): Promise<void> {
-  await cacheDel(CACHE_KEYS.categories)
+  await cacheDel(...allLocaleCacheKeys(CACHE_KEYS.categories))
 }

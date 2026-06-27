@@ -1,20 +1,24 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
-import { Search, Filter, ShoppingCart } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
+import { withLocale } from '@/lib/api-path'
 import { ProductWithCategory, Category } from '@/types'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
 
 const ALL_CATEGORY = 'Все'
+const SLUG_PIDE = 'Пиде'
+const SLUG_COMBO = 'Комбо'
 
 export default function ProductsPage() {
   const t = useTranslations('products')
   const tc = useTranslations('common')
+  const locale = useLocale()
   const [products, setProducts] = useState<ProductWithCategory[]>([])
   const [filteredProducts, setFilteredProducts] = useState<ProductWithCategory[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -32,7 +36,7 @@ export default function ProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('/api/products')
+      const response = await fetch(withLocale('/api/products', locale))
       const data = await response.json()
       setProducts(data)
     } catch {
@@ -44,7 +48,7 @@ export default function ProductsPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/categories')
+      const response = await fetch(withLocale('/api/categories', locale))
       const data = await response.json()
       setCategories(data)
     } catch {
@@ -67,7 +71,7 @@ export default function ProductsPage() {
     } else {
       // Если нет поискового запроса, показываем товары выбранной категории
       if (selectedCategory !== ALL_CATEGORY) {
-        filtered = filtered.filter(product => product.category?.name === selectedCategory)
+        filtered = filtered.filter((product) => product.category?.slug === selectedCategory)
       }
       // Если выбрано "Все", показываем все товары без фильтрации
     }
@@ -83,7 +87,7 @@ export default function ProductsPage() {
       ])
     }
     loadData()
-  }, [])
+  }, [locale])
 
   // Debounce search query
   useEffect(() => {
@@ -113,24 +117,25 @@ export default function ProductsPage() {
 
   // Группировка товаров по категориям
   const groupProductsByCategory = useCallback((items: ProductWithCategory[]) => {
-    const grouped: Record<string, ProductWithCategory[]> = {}
+    const grouped: Record<string, { label: string; products: ProductWithCategory[] }> = {}
     
-    items.forEach(product => {
-      const categoryName = product.category?.name || tc('noCategory')
-      if (!grouped[categoryName]) {
-        grouped[categoryName] = []
+    items.forEach((product) => {
+      const groupKey = product.category?.slug ?? tc('noCategory')
+      const groupLabel = product.category?.name ?? tc('noCategory')
+      if (!grouped[groupKey]) {
+        grouped[groupKey] = { label: groupLabel, products: [] }
       }
-      grouped[categoryName].push(product)
+      grouped[groupKey].products.push(product)
     })
 
-    // Сортируем категории: сначала приоритетные, потом остальные
-    const priorityCategories = categoryOrder.filter(cat => grouped[cat])
-    const otherCategories = Object.keys(grouped).filter(cat => !categoryOrder.includes(cat))
+    const priorityCategories = categoryOrder.filter((cat) => grouped[cat])
+    const otherCategories = Object.keys(grouped).filter((cat) => !categoryOrder.includes(cat))
     const sortedCategories = [...priorityCategories, ...otherCategories]
-    
-    return sortedCategories.map(category => ({
-      category,
-      products: grouped[category]
+
+    return sortedCategories.map((category) => ({
+      category: grouped[category].label,
+      slug: category,
+      products: grouped[category].products,
     }))
   }, [tc])
 
@@ -240,7 +245,7 @@ export default function ProductsPage() {
               <div className="space-y-3">
                 {/* First row - Все, Пиде, Комбо - 3 большие кнопки */}
                 <div className="grid grid-cols-3 gap-3">
-                  {[ALL_CATEGORY, 'Пиде', 'Комбо'].map((category) => (
+                  {[ALL_CATEGORY, SLUG_PIDE, SLUG_COMBO].map((category) => (
                     <button
                       key={category}
                       onClick={() => setSelectedCategory(category)}
@@ -253,7 +258,9 @@ export default function ProductsPage() {
                         boxShadow: '0 8px 25px rgba(255, 107, 53, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                       } : {}}
                     >
-                      {category === ALL_CATEGORY ? t('allCategories') : category}
+                      {category === ALL_CATEGORY
+                        ? t('allCategories')
+                        : categories.find((c) => c.slug === category)?.name ?? category}
                     </button>
                   ))}
                 </div>
@@ -261,13 +268,13 @@ export default function ProductsPage() {
                 {/* Second row - остальные категории */}
                 <div className="flex flex-wrap gap-2 justify-center">
                   {categories
-                    .filter(cat => !['Пиде', 'Комбо'].includes(cat.name))
+                    .filter((cat) => cat.slug !== SLUG_PIDE && cat.slug !== SLUG_COMBO)
                     .map((category) => (
                     <button
                       key={`mobile-${category.id}`}
-                      onClick={() => setSelectedCategory(category.name)}
+                      onClick={() => setSelectedCategory(category.slug)}
                       className={`px-5 py-3 rounded-2xl font-semibold transition-all duration-300 text-sm ${
-                        selectedCategory === category.name
+                        selectedCategory === category.slug
                           ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-95'
                       }`}
@@ -303,7 +310,7 @@ export default function ProductsPage() {
               {categories.map((category) => (
                 <button
                   key={`desktop-${category.id}`}
-                  onClick={() => setSelectedCategory(category.name)}
+                  onClick={() => setSelectedCategory(category.slug)}
                   className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 ${
                     selectedCategory === category.name
                       ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { PrismaClient, ProductStatus } from '@prisma/client'
+import { PrismaClient, ProductStatus, type ContentLocale } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { invalidateCategoryCaches, invalidateProductCaches } from '../src/lib/redis'
 
@@ -21,6 +21,23 @@ const PRODUCT_STATUS_BY_NAME: Record<string, ProductStatus> = {
   'Овощное пиде': 'CLASSIC',
 }
 
+/** Default Armenian category labels (canonical slug = Russian name in DB). */
+const CATEGORY_NAMES_HY: Record<string, string> = {
+  Пиде: 'Փիդե',
+  Комбо: 'Կոմբո',
+  Снэк: 'Сնэք',
+  Соусы: 'Սոուսներ',
+  Напитки: 'Խմիչքներ',
+}
+
+const CATEGORY_NAMES_EN: Record<string, string> = {
+  Пиде: 'Pide',
+  Комбо: 'Combo',
+  Снэк: 'Snacks',
+  Соусы: 'Sauces',
+  Напитки: 'Drinks',
+}
+
 type ProductSeed = {
   name: string
   description: string
@@ -38,17 +55,62 @@ function loadImageMap(): Record<string, string> {
   return JSON.parse(fs.readFileSync(IMAGE_MAP_JSON, 'utf8')) as Record<string, string>
 }
 
+async function upsertProductTranslation(
+  productId: string,
+  locale: ContentLocale,
+  data: { name: string; description: string; ingredients: string[] }
+): Promise<void> {
+  await prisma.productTranslation.upsert({
+    where: { productId_locale: { productId, locale } },
+    update: data,
+    create: { productId, locale, ...data },
+  })
+}
+
+async function upsertCategoryTranslation(
+  categoryId: string,
+  locale: ContentLocale,
+  data: { name: string; description?: string | null }
+): Promise<void> {
+  await prisma.categoryTranslation.upsert({
+    where: { categoryId_locale: { categoryId, locale } },
+    update: data,
+    create: { categoryId, locale, name: data.name, description: data.description ?? null },
+  })
+}
+
 async function main() {
   const imageMap = loadImageMap()
   const productsData: ProductSeed[] = JSON.parse(fs.readFileSync(PRODUCTS_JSON, 'utf8'))
   const categories = ['Пиде', 'Комбо', 'Снэк', 'Соусы', 'Напитки']
 
   for (const name of categories) {
-    await prisma.category.upsert({
+    const category = await prisma.category.upsert({
       where: { name },
       update: { isActive: true },
       create: { name, description: `Категория ${name}`, isActive: true },
     })
+
+    await upsertCategoryTranslation(category.id, 'ru', {
+      name,
+      description: `Категория ${name}`,
+    })
+
+    const hyName = CATEGORY_NAMES_HY[name]
+    if (hyName) {
+      await upsertCategoryTranslation(category.id, 'hy', {
+        name: hyName,
+        description: null,
+      })
+    }
+
+    const enName = CATEGORY_NAMES_EN[name]
+    if (enName) {
+      await upsertCategoryTranslation(category.id, 'en', {
+        name: enName,
+        description: null,
+      })
+    }
   }
 
   const categoryRows = await prisma.category.findMany()
@@ -67,7 +129,7 @@ async function main() {
       continue
     }
 
-    await prisma.product.upsert({
+    const product = await prisma.product.upsert({
       where: { name: item.name },
       update: {
         description: item.description,
@@ -86,6 +148,12 @@ async function main() {
         ingredients: item.ingredients,
         isAvailable: item.isAvailable,
       },
+    })
+
+    await upsertProductTranslation(product.id, 'ru', {
+      name: item.name,
+      description: item.description,
+      ingredients: item.ingredients,
     })
   }
 

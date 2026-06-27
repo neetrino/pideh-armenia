@@ -2,32 +2,30 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { logger } from '@/lib/logger'
+import { localeFromSearchParams } from '@/lib/content-locale'
+import {
+  cacheKeyForLocale,
+  localizeProduct,
+  localizeProducts,
+  PRODUCT_WITH_TRANSLATIONS_SELECT,
+} from '@/lib/localize-content'
 import { CACHE_KEYS, CACHE_TTL_SECONDS, cacheGet, cacheSet } from '@/lib/redis'
-
-const PRODUCT_SELECT = {
-  id: true,
-  name: true,
-  description: true,
-  price: true,
-  categoryId: true,
-  category: { select: { id: true, name: true, isActive: true } },
-  image: true,
-  ingredients: true,
-  isAvailable: true,
-  status: true,
-  createdAt: true,
-} as const
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
+    const locale = localeFromSearchParams(searchParams)
     const status = searchParams.get('status')
-    const cacheKey = status ? `${CACHE_KEYS.productsFeatured}:${status}` : CACHE_KEYS.productsFeatured
+    const cacheKey = cacheKeyForLocale(
+      status ? `${CACHE_KEYS.productsFeatured}:${status}` : CACHE_KEYS.productsFeatured,
+      locale
+    )
 
-    const cached = await cacheGet<unknown[]>(cacheKey)
+    const cached = await cacheGet<ReturnType<typeof localizeProducts>>(cacheKey)
     if (cached) {
       const response = NextResponse.json(cached)
       response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
+      response.headers.set('Vary', 'Accept-Language')
       return response
     }
 
@@ -42,13 +40,15 @@ export async function GET(request: NextRequest) {
     const products = await prisma.product.findMany({
       where: whereClause,
       orderBy: { createdAt: 'desc' },
-      select: PRODUCT_SELECT,
+      select: PRODUCT_WITH_TRANSLATIONS_SELECT,
     })
 
-    await cacheSet(cacheKey, products, CACHE_TTL_SECONDS)
+    const localized = localizeProducts(products, locale)
+    await cacheSet(cacheKey, localized, CACHE_TTL_SECONDS)
 
-    const response = NextResponse.json(products)
+    const response = NextResponse.json(localized)
     response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
+    response.headers.set('Vary', 'Accept-Language')
     return response
   } catch (error) {
     logger.error('Error fetching featured products', error)

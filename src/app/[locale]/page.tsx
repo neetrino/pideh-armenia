@@ -4,8 +4,9 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Phone, MapPin, Clock, ShoppingCart, Search } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useCart } from "@/hooks/useCart";
+import { withLocale } from "@/lib/api-path";
 import { ProductWithCategory } from "@/types";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -13,6 +14,7 @@ import ProductCard from "@/components/ProductCard";
 
 export default function Home() {
   const t = useTranslations('home')
+  const locale = useLocale()
   const tp = useTranslations('productDetail')
   const tc = useTranslations('common')
   const [products, setProducts] = useState<ProductWithCategory[]>([])
@@ -28,14 +30,14 @@ export default function Home() {
 
   useEffect(() => {
     fetchProducts()
-  }, [])
+  }, [locale])
 
   const fetchProducts = async () => {
     try {
       const [productsResponse, featuredResponse, bannerResponse] = await Promise.all([
-        fetch('/api/products', { cache: 'no-store' }),
-        fetch('/api/products/featured', { cache: 'no-store' }),
-        fetch('/api/products/banner', { cache: 'no-store' }),
+        fetch(withLocale('/api/products', locale), { cache: 'no-store' }),
+        fetch(withLocale('/api/products/featured', locale), { cache: 'no-store' }),
+        fetch(withLocale('/api/products/banner', locale), { cache: 'no-store' }),
       ])
 
       if (!productsResponse.ok || !featuredResponse.ok || !bannerResponse.ok) {
@@ -49,7 +51,7 @@ export default function Home() {
       if (Array.isArray(productsData)) {
         setProducts(productsData)
         const combos = productsData.filter(
-          (product: ProductWithCategory) => product.category?.name === 'Комбо'
+          (product: ProductWithCategory) => product.category?.slug === 'Комбо'
         )
         setComboProducts(combos.slice(0, 4))
       } else {
@@ -130,7 +132,12 @@ export default function Home() {
     }
     
     // Если нет поискового запроса, показываем товары выбранной категории
-    return products.filter(product => product.category?.name === activeCategory)
+    return products.filter((product) => product.category?.slug === activeCategory)
+  }
+
+  const getCategoryLabel = (slug: string) => {
+    const match = products.find((p) => p.category?.slug === slug)
+    return match?.category?.name ?? slug
   }
 
   const isPopularProduct = (product: ProductWithCategory) => {
@@ -498,7 +505,7 @@ export default function Home() {
                           boxShadow: '0 8px 25px rgba(255, 107, 53, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                         } : {}}
                       >
-                        {category}
+                        {getCategoryLabel(category)}
                       </button>
                     ))}
                   </div>
@@ -518,7 +525,7 @@ export default function Home() {
                           boxShadow: '0 8px 25px rgba(255, 107, 53, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                         } : {}}
                       >
-                        {category}
+                        {getCategoryLabel(category)}
                       </button>
                     ))}
                   </div>
@@ -537,7 +544,7 @@ export default function Home() {
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    {category}
+                    {getCategoryLabel(category)}
                   </button>
                 ))}
               </div>
@@ -582,7 +589,7 @@ export default function Home() {
               ) : (
                 <>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {t('categoryEmpty', { category: activeCategory })}
+                    {t('categoryEmpty', { category: getCategoryLabel(activeCategory) })}
                   </h3>
                   <p className="text-gray-600 mb-6">
                     {t('categoryEmptyHint')}

@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useParams } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
+import { withLocale } from '@/lib/api-path'
 import Image from 'next/image'
 import { ArrowLeft, ShoppingCart, Plus, Minus, Star, Clock, MapPin, Phone, Zap } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
@@ -16,6 +17,7 @@ export default function ProductPage() {
   const t = useTranslations('productDetail')
   const tn = useTranslations('nav')
   const tc = useTranslations('common')
+  const locale = useLocale()
   const params = useParams()
   const router = useRouter()
   const { addItem } = useCart()
@@ -29,14 +31,13 @@ export default function ProductPage() {
     if (params.id) {
       fetchProductAndSimilar(params.id as string)
     }
-  }, [params.id])
+  }, [params.id, locale])
 
   const fetchProductAndSimilar = async (id: string) => {
     try {
-      // Параллельная загрузка товара и всех товаров для похожих
       const [productResponse, similarResponse] = await Promise.all([
-        fetch(`/api/products/${id}`),
-        fetch('/api/products')
+        fetch(withLocale(`/api/products/${id}`, locale)),
+        fetch(withLocale('/api/products', locale)),
       ])
 
       if (productResponse.ok) {

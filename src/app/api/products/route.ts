@@ -2,27 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { logger } from '@/lib/logger'
+import { localeFromSearchParams } from '@/lib/content-locale'
+import {
+  localizeProducts,
+  PRODUCT_WITH_TRANSLATIONS_SELECT,
+} from '@/lib/localize-content'
 
-const PRODUCT_LIST_SELECT = {
-  id: true,
-  name: true,
-  description: true,
-  price: true,
-  categoryId: true,
-  category: {
-    select: { id: true, name: true, isActive: true },
-  },
-  image: true,
-  ingredients: true,
-  isAvailable: true,
-  status: true,
-  createdAt: true,
-} satisfies Prisma.ProductSelect
-
-// GET /api/products — публичный список товаров (создание товаров — в /api/admin/products)
+// GET /api/products — public list; ?locale=hy|en|ru
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
+    const locale = localeFromSearchParams(searchParams)
     const category = searchParams.get('category')
     const search = searchParams.get('search')
     const status = searchParams.get('status')
@@ -43,17 +33,28 @@ export async function GET(request: NextRequest) {
       whereClause.OR = [
         { name: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
+        {
+          translations: {
+            some: {
+              OR: [
+                { name: { contains: search, mode: 'insensitive' } },
+                { description: { contains: search, mode: 'insensitive' } },
+              ],
+            },
+          },
+        },
       ]
     }
 
     const products = await prisma.product.findMany({
       where: whereClause,
       orderBy: { createdAt: 'desc' },
-      select: PRODUCT_LIST_SELECT,
+      select: PRODUCT_WITH_TRANSLATIONS_SELECT,
     })
 
-    const response = NextResponse.json(products)
+    const response = NextResponse.json(localizeProducts(products, locale))
     response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
+    response.headers.set('Vary', 'Accept-Language')
     return response
   } catch (error) {
     logger.error('Error fetching products', error)

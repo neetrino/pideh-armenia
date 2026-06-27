@@ -4,52 +4,37 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { logger } from '@/lib/logger'
 import { invalidateProductCaches } from '@/lib/redis'
+import { localeFromSearchParams } from '@/lib/content-locale'
+import { localizeProduct, PRODUCT_WITH_TRANSLATIONS_SELECT } from '@/lib/localize-content'
 
-// GET /api/products/[id] - получить товар по ID
+// GET /api/products/[id] — ?locale=hy|en|ru
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
+    const locale = localeFromSearchParams(new URL(request.url).searchParams)
+
     const product = await prisma.product.findUnique({
       where: {
         id,
-        isAvailable: true
-      },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        categoryId: true,
-        category: true,
-        image: true,
-        ingredients: true,
         isAvailable: true,
-        status: true,
-        createdAt: true
-      }
+      },
+      select: PRODUCT_WITH_TRANSLATIONS_SELECT,
     })
 
     if (!product) {
-      return NextResponse.json(
-        { error: 'Product not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    // Добавляем кэширование на 10 минут для отдельных товаров
-    const response = NextResponse.json(product)
+    const response = NextResponse.json(localizeProduct(product, locale))
     response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=1200')
-    
+    response.headers.set('Vary', 'Accept-Language')
     return response
   } catch (error) {
     logger.error('Error fetching product', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch product' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })
   }
 }
 

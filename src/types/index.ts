@@ -5,13 +5,17 @@ import type {
   OrderItem,
   OrderStatus,
   ProductStatus,
-  Category,
   PaymentMethod,
 } from '@prisma/client'
+import type { LocalizedCategory, LocalizedProduct } from '@/lib/localize-content'
 
-export type { Product, User, Order, OrderItem, OrderStatus, ProductStatus, Category, PaymentMethod }
+export type { Product, User, Order, OrderItem, OrderStatus, ProductStatus, PaymentMethod }
 
-export type ProductWithCategory = Product & { category?: Category | null }
+/** Category from public API (localized name + stable slug). */
+export type Category = LocalizedCategory
+
+/** Product from public API with localized fields. */
+export type ProductWithCategory = LocalizedProduct
 
 export interface CartItem {
   product: ProductWithCategory

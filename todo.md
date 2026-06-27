@@ -68,10 +68,13 @@ API отдаёт поля для текущей locale; fallback: запроше
 - [x] about, contact (getTranslations)
 - [ ] hy.json — доработать about/contact/armenian copy (частично translit)
 
-#### 7.3 — БД + API + seed
-- [ ] Миграция: `ProductTranslation`, `CategoryTranslation`
-- [ ] API products/categories — locale query или из `[locale]`
-- [ ] Seed: текущий русский контент → `ru`; `hy`/`en` — копия или пусто для ручного перевода в admin
+#### 7.3 — БД + API + seed ✅
+- [x] `ProductTranslation`, `CategoryTranslation`, enum `ContentLocale`
+- [x] API: `?locale=hy|en|ru`, fallback hy → en → ru
+- [x] Категории: `slug` (ru key) + localized `name`
+- [x] Seed: ru для товаров; hy/en для категорий
+- [x] Redis cache per locale
+- [x] Storefront fetch с `useLocale()` + `withLocale()`
 
 #### 7.4 — Admin (вкладки перевода)
 - [ ] Товар create/edit: табы **Armenia | English | Russian**, одни и те же поля (name, description, ingredients)
